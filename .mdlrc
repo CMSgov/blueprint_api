@@ -1,0 +1,2 @@
+# Don't enforce linebreaks for lines shorter than 500 characters.
+style 'ci/mdlinelength.rb'
