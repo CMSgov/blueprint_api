@@ -9,7 +9,6 @@ def index(request):
 
 def healthcheck(request):
     response = {
-        "health": "Healthy",
-        "response": 200
+        "content": "Healthy"
     }
     return JsonResponse(response)
