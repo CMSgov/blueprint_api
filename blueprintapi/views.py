@@ -2,13 +2,10 @@ from django.http import JsonResponse
 
 
 def index(request):
-    response = {
-        "content": "Home"
-    }
+    response = {"content": "Home"}
     return JsonResponse(response)
 
+
 def healthcheck(request):
-    response = {
-        "content": "Healthy"
-    }
+    response = {"content": "Healthy"}
     return JsonResponse(response)

@@ -1,5 +1,6 @@
-from django.http import HttpResponse
+from django.http import JsonResponse
 
 
 def index(request):
-    return HttpResponse("Successful connection with Users API")
+    response = {"content": "Users"}
+    return JsonResponse(response)
