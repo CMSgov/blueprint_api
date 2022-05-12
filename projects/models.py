@@ -58,4 +58,4 @@ class Project(models.Model):
         return "%s id=%d" % (self.title, self.id)
 
     def get_absolute_url(self):
-        return f"/packages/{self.id}"
+        return f"/projects/{self.id}"
