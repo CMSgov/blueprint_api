@@ -6,9 +6,13 @@ Please visit the infrastructure repo for setting up a local development environm
 
 ### Poetry
 
-Blueprint API uses [Poetry](https://python-poetry.org/) for dependency management. To install Poetry follow [these instructions](https://python-poetry.org/docs/#installation).
+Blueprint API uses [Poetry](https://python-poetry.org/) for dependency management.
+
+**Optional:** If you want to install Poetry locally follow [these instructions](https://python-poetry.org/docs/#installation).
 
 #### Usage
+
+Enter the docker container (e.g. `docker exec -it blueprint_api_1 bash`) to run the following commands:
 
 ```bash
 # To add a dependency run
