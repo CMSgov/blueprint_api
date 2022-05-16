@@ -22,6 +22,7 @@ urlpatterns = [
     path("", views.index, name="index"),
     path("admin/", admin.site.urls),
     path("users/", include("users.urls")),
-    path("projects/", include("projects.urls")),
+    path("api/projects/", include("projects.urls")),
     path("healthcheck/", views.healthcheck, name="healthcheck"),
+    path("api-auth/", include("rest_framework.urls")),
 ]
