@@ -5,10 +5,14 @@ from users.models import User
 
 class Project(models.Model):
     title = models.CharField(
-        max_length=100, help_text="Name of the project", unique=False
+        max_length=100, 
+        help_text="Name of the project", 
+        unique=False
     )
     acronym = models.CharField(
-        max_length=20, help_text="Acronym for the name of the project", unique=False
+        max_length=20, 
+        help_text="Acronym for the name of the project", 
+        unique=False
     )
     creator = models.ForeignKey(
         User,

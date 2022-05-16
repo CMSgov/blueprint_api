@@ -81,9 +81,9 @@ class ProjectModelTest(TestCase):
 
         self.assertEqual(str(project), expected_object_name)
 
-    # def test_get_absolute_url(self):
-    #     test_id = 1
-    #     expected_url = f"/projects/{test_id}"
+    def test_get_absolute_url(self):
+        test_id = 1
+        expected_url = f"/projects/{test_id}"
 
-    #     project = Project.objects.get(id=test_id)
-    #     self.assertEqual(project.get_absolute_url(), expected_url)
+        project = Project.objects.get(id=test_id)
+        self.assertEqual(project.get_absolute_url(), expected_url)
