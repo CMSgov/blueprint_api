@@ -37,8 +37,8 @@ class ProjectsDetailView(APIView):
                 {"response": "The project you are looking for does not exist"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        serlizer = ProjectSerializer(project_instance)
-        return Response(serlizer.data, status=status.HTTP_200_OK)
+        serializer = ProjectSerializer(project_instance)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def patch(self, request, project_id, *args, **kwargs):
         project_instance = self.get_object(project_id)
@@ -47,13 +47,15 @@ class ProjectsDetailView(APIView):
                 {"response": "The project you are looking for does not exist"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        data = {
-            "": request.data.get(""),
-        }
+        # data = {
+        #     "": request.data.get(""),
+        # }
         serializer = ProjectSerializer(
-            instance=project_instance, data=data, partial=True
+            instance=project_instance, data=request.data, partial=True
         )
         if serializer.is_valid():
+            serializer.save()
+            # serializer.update(self, serializer.validated_data)
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
