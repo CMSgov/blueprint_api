@@ -1,9 +1,10 @@
+from rest_framework import permissions, status
+from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.response import Response 
-from rest_framework import status
-from rest_framework import permissions
+
 from .models import Project
 from .serializers import ProjectSerializer
+
 
 class ProjectsListViews(APIView):
 
@@ -34,7 +35,7 @@ class ProjectsDetailView(APIView):
         if not project_instance:
             return Response(
                 {"response": "The project you are looking for does not exist"},
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_400_BAD_REQUEST,
             )
         serlizer = ProjectSerializer(project_instance)
         return Response(serlizer.data, status=status.HTTP_200_OK)
@@ -44,12 +45,14 @@ class ProjectsDetailView(APIView):
         if not project_instance:
             return Response(
                 {"response": "The project you are looking for does not exist"},
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_400_BAD_REQUEST,
             )
         data = {
-            '' : request.data.get(''),
+            "": request.data.get(""),
         }
-        serializer = ProjectSerializer(instance = project_instance, data=data, partial = True)
+        serializer = ProjectSerializer(
+            instance=project_instance, data=data, partial=True
+        )
         if serializer.is_valid():
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -59,10 +62,10 @@ class ProjectsDetailView(APIView):
         if not project_instance:
             return Response(
                 {"response": "The project you are looking for does not exist"},
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_400_BAD_REQUEST,
             )
         project_instance.delete()
         return Response(
             {"response": "You have succesfully deleted the project!"},
-            status=status.HTTP_200_OK
+            status=status.HTTP_200_OK,
         )
