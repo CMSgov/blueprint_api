@@ -47,15 +47,11 @@ class ProjectsDetailView(APIView):
                 {"response": "The project you are looking for does not exist"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        # data = {
-        #     "": request.data.get(""),
-        # }
         serializer = ProjectSerializer(
             instance=project_instance, data=request.data, partial=True
         )
         if serializer.is_valid():
             serializer.save()
-            # serializer.update(self, serializer.validated_data)
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
