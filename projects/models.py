@@ -63,9 +63,3 @@ class Project(models.Model):
             ("can_add_members", "Can add members"),
             ("can_delete_members", "Can delete members"),
         ]
-
-    # def __str__(self):
-    #     return "%s id=%d" % (self.title, self.id)
-
-    # def get_absolute_url(self):
-    #     return f"/projects/{self.id}"
