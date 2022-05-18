@@ -38,6 +38,11 @@ class ProjectModelTest(TestCase):
         field_label = project._meta.get_field("location").verbose_name
         self.assertEqual(field_label, "location")
 
+    def test_status_label(self):
+        project = Project.objects.get(id=1)
+        field_label = project._meta.get_field("status").verbose_name
+        self.assertEqual(field_label, "status")
+
     def test_creator_label(self):
         project = Project.objects.get(id=1)
         field_label = project._meta.get_field("creator_id").verbose_name
@@ -74,16 +79,24 @@ class ProjectModelTest(TestCase):
         max_length = project._meta.get_field("location").max_length
         self.assertEqual(max_length, 100)
 
-    # Tests for model functions
-    def test_object_str_returns_project_title_and_id(self):
+    def test_status_max_length(self):
         project = Project.objects.get(id=1)
-        expected_object_name = f"{project.title} id={project.id}"
+        max_length = project._meta.get_field("status").max_length
+        self.assertEqual(max_length, 20)
 
-        self.assertEqual(str(project), expected_object_name)
+    # Tests for default value
+    def test_status_default_value(self):
+        # create a project without specifying status
+        Project.objects.create(
+            title="Basic Project",
+            acronym="BP",
+            impact_level="low",
+            location="other",
+            creator=User.objects.get(id=1),
+        )
 
-    def test_get_absolute_url(self):
-        test_id = 1
-        expected_url = f"/projects/{test_id}"
-
-        project = Project.objects.get(id=test_id)
-        self.assertEqual(project.get_absolute_url(), expected_url)
+        # ensure project status defaults as expected
+        expected_status = "active"
+        project = Project.objects.get(title="Basic Project")
+        status = project.status
+        self.assertEqual(status, expected_status)

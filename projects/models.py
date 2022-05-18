@@ -43,6 +43,16 @@ class Project(models.Model):
         null=True,
         help_text="Where the project is located",
     )
+    STATUS_CHOICES = [
+        ("active", "Active"),
+        ("archived", "Archived"),
+    ]
+    status = models.CharField(
+        choices=STATUS_CHOICES,
+        max_length=20,
+        default="active",
+        help_text="Status of the project",
+    )
     created = models.DateTimeField(auto_now_add=True, db_index=True)
     updated = models.DateTimeField(auto_now=True, db_index=True, null=True)
 
@@ -54,8 +64,8 @@ class Project(models.Model):
             ("can_delete_members", "Can delete members"),
         ]
 
-    def __str__(self):
-        return "%s id=%d" % (self.title, self.id)
+    # def __str__(self):
+    #     return "%s id=%d" % (self.title, self.id)
 
-    def get_absolute_url(self):
-        return f"/projects/{self.id}"
+    # def get_absolute_url(self):
+    #     return f"/projects/{self.id}"
