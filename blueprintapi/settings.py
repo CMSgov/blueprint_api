@@ -14,6 +14,11 @@ import os
 from pathlib import Path
 from typing import List
 
+# creates path for getting catalog data files
+settings_dir = os.path.dirname(__file__)
+PROJECT_ROOT = os.path.abspath(os.path.dirname(settings_dir))
+CATALOGS_DIR = os.path.join(PROJECT_ROOT, 'catalog_data/')
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -46,6 +51,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "users.apps.UsersConfig",
     "projects.apps.ProjectConfig",
+    "catalogs.apps.CatalogConfig",
 ]
 
 MIDDLEWARE = [
