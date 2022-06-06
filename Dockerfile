@@ -8,6 +8,10 @@ ENV PYTHONFAULTHANDLER=1 \
     PIP_DEFAULT_TIMEOUT=100 \
     POETRY_VERSION=1.1.13
 
+RUN apt-get update \
+    && apt-get install -y git \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /usr/local
 
 RUN pip install "poetry==$POETRY_VERSION"
