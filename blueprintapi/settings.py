@@ -33,7 +33,6 @@ ALLOWED_HOSTS: List[str] = [
     "*",
 ]
 
-
 # Application definition
 
 INSTALLED_APPS = [
