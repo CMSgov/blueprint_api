@@ -31,7 +31,6 @@ class CatalogModelTest(TestCase):
 
     def test_get_control_by_id(self):
         cid = self.cat.id
-        print(f"ID: {cid}")
         response = client.get(
             reverse("get_control_by_id", kwargs={"catalog": cid, "control_id": "ac-1"})
         )
@@ -39,7 +38,6 @@ class CatalogModelTest(TestCase):
 
     def test_post_control_by_id(self):
         cid = self.cat.id
-        print(f"ID: {cid}")
         response = client.post(
             reverse("get_control_by_id", kwargs={"catalog": cid, "control_id": "ac-1"})
         )
