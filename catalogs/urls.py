@@ -7,6 +7,6 @@ urlpatterns = [
     path(
         "<int:catalog>/control/<str:control_id>/",
         get_control_by_id,
-        name="get-control-data",
+        name="get_control_by_id",
     ),
 ]
