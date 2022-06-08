@@ -23,6 +23,6 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/users/", include("users.urls")),
     path("api/projects/", include("projects.urls")),
-    path("healthcheck/", views.healthcheck, name="healthcheck"),
+    path("api/healthcheck/", views.healthcheck, name="healthcheck"),
     path("api-auth/", include("rest_framework.urls")),
 ]
