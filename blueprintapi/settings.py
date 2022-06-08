@@ -35,7 +35,7 @@ DEBUG = True
 ALLOWED_HOSTS: List[str] = [
     "localhost",
     "127.0.0.1",
-    "*"
+    "*",
 ]
 
 
