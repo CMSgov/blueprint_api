@@ -22,8 +22,9 @@ urlpatterns = [
     path("", views.index, name="index"),
     path("admin/", admin.site.urls),
     path("api/catalogs/", include("catalogs.urls")),
-    path("api/users/", include("users.urls")),
+    path("api/components/", include("components.urls")),
     path("api/projects/", include("projects.urls")),
+    path("api/users/", include("users.urls")),
     path("api/healthcheck/", views.healthcheck, name="healthcheck"),
     path("api-auth/", include("rest_framework.urls")),
 ]
