@@ -7,7 +7,7 @@ from rest_framework import status
 from catalogs.models import Catalog
 
 from .models import Component
-from .serializers import ComponentSerializer
+from .serializers import ComponentDetailSerializer, ComponentListSerializer
 
 TEST_COMPONENT_JSON_BLOB = {
     "component-definition": {
@@ -101,6 +101,9 @@ class ComponentModelTest(TestCase):
         self.assertEqual(max_length, 100)
 
 
+TEST_COMPONENT_CONTROLS = ["ac-2.1", "ac-6.10", "ac-8", "au-6.1", "sc-2"]
+
+
 class GetAllComponentsTest(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -112,7 +115,7 @@ class GetAllComponentsTest(TestCase):
             title="Cool Component",
             description="Probably the coolest component you ever did see. It's magical.",
             catalog=Catalog.objects.get(id=cls.test_catalog.id),
-            controls=["ac-2.1", "ac-6.10", "ac-8", "au-6.1", "sc-2"],
+            controls=TEST_COMPONENT_CONTROLS,
             search_terms=["cool", "magic", "software"],
             type="software",
             component_json=TEST_COMPONENT_JSON_BLOB,
@@ -122,22 +125,34 @@ class GetAllComponentsTest(TestCase):
             title="Another Even Cooler Component",
             description="This one is better.",
             catalog=Catalog.objects.get(id=cls.test_catalog.id),
-            controls=["ac-2.1", "sc-2"],
+            controls=TEST_COMPONENT_CONTROLS,
             search_terms=["cool", "best"],
             type="software",
             component_json=TEST_COMPONENT_JSON_BLOB,
         )
 
     def test_get_all_components(self):
-        expected_num_components = 2
 
         response = client.get(reverse("component-list"))
         components = Component.objects.all()
-        serializer = ComponentSerializer(components, many=True)
+        serializer = ComponentListSerializer(components, many=True)
+
+        expected_num_components = 2
+        received_num_components = len(response.data)
 
         self.assertEqual(response.data, serializer.data)
-        self.assertEqual(len(response.data), expected_num_components)
+        self.assertEqual(received_num_components, expected_num_components)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_controls_count_is_returned(self):
+        response = client.get(reverse("component-list"))
+        component = response.data[0]
+
+        expected_controls_count = len(TEST_COMPONENT_CONTROLS)
+        received_controls_count = component["controls_count"]
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(received_controls_count, expected_controls_count)
 
 
 class GetSingleComponentTest(TestCase):
@@ -162,7 +177,7 @@ class GetSingleComponentTest(TestCase):
             reverse("component-detail", kwargs={"pk": self.test_component.pk})
         )
         component = Component.objects.get(pk=self.test_component.pk)
-        serializer = ComponentSerializer(component)
+        serializer = ComponentDetailSerializer(component)
 
         self.assertEqual(response.data, serializer.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
