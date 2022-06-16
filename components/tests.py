@@ -7,7 +7,7 @@ from rest_framework import status
 from catalogs.models import Catalog
 
 from .models import Component
-from .serializers import ComponentDetailSerializer, ComponentListSerializer
+from .serializers import ComponentListSerializer, ComponentSerializer
 
 TEST_COMPONENT_JSON_BLOB = {
     "component-definition": {
@@ -177,7 +177,7 @@ class GetSingleComponentTest(TestCase):
             reverse("component-detail", kwargs={"pk": self.test_component.pk})
         )
         component = Component.objects.get(pk=self.test_component.pk)
-        serializer = ComponentDetailSerializer(component)
+        serializer = ComponentSerializer(component)
 
         self.assertEqual(response.data, serializer.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)

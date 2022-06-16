@@ -17,14 +17,11 @@ class ComponentListSerializer(serializers.ModelSerializer):
             "description",
             "type",
             "catalog",
-            "controls",
-            "search_terms",
-            "component_json",
             "controls_count",
         )
 
 
-class ComponentDetailSerializer(serializers.ModelSerializer):
+class ComponentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Component
         fields = (
