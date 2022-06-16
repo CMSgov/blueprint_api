@@ -22,6 +22,9 @@ TEST_COMPONENT_JSON_BLOB = {
     }
 }
 
+# initialize the APIClient app
+client = Client()
+
 
 class ComponentModelTest(TestCase):
     @classmethod
@@ -98,10 +101,6 @@ class ComponentModelTest(TestCase):
         self.assertEqual(max_length, 100)
 
 
-# initialize the APIClient app
-client = Client()
-
-
 class GetAllComponentsTest(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -130,12 +129,11 @@ class GetAllComponentsTest(TestCase):
         )
 
     def test_get_all_components(self):
+        expected_num_components = 2
+
         response = client.get(reverse("component-list"))
         components = Component.objects.all()
         serializer = ComponentSerializer(components, many=True)
-
-        expected_num_components = 2
-        # print("------", len(response.data))
 
         self.assertEqual(response.data, serializer.data)
         self.assertEqual(len(response.data), expected_num_components)
@@ -333,3 +331,26 @@ class CreateNewComponentTest(TestCase):
             content_type="application/json",
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_type_field_is_lowercase(self):
+        self.uppercase_type_field = {
+            "title": "Cool Component",
+            "description": "Probably the coolest component you ever did see. It's magical.",
+            "catalog": self.test_catalog.id,
+            "controls": ["ac-2.1", "ac-6.10", "ac-8", "au-6.1", "sc-2"],
+            "search_terms": ["cool", "magic", "software"],
+            "type": "SOFTWARE",
+            "component_json": TEST_COMPONENT_JSON_BLOB,
+        }
+
+        response = client.post(
+            reverse("component-list"),
+            data=json.dumps(self.uppercase_type_field),
+            content_type="application/json",
+        )
+
+        received_type = response.data["type"]
+        expected_lowercase_type = "software"
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(received_type, expected_lowercase_type)

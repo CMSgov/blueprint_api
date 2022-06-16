@@ -1,5 +1,7 @@
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 
 from catalogs.models import Catalog
 
@@ -47,3 +49,9 @@ class Component(models.Model):
         null=False,
         help_text="OSCAL JSON representation of the component",
     )
+
+
+# ensure the "type" field value is lowercase before saving
+@receiver(pre_save, sender=Component)
+def convert_to_lowercase(sender, instance, *args, **kwargs):
+    instance.type = instance.type.lower()
