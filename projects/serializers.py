@@ -14,4 +14,5 @@ class ProjectSerializer(serializers.ModelSerializer):
             "location",
             "status",
             "creator",
+            "components",
         )
