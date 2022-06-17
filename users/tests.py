@@ -53,7 +53,7 @@ class GetSingleUserTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_invalid_single_user(self):
-        invalid_id = 999
+        invalid_id = 0
         response = client.get(reverse("user-detail", kwargs={"pk": invalid_id}))
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
