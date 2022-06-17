@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "users.apps.UsersConfig",
     "projects.apps.ProjectConfig",
     "catalogs.apps.CatalogConfig",
+    "guardian",
 ]
 
 MIDDLEWARE = [
