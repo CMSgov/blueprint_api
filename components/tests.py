@@ -33,10 +33,10 @@ class ComponentModelTest(TestCase):
             name="NIST_SP-800", file_name="NIST_SP-800.json"
         )
 
-        Component.objects.create(
+        cls.test_component = Component.objects.create(
             title="Cool Component",
             description="Probably the coolest component you ever did see. It's magical.",
-            catalog=Catalog.objects.get(id=1),
+            catalog=Catalog.objects.get(id=cls.test_catalog.id),
             controls=["ac-2.1", "ac-6.10", "ac-8", "au-6.1", "sc-2"],
             search_terms=["cool", "magic", "software"],
             type="software",
@@ -45,58 +45,58 @@ class ComponentModelTest(TestCase):
 
     # Tests for field labels
     def test_title_label(self):
-        project = Component.objects.get(id=1)
+        project = Component.objects.get(id=self.test_component.id)
         field_label = project._meta.get_field("title").verbose_name
         self.assertEqual(field_label, "title")
 
     def test_description_label(self):
-        project = Component.objects.get(id=1)
+        project = Component.objects.get(id=self.test_component.id)
         field_label = project._meta.get_field("description").verbose_name
         self.assertEqual(field_label, "description")
 
     def test_controls_label(self):
-        project = Component.objects.get(id=1)
+        project = Component.objects.get(id=self.test_component.id)
         field_label = project._meta.get_field("controls").verbose_name
         self.assertEqual(field_label, "controls")
 
     def test_type_label(self):
-        project = Component.objects.get(id=1)
+        project = Component.objects.get(id=self.test_component.id)
         field_label = project._meta.get_field("type").verbose_name
         self.assertEqual(field_label, "type")
 
     def test_search_terms_label(self):
-        project = Component.objects.get(id=1)
+        project = Component.objects.get(id=self.test_component.id)
         field_label = project._meta.get_field("search_terms").verbose_name
         self.assertEqual(field_label, "search terms")
 
     def test_component_json_label(self):
-        project = Component.objects.get(id=1)
+        project = Component.objects.get(id=self.test_component.id)
         field_label = project._meta.get_field("component_json").verbose_name
         self.assertEqual(field_label, "component json")
 
     def test_created_label(self):
-        project = Component.objects.get(id=1)
+        project = Component.objects.get(id=self.test_component.id)
         field_label = project._meta.get_field("created").verbose_name
         self.assertEqual(field_label, "created")
 
     def test_updated_label(self):
-        project = Component.objects.get(id=1)
+        project = Component.objects.get(id=self.test_component.id)
         field_label = project._meta.get_field("updated").verbose_name
         self.assertEqual(field_label, "updated")
 
     # Tests for max length
     def test_title_max_length(self):
-        project = Component.objects.get(id=1)
+        project = Component.objects.get(id=self.test_component.id)
         max_length = project._meta.get_field("title").max_length
         self.assertEqual(max_length, 100)
 
     def test_description_max_length(self):
-        project = Component.objects.get(id=1)
+        project = Component.objects.get(id=self.test_component.id)
         max_length = project._meta.get_field("description").max_length
         self.assertEqual(max_length, 500)
 
     def test_type_max_length(self):
-        project = Component.objects.get(id=1)
+        project = Component.objects.get(id=self.test_component.id)
         max_length = project._meta.get_field("type").max_length
         self.assertEqual(max_length, 100)
 
