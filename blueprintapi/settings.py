@@ -83,6 +83,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "blueprintapi.wsgi.application"
 
+AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend', 'guardian.backends.ObjectPermissionBackend')
+
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
