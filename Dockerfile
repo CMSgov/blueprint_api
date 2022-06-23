@@ -12,8 +12,6 @@ WORKDIR /usr/local
 
 RUN pip install "poetry==$POETRY_VERSION"
 
-RUN pip install django-filter
-
 COPY poetry.lock pyproject.toml /usr/local/
 
 RUN poetry config virtualenvs.create false \
