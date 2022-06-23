@@ -14,11 +14,6 @@ import os
 from pathlib import Path
 from typing import List
 
-# creates path for getting catalog data files
-settings_dir = os.path.dirname(__file__)
-PROJECT_ROOT = os.path.abspath(os.path.dirname(settings_dir))
-CATALOGS_DIR = os.path.join(PROJECT_ROOT, 'catalog_data/')
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -35,8 +30,8 @@ DEBUG = True
 ALLOWED_HOSTS: List[str] = [
     "localhost",
     "127.0.0.1",
+    "*",
 ]
-
 
 # Application definition
 
@@ -49,10 +44,11 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "corsheaders",
     "rest_framework",
-    "users.apps.UsersConfig",
-    "projects.apps.ProjectConfig",
     "catalogs.apps.CatalogConfig",
     "guardian",
+    "components.apps.ComponentsConfig",
+    "projects.apps.ProjectConfig",
+    "users.apps.UsersConfig",
 ]
 
 MIDDLEWARE = [
@@ -96,11 +92,11 @@ AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend', 'guardia
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("POSTGRES_NAME"),
+        "NAME": os.environ.get("POSTGRES_DB_NAME"),
         "USER": os.environ.get("POSTGRES_USER"),
         "PASSWORD": os.environ.get("POSTGRES_PASSWORD"),
-        "HOST": "db",
-        "PORT": 5432,
+        "HOST": os.environ.get("POSTGRES_DB_HOST"),
+        "PORT": os.environ.get("POSTGRES_DB_PORT"),
     }
 }
 
@@ -146,6 +142,10 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
+
+
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = "media/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
