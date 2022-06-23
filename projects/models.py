@@ -10,7 +10,6 @@ from access_management.permission_constants import (
     manage_project_users_permission,
 )
 from access_management.utils import generate_groups_and_permission
-
 from users.models import User
 
 
@@ -75,6 +74,7 @@ class Project(models.Model):
             ("can_delete_members", "Can delete members"),
             manage_project_users_permission,
         ]
+
 
 @receiver(post_save, sender=Project)
 def create_groups_for_project(sender, instance, **kwargs):

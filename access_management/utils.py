@@ -1,16 +1,13 @@
 from django.contrib.auth.models import Group
-from access_management.permission_constants import * # noqa: F403
 from guardian.shortcuts import assign_perm
 
-from pprint import pprint
-
-PERMISSION_GROUP_SUFFIX = '_permission_group'
+PERMISSION_GROUP_SUFFIX = "_permission_group"
 current_module_variables = vars()
 
 # Create a list of groups and assign associated permissions to that group
 # using the naming convention and permission mapping in the permission_constants file.
 def generate_groups_and_permission(model_name, instance_name, instance):
-    groups = current_module_variables[model_name+PERMISSION_GROUP_SUFFIX]
+    groups = current_module_variables[model_name + PERMISSION_GROUP_SUFFIX]
 
     for k, v in groups.items():
         try:
@@ -21,13 +18,11 @@ def generate_groups_and_permission(model_name, instance_name, instance):
             # create a group based on the generated group name
             group = Group.objects.create(name=group_name)
 
-            # loop through the array of partial permissions 
+            # loop through the array of partial permissions
             for permission in v:
                 # Add the permission to the associated group that was just created.
                 # The instance indicates the object that this object level permission is for.
                 assign_perm(permission[0], group, instance)
-                # TODO: log
 
         except Exception as e:
-            # TODO - log failure
             raise e
