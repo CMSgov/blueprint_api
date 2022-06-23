@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "catalogs.apps.CatalogConfig",
+    "guardian",
     "components.apps.ComponentsConfig",
     "projects.apps.ProjectConfig",
     "users.apps.UsersConfig",
