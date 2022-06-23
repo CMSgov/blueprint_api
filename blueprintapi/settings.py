@@ -49,7 +49,6 @@ INSTALLED_APPS = [
     "components.apps.ComponentsConfig",
     "projects.apps.ProjectConfig",
     "users.apps.UsersConfig",
-    "guardian",
 ]
 
 MIDDLEWARE = [

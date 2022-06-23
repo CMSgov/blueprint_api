@@ -17,7 +17,6 @@ whitenoise = "^6.1.0"
 django-guardian = "^2.4.0"
 pathlib = "^1.0.1"
 jsonschema = "^4.6.0"
-django-guardian = "^2.4.0"
 
 [tool.poetry.dev-dependencies]
 
