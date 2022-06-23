@@ -1,4 +1,4 @@
-FROM python:slim-buster
+FROM --platform=linux/amd64 python:slim-buster
 
 ENV PYTHONFAULTHANDLER=1 \
     PYTHONUNBUFFERED=1 \
@@ -11,6 +11,8 @@ ENV PYTHONFAULTHANDLER=1 \
 WORKDIR /usr/local
 
 RUN pip install "poetry==$POETRY_VERSION"
+
+RUN pip install django-filter
 
 COPY poetry.lock pyproject.toml /usr/local/
 

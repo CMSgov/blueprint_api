@@ -22,6 +22,11 @@ class Component(models.Model):
         null=False,
         unique=False,
         help_text="Type category of the component",
+        choices=(
+            ("policy", ("policy")),
+            ("service", ("service")),
+            ("software", ("software")),
+        ),
     )
     catalog = models.ForeignKey(
         Catalog,
