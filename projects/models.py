@@ -1,5 +1,15 @@
-from django.db import models
+from pprint import pprint
 
+from django.contrib.auth.models import Group
+from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+from access_management.permission_constants import (
+    PROJECT_ADMIN_GROUP,
+    manage_project_users_permission,
+)
+from access_management.utils import generate_groups_and_permission
 from users.models import User
 
 
@@ -62,4 +72,28 @@ class Project(models.Model):
         permissions = [
             ("can_add_members", "Can add members"),
             ("can_delete_members", "Can delete members"),
+            manage_project_users_permission,
         ]
+
+
+@receiver(post_save, sender=Project)
+def create_groups_for_project(sender, instance, **kwargs):
+    # only want to do this when a project is created
+    if kwargs["created"]:
+        try:
+            # Create groups for project with associated permissions
+            generate_groups_and_permission(
+                instance._meta.model_name, str(instance.id), instance
+            )
+
+            # add the creator user to the project admin group by default
+            project_admin_group = Group.objects.get(
+                name=str(instance.id) + PROJECT_ADMIN_GROUP
+            )
+            instance.creator.groups.add(project_admin_group)
+
+        except Exception as e:
+            # TODO: log failure
+            raise e
+    else:
+        print("Object not created yet.")

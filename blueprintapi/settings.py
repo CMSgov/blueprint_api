@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "catalogs.apps.CatalogConfig",
+    "guardian",
     "components.apps.ComponentsConfig",
     "projects.apps.ProjectConfig",
     "users.apps.UsersConfig",
@@ -81,6 +82,11 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "blueprintapi.wsgi.application"
+
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",
+    "guardian.backends.ObjectPermissionBackend",
+)
 
 
 # Database

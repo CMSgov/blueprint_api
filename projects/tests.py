@@ -1,4 +1,5 @@
 from django.test import TestCase
+from guardian.shortcuts import get_perms
 
 from projects.models import Project
 from users.models import User
@@ -100,3 +101,17 @@ class ProjectModelTest(TestCase):
         project = Project.objects.get(title="Basic Project")
         status = project.status
         self.assertEqual(status, expected_status)
+
+    def test_permission_group_on_creation(self):
+        Project.objects.create(
+            title="Test Project",
+            acronym="TP",
+            impact_level="low",
+            location="other",
+            creator=User.objects.get(id=1),
+        )
+        project = Project.objects.get(title="Test Project")
+        user = User.objects.get(id=1)
+        self.assertEqual("change_project" in get_perms(user, project), True)
+        self.assertEqual("view_project" in get_perms(user, project), True)
+        self.assertEqual("manage_project_users" in get_perms(user, project), True)
