@@ -9,7 +9,6 @@ class Environment:
         defaul_secret_key           = "django-insecure-_o$0y5g@1*uyrw0!3(0%wdv-ds5wp26yp*bko+q#y4b&y!50%6"
         self.allowed_hosts          = os.environ.get("ALLOWED_HOSTS", ['localhost', '127.0.0.1'])
         self.log_level              = os.environ.get("LOG_LEVEL", logging.INFO)
-        self.debug                  = os.environ.get("DEBUG")
         self.oidc_config            = os.environ.get("OIDC_CONFIG")
         self.metrics_env            = os.environ.get("METRICS_ENV_NAME")
         self.db_username            = os.environ.get("POSTGRES_USER")
