@@ -138,6 +138,7 @@ class ProjectModelTest(TestCase):
         self.assertEqual("view_project" in get_perms(user, project), True)
         self.assertEqual("manage_project_users" in get_perms(user, project), True)
 
+class ProjectComponentsTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.test_user = User.objects.create()
@@ -147,6 +148,16 @@ class ProjectModelTest(TestCase):
         )
 
         cls.test_component = Component.objects.create(
+            title="Cool Component",
+            description="Probably the coolest component you ever did see. It's magical.",
+            catalog=Catalog.objects.get(id=cls.test_catalog.id),
+            controls=["ac-2.1", "ac-6.10", "ac-8", "au-6.1", "sc-2"],
+            search_terms=["cool", "magic", "software"],
+            type="software",
+            component_json=TEST_COMPONENT_JSON_BLOB,
+        )
+
+        cls.test_component_2 = Component.objects.create(
             title="Cool Component",
             description="Probably the coolest component you ever did see. It's magical.",
             catalog=Catalog.objects.get(id=cls.test_catalog.id),
@@ -166,19 +177,29 @@ class ProjectModelTest(TestCase):
         )
 
         cls.test_project.components.set(
-            [Component.objects.get(id=cls.test_component.id)]
+            [
+                Component.objects.get(id=cls.test_component.id),
+                Component.objects.get(id=cls.test_component_2.id),
+            ]
         )
 
-    def test_get_valid_single_component(self):
-        print("A---", self.test_project)
+    def test_get_project_with_components(self):
         response = client.get(
-            reverse("project-detail", kwargs={"pk": self.test_project.pk})
+            reverse("project-detail", kwargs={"project_id": self.test_project.pk})
         )
-
-        print("B----", response)
 
         project = Project.objects.get(pk=self.test_project.pk)
         serializer = ProjectSerializer(project)
 
         self.assertEqual(response.data, serializer.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        received_num_components = len(response.data["components"])
+        received_components_count = response.data["components_count"]
+        expected_num_components = 2
+
+        # ensure that response includes all components in the project
+        self.assertEqual(received_num_components, expected_num_components)
+
+        # ensure that response includes accurate components_count
+        self.assertEqual(received_components_count, expected_num_components)
