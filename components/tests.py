@@ -1,5 +1,4 @@
 import json
-from collections import OrderedDict
 
 from django.test import Client, TestCase
 from django.urls import reverse
@@ -387,7 +386,7 @@ class ComponentViewTest(TestCase):
             type="software",
             component_json=TEST_COMPONENT_JSON_BLOB,
         )
-        cls.test_component = Component.objects.create(
+        cls.test_component_2 = Component.objects.create(
             title="testing title",
             description="testing description",
             catalog=Catalog.objects.get(id=cls.test_catalog.id),
@@ -399,80 +398,66 @@ class ComponentViewTest(TestCase):
 
     def test_search_empty_request(self):
         resp = self.client.get("/api/components/search/?format=json")
-
         expectedResonse = [
-            OrderedDict(
-                [
-                    ("id", 1),
-                    ("title", "Cool Component"),
-                    (
-                        "description",
-                        "Probably the coolest component you ever did see. It's magical.",
-                    ),
-                    ("type", "software"),
-                    ("catalog", 1),
-                    ("controls_count", 5),
-                ]
-            ),
-            OrderedDict(
-                [
-                    ("id", 2),
-                    ("title", "testing title"),
-                    ("description", "testing description"),
-                    ("type", "policy"),
-                    ("catalog", 1),
-                    ("controls_count", 1),
-                ]
-            ),
+            {
+                "id": self.test_component.id,
+                "title": "Cool Component",
+                "description": "Probably the coolest component you ever did see. It's magical.",
+                "type": "software",
+                "catalog": self.test_catalog.id,
+                "controls_count": 5,
+            },
+            {
+                "id": self.test_component_2.id,
+                "title": "testing title",
+                "description": "testing description",
+                "type": "policy",
+                "catalog": self.test_catalog.id,
+                "controls_count": 1,
+            },
             {"total_item_count": 2},
         ]
+
         self.assertEqual(resp.status_code, 200)
-        self.assertEqual(resp.data, expectedResonse)
+        self.assertEqual(json.loads(resp.content), expectedResonse)
 
     def test_search_query_win(self):
         resp = self.client.get("/api/components/search/?search=win", format="json")
-
         expectedResonse = [{"total_item_count": 0}]
+
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.data, expectedResonse)
 
     def test_search_filter_type_software(self):
         resp = self.client.get("/api/components/search/?type=software", format="json")
-
         expectedResonse = [
-            OrderedDict(
-                [
-                    ("id", 1),
-                    ("title", "Cool Component"),
-                    (
-                        "description",
-                        "Probably the coolest component you ever did see. It's magical.",
-                    ),
-                    ("type", "software"),
-                    ("catalog", 1),
-                    ("controls_count", 5),
-                ]
-            ),
+            {
+                "id": self.test_component.id,
+                "title": "Cool Component",
+                "description": "Probably the coolest component you ever did see. It's magical.",
+                "type": "software",
+                "catalog": self.test_catalog.id,
+                "controls_count": 5,
+            },
             {"total_item_count": 1},
         ]
+
         self.assertEqual(resp.status_code, 200)
-        self.assertEqual(resp.data, expectedResonse)
+        self.assertEqual(json.loads(resp.content), expectedResonse)
 
     def test_search_filter_type_policy(self):
         resp = self.client.get("/api/components/search/?type=policy", format="json")
-
         expectedResonse = [
-            OrderedDict(
-                [
-                    ("id", 2),
-                    ("title", "testing title"),
-                    ("description", "testing description"),
-                    ("type", "policy"),
-                    ("catalog", 1),
-                    ("controls_count", 1),
-                ]
-            ),
+            {
+                "id": self.test_component_2.id,
+                "title": "testing title",
+                "description": "testing description",
+                "type": "policy",
+                "catalog": self.test_catalog.id,
+                "controls_count": 1,
+            },
             {"total_item_count": 1},
         ]
+
         self.assertEqual(resp.status_code, 200)
-        self.assertEqual(resp.data, expectedResonse)
+        self.assertEqual(json.loads(resp.content), expectedResonse)
