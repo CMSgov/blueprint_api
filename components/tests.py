@@ -398,28 +398,8 @@ class ComponentViewTest(TestCase):
 
     def test_search_empty_request(self):
         resp = self.client.get("/api/components/search/?format=json")
-        expectedResonse = [
-            {
-                "id": self.test_component.id,
-                "title": "Cool Component",
-                "description": "Probably the coolest component you ever did see. It's magical.",
-                "type": "software",
-                "catalog": self.test_catalog.id,
-                "controls_count": 5,
-            },
-            {
-                "id": self.test_component_2.id,
-                "title": "testing title",
-                "description": "testing description",
-                "type": "policy",
-                "catalog": self.test_catalog.id,
-                "controls_count": 1,
-            },
-            {"total_item_count": 2},
-        ]
-
         self.assertEqual(resp.status_code, 200)
-        self.assertEqual(json.loads(resp.content), expectedResonse)
+        self.assertEqual(json.loads(resp.content)[2].get("total_item_count"), 2)
 
     def test_search_query_win(self):
         resp = self.client.get("/api/components/search/?search=win", format="json")
@@ -430,34 +410,12 @@ class ComponentViewTest(TestCase):
 
     def test_search_filter_type_software(self):
         resp = self.client.get("/api/components/search/?type=software", format="json")
-        expectedResonse = [
-            {
-                "id": self.test_component.id,
-                "title": "Cool Component",
-                "description": "Probably the coolest component you ever did see. It's magical.",
-                "type": "software",
-                "catalog": self.test_catalog.id,
-                "controls_count": 5,
-            },
-            {"total_item_count": 1},
-        ]
-
         self.assertEqual(resp.status_code, 200)
-        self.assertEqual(json.loads(resp.content), expectedResonse)
+        self.assertEqual(json.loads(resp.content)[0].get("type"), "software")
+        self.assertEqual(json.loads(resp.content)[1].get("total_item_count"), 1)
 
     def test_search_filter_type_policy(self):
         resp = self.client.get("/api/components/search/?type=policy", format="json")
-        expectedResonse = [
-            {
-                "id": self.test_component_2.id,
-                "title": "testing title",
-                "description": "testing description",
-                "type": "policy",
-                "catalog": self.test_catalog.id,
-                "controls_count": 1,
-            },
-            {"total_item_count": 1},
-        ]
-
         self.assertEqual(resp.status_code, 200)
-        self.assertEqual(json.loads(resp.content), expectedResonse)
+        self.assertEqual(json.loads(resp.content)[0].get("type"), "policy")
+        self.assertEqual(json.loads(resp.content)[1].get("total_item_count"), 1)
