@@ -1,11 +1,14 @@
 import json
+from typing import List
 
+from django.core.files import File
 from django.test import Client, TestCase
 from django.urls import reverse
 from rest_framework import status
 
 from catalogs.models import Catalog
 
+from .componentio import ComponentTools
 from .models import Component
 from .serializers import ComponentListSerializer, ComponentSerializer
 
@@ -444,3 +447,44 @@ class ComponentViewTest(TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(json.loads(resp.content)[0].get("type"), "policy")
         self.assertEqual(json.loads(resp.content)[1].get("total_item_count"), 1)
+
+
+class ComponentioTest(TestCase):
+    def setUp(self):
+        with open("catalogs/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
+            catalog = File(f)
+            self.cat = Catalog.objects.create(
+                name="Test Catalog",
+                file_name=catalog,
+            )
+        self.test_component = Component.objects.create(
+            title="Cool Component",
+            catalog=self.cat,
+            component_json=TEST_COMPONENT_JSON_BLOB,
+        )
+        self.tools = ComponentTools(self.test_component.component_json)
+
+    def test_get_components(self):
+        components = self.tools.get_components()
+        self.assertIsInstance(components, List)
+
+    def test_get_component_value(self):
+        title = self.tools.get_component_value("title")
+        description = self.tools.get_component_value("description")
+        self.assertEquals(title, "Cool Component")
+        self.assertEquals(description, "This is a really cool component.")
+
+    def test_get_implemenations(self):
+        impl = self.tools.get_implemenations()
+        self.assertEquals(impl[0].get("description"), "CMS_ARS_3_1")
+        self.assertIsInstance(impl[0].get("implemented-requirements"), List)
+
+    def test_get_controls(self):
+        controls = self.tools.get_controls()
+        self.assertEquals(len(controls), 5)
+        self.assertEquals(controls[0].get("control-id"), "ac-2.1")
+
+    def test_get_control_ids(self):
+        ids = self.tools.get_control_ids()
+        self.assertEquals(len(ids), 5)
+        self.assertEquals(ids[0], "ac-2.1")
