@@ -398,7 +398,6 @@ class ComponentViewTest(TestCase):
 
     def test_search_empty_request(self):
         resp = self.client.get("/api/components/search/?format=json")
-
         expectedResonse = [
             {
                 "id": 1,
@@ -419,18 +418,13 @@ class ComponentViewTest(TestCase):
             {"total_item_count": 2},
         ]
 
-        # print('resp', resp)
-        # print('resp.data', resp.data)
-        # print("test_search_empty_request resp.content", resp.content)
-        # print('resp.content.test', resp.content)
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(json.loads(resp.content), expectedResonse)
 
     def test_search_query_win(self):
         resp = self.client.get("/api/components/search/?search=win", format="json")
-        # expectedResonse = [{"total_item_count":0}]
         expectedResonse = [{"total_item_count": 0}]
-        # print("test_search_query_win resp.content", resp.content)
+
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.data, expectedResonse)
 
@@ -447,13 +441,12 @@ class ComponentViewTest(TestCase):
             },
             {"total_item_count": 1},
         ]
-        # print("test_search_filter_type_software resp.content", resp.content)
+
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(json.loads(resp.content), expectedResonse)
 
     def test_search_filter_type_policy(self):
         resp = self.client.get("/api/components/search/?type=policy", format="json")
-
         expectedResonse = [
             {
                 "id": 2,
@@ -466,6 +459,5 @@ class ComponentViewTest(TestCase):
             {"total_item_count": 1},
         ]
 
-        # print("test_search_filter_type_policy resp.content", resp.content)
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(json.loads(resp.content), expectedResonse)
