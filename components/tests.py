@@ -401,6 +401,7 @@ class ComponentViewTest(TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(json.loads(resp.content)[2].get("total_item_count"), 2)
 
+
     def test_search_query_win(self):
         resp = self.client.get("/api/components/search/?search=win", format="json")
         expectedResonse = [{"total_item_count": 0}]
