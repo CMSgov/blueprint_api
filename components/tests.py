@@ -386,7 +386,7 @@ class ComponentViewTest(TestCase):
             type="software",
             component_json=TEST_COMPONENT_JSON_BLOB,
         )
-        cls.test_component = Component.objects.create(
+        cls.test_component_2 = Component.objects.create(
             title="testing title",
             description="testing description",
             catalog=Catalog.objects.get(id=cls.test_catalog.id),
@@ -400,19 +400,19 @@ class ComponentViewTest(TestCase):
         resp = self.client.get("/api/components/search/?format=json")
         expectedResonse = [
             {
-                "id": 1,
+                "id": self.test_component.id,
                 "title": "Cool Component",
                 "description": "Probably the coolest component you ever did see. It's magical.",
                 "type": "software",
-                "catalog": 1,
+                "catalog": self.test_catalog.id,
                 "controls_count": 5,
             },
             {
-                "id": 2,
+                "id": self.test_component_2.id,
                 "title": "testing title",
                 "description": "testing description",
                 "type": "policy",
-                "catalog": 1,
+                "catalog": self.test_catalog.id,
                 "controls_count": 1,
             },
             {"total_item_count": 2},
@@ -432,11 +432,11 @@ class ComponentViewTest(TestCase):
         resp = self.client.get("/api/components/search/?type=software", format="json")
         expectedResonse = [
             {
-                "id": 1,
+                "id": self.test_component.id,
                 "title": "Cool Component",
                 "description": "Probably the coolest component you ever did see. It's magical.",
                 "type": "software",
-                "catalog": 1,
+                "catalog": self.test_catalog.id,
                 "controls_count": 5,
             },
             {"total_item_count": 1},
@@ -449,11 +449,11 @@ class ComponentViewTest(TestCase):
         resp = self.client.get("/api/components/search/?type=policy", format="json")
         expectedResonse = [
             {
-                "id": 2,
+                "id": self.test_component_2.id,
                 "title": "testing title",
                 "description": "testing description",
                 "type": "policy",
-                "catalog": 1,
+                "catalog": self.test_catalog.id,
                 "controls_count": 1,
             },
             {"total_item_count": 1},
