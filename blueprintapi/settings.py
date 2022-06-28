@@ -13,26 +13,23 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import os
 from pathlib import Path
 from typing import List
+from .Environment import Environment
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+environment = Environment()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-_o$0y5g@1*uyrw0!3(0%wdv-ds5wp26yp*bko+q#y4b&y!50%6"
+SECRET_KEY = environment.get_secret_key()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = environment.get_debug()
 
-ALLOWED_HOSTS: List[str] = [
-    "localhost",
-    "127.0.0.1",
-    "*",
-]
-
+ALLOWED_HOSTS = environment.get_allowed_hosts()
 # Application definition
 
 INSTALLED_APPS = [
@@ -96,11 +93,11 @@ AUTHENTICATION_BACKENDS = (
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("POSTGRES_DB_NAME"),
-        "USER": os.environ.get("POSTGRES_USER"),
-        "PASSWORD": os.environ.get("POSTGRES_PASSWORD"),
-        "HOST": os.environ.get("POSTGRES_DB_HOST"),
-        "PORT": os.environ.get("POSTGRES_DB_PORT"),
+        "NAME": environment.get_db_name(),
+        "USER": environment.get_db_username(),
+        "PASSWORD": environment.get_db_password(),
+        "HOST": environment.get_db_host(),
+        "PORT": environment.get_db_port(),
     }
 }
 
@@ -156,17 +153,5 @@ MEDIA_URL = "media/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-CORS_ALLOW_ALL_ORIGINS = True
-
-CORS_ALLOW_HEADERS = [
-    "accept",
-    "accept-encoding",
-    "access-control-allow-origin",
-    "authorization",
-    "content-type",
-    "dnt",
-    "origin",
-    "user-agent",
-    "x-csrftoken",
-    "x-requested-with",
-]
+CORS_ALLOW_ALL_ORIGINS = environment.get_cors_allow_origins()
+CORS_ALLOW_HEADERS = environment.get_cors_allow_headers()
