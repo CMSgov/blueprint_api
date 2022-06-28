@@ -19,6 +19,48 @@ TEST_COMPONENT_JSON_BLOB = {
             "version": "1",
             "oscal-version": "1.0.0",
         },
+        "components": [
+            {
+                "uuid": "e35accd9-0cc3-4a02-8557-01764c7cbe0b",
+                "type": "software",
+                "title": "Cool Component",
+                "description": "This is a really cool component.",
+                "control-implementations": [
+                    {
+                        "uuid": "f94a7f03-6ac5-4386-98eb-fa0392f26a1c",
+                        "source": "https://raw.githubusercontent.com/NIST/catalog.json",
+                        "description": "CMS_ARS_3_1",
+                        "implemented-requirements": [
+                            {
+                                "uuid": "6698d762-5cdc-452e-9f9e-3074df5292c6",
+                                "control-id": "ac-2.1",
+                                "description": "This component statisfies a.",
+                            },
+                            {
+                                "uuid": "73dd3c2e-54eb-43c6-a488-dfb7c79d9413",
+                                "control-id": "ac-2.2",
+                                "description": "This component statisfies b.",
+                            },
+                            {
+                                "uuid": "73dd3c2e-54eb-43c6-a488-dfb7c79d9413",
+                                "control-id": "ac-2.3",
+                                "description": "This component statisfies c.",
+                            },
+                            {
+                                "uuid": "73dd3c2e-54eb-43c6-a488-dfb7c79d9413",
+                                "control-id": "ac-2.4",
+                                "description": "This component statisfies d.",
+                            },
+                            {
+                                "uuid": "73dd3c2e-54eb-43c6-a488-dfb7c79d9413",
+                                "control-id": "ac-2.5",
+                                "description": "This component statisfies e.",
+                            },
+                        ],
+                    }
+                ],
+            }
+        ],
     }
 }
 
@@ -258,23 +300,6 @@ class CreateNewComponentTest(TestCase):
         response = client.post(
             reverse("component-list"),
             data=json.dumps(self.invalid_payload_without_title),
-            content_type="application/json",
-        )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_description_field_is_required(self):
-        self.invalid_payload_without_description = {
-            "title": "Cool Component",
-            "catalog": self.test_catalog.id,
-            "controls": ["ac-2.1", "ac-6.10", "ac-8", "au-6.1", "sc-2"],
-            "search_terms": ["cool", "magic", "software"],
-            "type": "software",
-            "component_json": TEST_COMPONENT_JSON_BLOB,
-        }
-
-        response = client.post(
-            reverse("component-list"),
-            data=json.dumps(self.invalid_payload_without_description),
             content_type="application/json",
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
