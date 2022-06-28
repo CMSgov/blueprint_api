@@ -1,5 +1,4 @@
 import json
-from collections import OrderedDict
 
 from django.test import Client, TestCase
 from django.urls import reverse
@@ -401,78 +400,72 @@ class ComponentViewTest(TestCase):
         resp = self.client.get("/api/components/search/?format=json")
 
         expectedResonse = [
-            OrderedDict(
-                [
-                    ("id", 1),
-                    ("title", "Cool Component"),
-                    (
-                        "description",
-                        "Probably the coolest component you ever did see. It's magical.",
-                    ),
-                    ("type", "software"),
-                    ("catalog", 1),
-                    ("controls_count", 5),
-                ]
-            ),
-            OrderedDict(
-                [
-                    ("id", 2),
-                    ("title", "testing title"),
-                    ("description", "testing description"),
-                    ("type", "policy"),
-                    ("catalog", 1),
-                    ("controls_count", 1),
-                ]
-            ),
+            {
+                "id": 1,
+                "title": "Cool Component",
+                "description": "Probably the coolest component you ever did see. It's magical.",
+                "type": "software",
+                "catalog": 1,
+                "controls_count": 5,
+            },
+            {
+                "id": 2,
+                "title": "testing title",
+                "description": "testing description",
+                "type": "policy",
+                "catalog": 1,
+                "controls_count": 1,
+            },
             {"total_item_count": 2},
         ]
+
+        # print('resp', resp)
+        # print('resp.data', resp.data)
+        # print("test_search_empty_request resp.content", resp.content)
+        # print('resp.content.test', resp.content)
         self.assertEqual(resp.status_code, 200)
-        self.assertEqual(resp.data, expectedResonse)
+        self.assertEqual(json.loads(resp.content), expectedResonse)
 
     def test_search_query_win(self):
         resp = self.client.get("/api/components/search/?search=win", format="json")
-
+        # expectedResonse = [{"total_item_count":0}]
         expectedResonse = [{"total_item_count": 0}]
+        # print("test_search_query_win resp.content", resp.content)
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.data, expectedResonse)
 
     def test_search_filter_type_software(self):
         resp = self.client.get("/api/components/search/?type=software", format="json")
-
         expectedResonse = [
-            OrderedDict(
-                [
-                    ("id", 1),
-                    ("title", "Cool Component"),
-                    (
-                        "description",
-                        "Probably the coolest component you ever did see. It's magical.",
-                    ),
-                    ("type", "software"),
-                    ("catalog", 1),
-                    ("controls_count", 5),
-                ]
-            ),
+            {
+                "id": 1,
+                "title": "Cool Component",
+                "description": "Probably the coolest component you ever did see. It's magical.",
+                "type": "software",
+                "catalog": 1,
+                "controls_count": 5,
+            },
             {"total_item_count": 1},
         ]
+        # print("test_search_filter_type_software resp.content", resp.content)
         self.assertEqual(resp.status_code, 200)
-        self.assertEqual(resp.data, expectedResonse)
+        self.assertEqual(json.loads(resp.content), expectedResonse)
 
     def test_search_filter_type_policy(self):
         resp = self.client.get("/api/components/search/?type=policy", format="json")
 
         expectedResonse = [
-            OrderedDict(
-                [
-                    ("id", 2),
-                    ("title", "testing title"),
-                    ("description", "testing description"),
-                    ("type", "policy"),
-                    ("catalog", 1),
-                    ("controls_count", 1),
-                ]
-            ),
+            {
+                "id": 2,
+                "title": "testing title",
+                "description": "testing description",
+                "type": "policy",
+                "catalog": 1,
+                "controls_count": 1,
+            },
             {"total_item_count": 1},
         ]
+
+        # print("test_search_filter_type_policy resp.content", resp.content)
         self.assertEqual(resp.status_code, 200)
-        self.assertEqual(resp.data, expectedResonse)
+        self.assertEqual(json.loads(resp.content), expectedResonse)

@@ -43,9 +43,10 @@ class ComponentListSearchView(APIView):
             ).qs
         else:
             filtered_qs = ComponentFilter(
-                self.request.query_params, queryset=Component.objects.all()
+                self.request.query_params,
+                queryset=Component.objects.all().order_by("id"),
             ).qs
-
+        # ordering = ["-id"] need to add ordering to filtered_qs here
         # Utilize the pagination based on 20 items on a page
         paginator = Paginator(filtered_qs, 20)
         try:
