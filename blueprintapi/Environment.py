@@ -22,10 +22,12 @@ class Environment:
         defaul_secret_key = (
             "django-insecure-_o$0y5g@1*uyrw0!3(0%wdv-ds5wp26yp*bko+q#y4b&y!50%6"
         )
-        hosts = ["localhost", "127.0.0.1"]
+        hosts = []
         env_hosts = os.environ.get("ALLOWED_HOSTS")
         if env_hosts:
             hosts.append(env_hosts)
+        else:
+            hosts = ["localhost", "127.0.0.1"]
         self.allowed_hosts      = hosts
         self.log_level          = os.environ.get("LOG_LEVEL", logging.INFO)
         self.oidc_config        = os.environ.get("OIDC_CONFIG")
