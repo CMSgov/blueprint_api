@@ -7,6 +7,7 @@ from django.urls import reverse
 from rest_framework import status
 
 from catalogs.models import Catalog
+from testing_utils import prevent_request_warnings
 
 from .componentio import ComponentTools
 from .models import Component
@@ -227,6 +228,7 @@ class GetSingleComponentTest(TestCase):
         self.assertEqual(response.data, serializer.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    @prevent_request_warnings
     def test_get_invalid_single_component(self):
         invalid_id = 0
         response = client.get(reverse("component-detail", kwargs={"pk": invalid_id}))
@@ -259,6 +261,7 @@ class CreateNewComponentTest(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
+    @prevent_request_warnings
     def test_create_invalid_component(self):
         self.invalid_payload = {
             "not_real": "this is not a valid field for a component and will fail create attempt"
@@ -290,6 +293,7 @@ class CreateNewComponentTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     # required field tests
+    @prevent_request_warnings
     def test_title_field_is_required(self):
         self.invalid_payload_without_title = {
             "description": "Probably the coolest component you ever did see. It's magical.",
@@ -307,6 +311,7 @@ class CreateNewComponentTest(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
+    @prevent_request_warnings
     def test_catalog_field_is_required(self):
         self.invalid_payload_without_catalog = {
             "title": "Cool Component",
@@ -324,6 +329,7 @@ class CreateNewComponentTest(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
+    @prevent_request_warnings
     def test_controls_field_is_required(self):
         self.invalid_payload_without_controls = {
             "title": "Cool Component",
@@ -341,6 +347,7 @@ class CreateNewComponentTest(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
+    @prevent_request_warnings
     def test_type_field_is_required(self):
         self.invalid_payload_without_type = {
             "title": "Cool Component",
@@ -358,6 +365,7 @@ class CreateNewComponentTest(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
+    @prevent_request_warnings
     def test_component_json_field_is_required(self):
         self.invalid_payload_without_component_json = {
             "title": "Cool Component",

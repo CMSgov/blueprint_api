@@ -3,6 +3,8 @@ from django.test import Client, TestCase
 from django.urls import reverse
 from rest_framework import status
 
+from testing_utils import prevent_request_warnings
+
 from .catalogio import CatalogTools as Tools
 from .models import Catalog
 
@@ -36,6 +38,7 @@ class CatalogModelTest(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    @prevent_request_warnings
     def test_post_control_by_id(self):
         cid = self.cat.id
         response = client.post(
