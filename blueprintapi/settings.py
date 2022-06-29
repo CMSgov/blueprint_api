@@ -29,7 +29,8 @@ SECRET_KEY = environment.get_secret_key()
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = environment.get_debug()
 
-ALLOWED_HOSTS = environment.get_allowed_hosts()
+ALLOWED_HOSTS = ["app"]
+ALLOWED_HOSTS.extend(environment.get_allowed_hosts())
 # Application definition
 
 INSTALLED_APPS = [
