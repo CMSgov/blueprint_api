@@ -8,6 +8,7 @@ from access_management.permission_constants import (
     manage_project_users_permission,
 )
 from access_management.utils import generate_groups_and_permission
+from components.models import Component
 from users.models import User
 
 
@@ -24,6 +25,11 @@ class Project(models.Model):
         default=None,
         related_name="projects_created",
         help_text="User id of the project creator",
+    )
+    components = models.ManyToManyField(
+        Component,
+        related_name="used_by_projects",
+        help_text="Components that exist in the project",
     )
     IMPACT_LEVEL_CHOICES = [
         ("low", "Low"),
