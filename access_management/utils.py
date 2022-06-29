@@ -1,4 +1,5 @@
 from django.contrib.auth.models import Group
+from access_management.permission_constants import *
 from guardian.shortcuts import assign_perm
 
 PERMISSION_GROUP_SUFFIX = "_permission_group"
