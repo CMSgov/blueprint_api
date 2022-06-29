@@ -1,5 +1,6 @@
 import logging
 import os
+import requests
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -18,6 +19,7 @@ class Environment:
             "user-agent",
             "x-csrftoken",
             "x-requested-with",
+
         ]
         defaul_secret_key = (
             "django-insecure-_o$0y5g@1*uyrw0!3(0%wdv-ds5wp26yp*bko+q#y4b&y!50%6"
@@ -26,7 +28,7 @@ class Environment:
         env_hosts = os.environ.get("ALLOWED_HOSTS")
         if env_hosts:
             hosts.append(env_hosts)
-            # In case of containerized deployment to ECS/Fargate get the ip address and add of target group and add it to allowed hosts.
+            # In case of containerized deployment to ECS/Fargate get the ip address of target group and add it to allowed hosts.
             metadata_uri = os.environ.get('ECS_CONTAINER_METADATA_URI')
             if metadata_uri:
                 container_metadata = requests.get(metadata_uri).json()
