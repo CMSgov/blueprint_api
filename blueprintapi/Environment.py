@@ -26,6 +26,11 @@ class Environment:
         env_hosts = os.environ.get("ALLOWED_HOSTS")
         if env_hosts:
             hosts.append(env_hosts)
+            # In case of containerized deployment to ECS/Fargate get the ip address and add of target group and add it to allowed hosts.
+            metadata_uri = os.environ.get('ECS_CONTAINER_METADATA_URI')
+            if metadata_uri:
+                container_metadata = requests.get(metadata_uri).json()
+                hosts.append(container_metadata['Networks'][0]['IPv4Addresses'][0])
         else:
             hosts = ["localhost", "127.0.0.1"]
         self.allowed_hosts      = hosts
