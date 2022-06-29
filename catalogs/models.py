@@ -12,6 +12,9 @@ class Catalog(models.Model):
     created = models.DateTimeField(auto_now_add=True, db_index=True)
     updated = models.DateTimeField(auto_now=True, db_index=True, null=True)
 
+    def __str__(self):
+        return self.name
+
 
 @receiver(models.signals.post_delete, sender=Catalog)
 def auto_delete_file_on_delete(sender, instance, **kwargs):

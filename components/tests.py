@@ -1,11 +1,14 @@
 import json
+from typing import List
 
+from django.core.files import File
 from django.test import Client, TestCase
 from django.urls import reverse
 from rest_framework import status
 
 from catalogs.models import Catalog
 
+from .componentio import ComponentTools
 from .models import Component
 from .serializers import ComponentListSerializer, ComponentSerializer
 
@@ -19,6 +22,48 @@ TEST_COMPONENT_JSON_BLOB = {
             "version": "1",
             "oscal-version": "1.0.0",
         },
+        "components": [
+            {
+                "uuid": "e35accd9-0cc3-4a02-8557-01764c7cbe0b",
+                "type": "software",
+                "title": "Cool Component",
+                "description": "This is a really cool component.",
+                "control-implementations": [
+                    {
+                        "uuid": "f94a7f03-6ac5-4386-98eb-fa0392f26a1c",
+                        "source": "https://raw.githubusercontent.com/NIST/catalog.json",
+                        "description": "CMS_ARS_3_1",
+                        "implemented-requirements": [
+                            {
+                                "uuid": "6698d762-5cdc-452e-9f9e-3074df5292c6",
+                                "control-id": "ac-2.1",
+                                "description": "This component statisfies a.",
+                            },
+                            {
+                                "uuid": "73dd3c2e-54eb-43c6-a488-dfb7c79d9413",
+                                "control-id": "ac-2.2",
+                                "description": "This component statisfies b.",
+                            },
+                            {
+                                "uuid": "73dd3c2e-54eb-43c6-a488-dfb7c79d9413",
+                                "control-id": "ac-2.3",
+                                "description": "This component statisfies c.",
+                            },
+                            {
+                                "uuid": "73dd3c2e-54eb-43c6-a488-dfb7c79d9413",
+                                "control-id": "ac-2.4",
+                                "description": "This component statisfies d.",
+                            },
+                            {
+                                "uuid": "73dd3c2e-54eb-43c6-a488-dfb7c79d9413",
+                                "control-id": "ac-2.5",
+                                "description": "This component statisfies e.",
+                            },
+                        ],
+                    }
+                ],
+            }
+        ],
     }
 }
 
@@ -262,23 +307,6 @@ class CreateNewComponentTest(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_description_field_is_required(self):
-        self.invalid_payload_without_description = {
-            "title": "Cool Component",
-            "catalog": self.test_catalog.id,
-            "controls": ["ac-2.1", "ac-6.10", "ac-8", "au-6.1", "sc-2"],
-            "search_terms": ["cool", "magic", "software"],
-            "type": "software",
-            "component_json": TEST_COMPONENT_JSON_BLOB,
-        }
-
-        response = client.post(
-            reverse("component-list"),
-            data=json.dumps(self.invalid_payload_without_description),
-            content_type="application/json",
-        )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
     def test_catalog_field_is_required(self):
         self.invalid_payload_without_catalog = {
             "title": "Cool Component",
@@ -419,3 +447,44 @@ class ComponentViewTest(TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(json.loads(resp.content)[0].get("type"), "policy")
         self.assertEqual(json.loads(resp.content)[1].get("total_item_count"), 1)
+
+
+class ComponentioTest(TestCase):
+    def setUp(self):
+        with open("catalogs/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
+            catalog = File(f)
+            self.cat = Catalog.objects.create(
+                name="Test Catalog",
+                file_name=catalog,
+            )
+        self.test_component = Component.objects.create(
+            title="Cool Component",
+            catalog=self.cat,
+            component_json=TEST_COMPONENT_JSON_BLOB,
+        )
+        self.tools = ComponentTools(self.test_component.component_json)
+
+    def test_get_components(self):
+        components = self.tools.get_components()
+        self.assertIsInstance(components, List)
+
+    def test_get_component_value(self):
+        title = self.tools.get_component_value("title")
+        description = self.tools.get_component_value("description")
+        self.assertEquals(title, "Cool Component")
+        self.assertEquals(description, "This is a really cool component.")
+
+    def test_get_implemenations(self):
+        impl = self.tools.get_implemenations()
+        self.assertEquals(impl[0].get("description"), "CMS_ARS_3_1")
+        self.assertIsInstance(impl[0].get("implemented-requirements"), List)
+
+    def test_get_controls(self):
+        controls = self.tools.get_controls()
+        self.assertEquals(len(controls), 5)
+        self.assertEquals(controls[0].get("control-id"), "ac-2.1")
+
+    def test_get_control_ids(self):
+        ids = self.tools.get_control_ids()
+        self.assertEquals(len(ids), 5)
+        self.assertEquals(ids[0], "ac-2.1")
