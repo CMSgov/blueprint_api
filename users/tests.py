@@ -4,6 +4,8 @@ from django.test import Client, TestCase
 from django.urls import reverse
 from rest_framework import status
 
+from testing_utils import prevent_request_warnings
+
 from .models import User
 from .serializers import UserSerializer
 
@@ -52,6 +54,7 @@ class GetSingleUserTest(TestCase):
         self.assertEqual(response.data, serializer.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    @prevent_request_warnings
     def test_get_invalid_single_user(self):
         invalid_id = 0
         response = client.get(reverse("user-detail", kwargs={"pk": invalid_id}))
@@ -75,6 +78,7 @@ class CreateNewUserTest(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
+    @prevent_request_warnings
     def test_create_invalid_user(self):
         # note that username is required for valid post
         self.invalid_payload = {
@@ -115,6 +119,7 @@ class UpdateSingleUserTest(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    @prevent_request_warnings
     def test_invalid_update_user(self):
         self.invalid_payload = {
             "username": "",
