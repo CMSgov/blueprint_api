@@ -7,22 +7,6 @@ logger = logging.getLogger(__name__)
 
 class Environment:
     def __init__(self):
-        default_cors_headers = [
-            "accept",
-            "accept-encoding",
-            "access-control-allow-origin",
-            "authorization",
-            "content-type",
-            "dnt",
-            "origin",
-            "user-agent",
-            "x-csrftoken",
-            "x-requested-with",
-        ]
-        headers = os.environ.get(f"CORS_ALLOW_HEADERS")
-        if headers:
-            default_cors_headers = headers.split(",")
-            logger.info(f"Updated default cors headers {default_cors_headers}")
         defaul_secret_key = (
             "django-insecure-_o$0y5g@1*uyrw0!3(0%wdv-ds5wp26yp*bko+q#y4b&y!50%6"
         )
@@ -45,9 +29,8 @@ class Environment:
         self.db_host            = os.environ.get("POSTGRES_DB_HOST")
         self.db_port            = os.environ.get("POSTGRES_DB_PORT", "5432")
         self.cors_allow_origins = os.environ.get("CORS_ALLOW_ALL_ORIGINS", True)
-        self.cors_allow_headers = default_cors_headers
-        self.debug = os.environ.get("API_DEBUG", True)
-        self.secret_key = os.environ.get("SECRET_KEY", defaul_secret_key)
+        self.debug              = os.environ.get("API_DEBUG", True)
+        self.secret_key         = os.environ.get("SECRET_KEY", defaul_secret_key)
 
         # Log basic environment variables except db related for security reasons.
         logger.info("============== Environment Variables ================")
@@ -56,7 +39,6 @@ class Environment:
         logger.info(f"OIDC Config           : {self.oidc_config}")
         logger.info(f"Metrics Env           : {self.metrics_env}")
         logger.info(f"Cors allow origin     : {self.cors_allow_origins}")
-        logger.info(f"Cors allow headers    : {self.cors_allow_headers}")
         logger.info(f"Debug                 : {self.debug}")
         logger.info("============== End Environment Variables ================")
 
@@ -89,9 +71,6 @@ class Environment:
 
     def get_cors_allow_origins(self):
         return self.cors_allow_origins
-
-    def get_cors_allow_headers(self):
-        return self.cors_allow_headers
 
     def get_debug(self):
         return self.debug
