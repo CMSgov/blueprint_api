@@ -156,7 +156,7 @@ MEDIA_URL = "media/"
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-CORS_ALLOWED_ORIGINS = []
 CORS_ALLOW_ALL_ORIGINS = environment.get_cors_allow_origins()
-CORS_ALLOW_HEADERS = environment.get_cors_allow_headers()
+CORS_ALLOW_HEADERS = []
+CORS_ALLOW_HEADERS.append(environment.get_cors_allow_headers())
 logger.info(f"Settings Cors allow headers    : {CORS_ALLOW_HEADERS}")

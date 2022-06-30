@@ -19,6 +19,9 @@ class Environment:
             "x-csrftoken",
             "x-requested-with",
         ]
+        headers = os.environ.get("CORS_ALLOW_HEADERS")
+        if headers:
+            default_cors_headers = headers.split(",")
         defaul_secret_key = (
             "django-insecure-_o$0y5g@1*uyrw0!3(0%wdv-ds5wp26yp*bko+q#y4b&y!50%6"
         )
@@ -41,9 +44,7 @@ class Environment:
         self.db_host            = os.environ.get("POSTGRES_DB_HOST")
         self.db_port            = os.environ.get("POSTGRES_DB_PORT", "5432")
         self.cors_allow_origins = os.environ.get("CORS_ALLOW_ALL_ORIGINS", True)
-        self.cors_allow_headers = os.environ.get(
-            "CORS_ALLOW_HEADERS", default_cors_headers
-        )
+        self.cors_allow_headers = default_cors_headers
         self.debug = os.environ.get("API_DEBUG", True)
         self.secret_key = os.environ.get("SECRET_KEY", defaul_secret_key)
 
