@@ -5,7 +5,6 @@ import requests
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-
 class Environment:
     def __init__(self):
         default_cors_headers = [
@@ -19,7 +18,6 @@ class Environment:
             "user-agent",
             "x-csrftoken",
             "x-requested-with",
-
         ]
         defaul_secret_key = (
             "django-insecure-_o$0y5g@1*uyrw0!3(0%wdv-ds5wp26yp*bko+q#y4b&y!50%6"

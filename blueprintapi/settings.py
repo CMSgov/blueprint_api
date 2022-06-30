@@ -12,9 +12,12 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 import os
 from pathlib import Path
+import logging
 
 from .Environment import Environment
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -154,3 +157,4 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CORS_ALLOW_ALL_ORIGINS = environment.get_cors_allow_origins()
 CORS_ALLOW_HEADERS = environment.get_cors_allow_headers()
+logger.info(f"Settings Cors allow headers    : {CORS_ALLOW_HEADERS}")
