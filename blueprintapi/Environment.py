@@ -19,9 +19,10 @@ class Environment:
             "x-csrftoken",
             "x-requested-with",
         ]
-        headers = os.environ.get("CORS_ALLOW_HEADERS")
+        headers = os.environ.get(f"CORS_ALLOW_HEADERS")
         if headers:
             default_cors_headers = headers.split(",")
+            logger.info(f"Updated default cors headers {default_cors_headers}")
         defaul_secret_key = (
             "django-insecure-_o$0y5g@1*uyrw0!3(0%wdv-ds5wp26yp*bko+q#y4b&y!50%6"
         )
