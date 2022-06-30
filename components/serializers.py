@@ -33,4 +33,6 @@ class ComponentSerializer(serializers.ModelSerializer):
             "controls",
             "search_terms",
             "component_json",
+            "component_file",
+            "status",
         )

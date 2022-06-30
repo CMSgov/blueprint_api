@@ -329,60 +329,6 @@ class CreateNewComponentTest(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    @prevent_request_warnings
-    def test_controls_field_is_required(self):
-        self.invalid_payload_without_controls = {
-            "title": "Cool Component",
-            "description": "Probably the coolest component you ever did see. It's magical.",
-            "catalog": self.test_catalog.id,
-            "search_terms": ["cool", "magic", "software"],
-            "type": "software",
-            "component_json": TEST_COMPONENT_JSON_BLOB,
-        }
-
-        response = client.post(
-            reverse("component-list"),
-            data=json.dumps(self.invalid_payload_without_controls),
-            content_type="application/json",
-        )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    @prevent_request_warnings
-    def test_type_field_is_required(self):
-        self.invalid_payload_without_type = {
-            "title": "Cool Component",
-            "description": "Probably the coolest component you ever did see. It's magical.",
-            "catalog": self.test_catalog.id,
-            "controls": ["ac-2.1", "ac-6.10", "ac-8", "au-6.1", "sc-2"],
-            "search_terms": ["cool", "magic", "software"],
-            "component_json": TEST_COMPONENT_JSON_BLOB,
-        }
-
-        response = client.post(
-            reverse("component-list"),
-            data=json.dumps(self.invalid_payload_without_type),
-            content_type="application/json",
-        )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    @prevent_request_warnings
-    def test_component_json_field_is_required(self):
-        self.invalid_payload_without_component_json = {
-            "title": "Cool Component",
-            "description": "Probably the coolest component you ever did see. It's magical.",
-            "catalog": self.test_catalog.id,
-            "controls": ["ac-2.1", "ac-6.10", "ac-8", "au-6.1", "sc-2"],
-            "search_terms": ["cool", "magic", "software"],
-            "type": "software",
-        }
-
-        response = client.post(
-            reverse("component-list"),
-            data=json.dumps(self.invalid_payload_without_component_json),
-            content_type="application/json",
-        )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
     def test_type_field_is_lowercase(self):
         self.uppercase_type_field = {
             "title": "Cool Component",
