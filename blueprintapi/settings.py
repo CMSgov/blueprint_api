@@ -56,8 +56,6 @@ MIDDLEWARE = [
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
-    #HealthCheckMiddleware needs to be before CommonMiddleware to avoid ALLOWED_HOSTED check for health check
-    'blueprintapi.Healthcheck.HealthCheckMiddleware',
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",

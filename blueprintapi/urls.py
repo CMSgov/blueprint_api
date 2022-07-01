@@ -25,6 +25,6 @@ urlpatterns = [
     path("api/components/", include("components.urls")),
     path("api/projects/", include("projects.urls")),
     path("api/users/", include("users.urls")),
-    #path("api/healthcheck/", views.healthcheck, name="healthcheck"),
+    path("api/healthcheck/", views.healthcheck, name="healthcheck"),
     path("api-auth/", include("rest_framework.urls")),
 ]
