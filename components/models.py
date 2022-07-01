@@ -17,7 +17,7 @@ class Component(models.Model):
 
     title = models.CharField(
         max_length=100,
-        unique=False,
+        unique=True,
         help_text="Name of the component",
     )
     description = models.CharField(
@@ -28,7 +28,8 @@ class Component(models.Model):
     )
     type = models.CharField(
         max_length=100,
-        null=False,
+        null=True,
+        blank=True,
         unique=False,
         help_text="Type category of the component",
     )
@@ -42,6 +43,8 @@ class Component(models.Model):
     controls = ArrayField(
         models.CharField(max_length=30, blank=True),
         help_text="List of controls that the component addresses",
+        null=True,
+        blank=True,
     )
     search_terms = ArrayField(
         models.CharField(max_length=50, blank=True),
@@ -55,7 +58,8 @@ class Component(models.Model):
         null=True,
     )
     component_json = models.JSONField(
-        null=False,
+        null=True,
+        blank=True,
         help_text="OSCAL JSON representation of the component",
     )
     component_file = models.FileField(
