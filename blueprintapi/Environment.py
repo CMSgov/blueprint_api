@@ -15,10 +15,10 @@ class Environment:
         if env_hosts:
             hosts.append(env_hosts)
             # In case of containerized deployment to ECS/Fargate get the ip address of target group and add it to allowed hosts.
-            # metadata_uri = os.environ.get('ECS_CONTAINER_METADATA_URI')
-            # if metadata_uri:
-            #     container_metadata = requests.get(metadata_uri).json()
-            #     hosts.append(container_metadata['Networks'][0]['IPv4Addresses'][0])
+            metadata_uri = os.environ.get('ECS_CONTAINER_METADATA_URI')
+            if metadata_uri:
+                container_metadata = requests.get(metadata_uri).json()
+                hosts.append(container_metadata['Networks'][0]['IPv4Addresses'][0])
         self.allowed_hosts      = hosts
         self.log_level          = os.environ.get("LOG_LEVEL", logging.INFO)
         self.oidc_config        = os.environ.get("OIDC_CONFIG")
