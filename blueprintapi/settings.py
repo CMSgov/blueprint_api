@@ -12,9 +12,12 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 import os
 from pathlib import Path
+import logging
 
 from .Environment import Environment
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -28,7 +31,6 @@ SECRET_KEY = environment.get_secret_key()
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = environment.get_debug()
-
 ALLOWED_HOSTS = environment.get_allowed_hosts()
 # Application definition
 
@@ -152,6 +154,16 @@ MEDIA_URL = "media/"
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
 CORS_ALLOW_ALL_ORIGINS = environment.get_cors_allow_origins()
-CORS_ALLOW_HEADERS = environment.get_cors_allow_headers()
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "accept-encoding",
+    "access-control-allow-origin",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+]
