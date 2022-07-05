@@ -252,34 +252,47 @@ class ProjectAddComponentViewTest(TestCase):
 
     def test_invalid_project(self):
         resp = self.client.post(
-            "/api/projects/0/add-component", {"creator": 1, "component_id": 1}
+            "/api/projects/add-component/",
+            {"creator": 1, "component_id": 1, "project_id": 0},
         )
         self.assertEqual(resp.status_code, 400)
 
     def test_invalid_project_permissions(self):
         resp = self.client.post(
-            "/api/projects/" + str(self.test_project.id) + "/add-component",
-            {"creator": 0, "component_id": 1},
+            "/api/projects/add-component/",
+            {"creator": 0, "component_id": 1, "project_id": self.test_project.id},
         )
         self.assertEqual(resp.status_code, 401)
 
     def test_invalid_component(self):
         resp = self.client.post(
-            "/api/projects/" + str(self.test_project.id) + "/add-component",
-            {"creator": self.test_user.id, "component_id": 0},
+            "/api/projects/add-component/",
+            {
+                "creator": self.test_user.id,
+                "component_id": 0,
+                "project_id": self.test_project.id,
+            },
         )
         self.assertEqual(resp.status_code, 400)
 
     def test_different_catalog(self):
         resp = self.client.post(
-            "/api/projects/" + str(self.test_project.id) + "/add-component",
-            {"creator": self.test_user.id, "component_id": self.test_component_2.id},
+            "/api/projects/add-component/",
+            {
+                "creator": self.test_user.id,
+                "component_id": self.test_component_2.id,
+                "project_id": self.test_project.id,
+            },
         )
         self.assertEqual(resp.status_code, 400)
 
     def test_happy_path(self):
         resp = self.client.post(
-            "/api/projects/" + str(self.test_project.id) + "/add-component",
-            {"creator": self.test_user.id, "component_id": self.test_component.id},
+            "/api/projects/add-component/",
+            {
+                "creator": self.test_user.id,
+                "component_id": self.test_component.id,
+                "project_id": self.test_project.id,
+            },
         )
         self.assertEqual(resp.status_code, 200)

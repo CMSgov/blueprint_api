@@ -84,9 +84,9 @@ class ProjectAddComponentView(APIView):
         except Component.DoesNotExist:
             return None
 
-    def post(self, request, project_id, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         # Make sure project is valid
-        projectExists = self.get_object(project_id)
+        projectExists = self.get_object(request.data.get("project_id"))
         if projectExists is None:
             return Response(
                 {"response": "The project you are looking for does not exist"},
