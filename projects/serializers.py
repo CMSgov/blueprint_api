@@ -23,5 +23,6 @@ class ProjectSerializer(serializers.ModelSerializer):
             "creator",
             "components",
             "components_count",
+            "catalog",
         )
         depth = 1

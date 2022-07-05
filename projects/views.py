@@ -109,7 +109,15 @@ class ProjectAddComponentView(APIView):
                 {"response": "The selected component does not exist"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        # Connect the component to the project
-        projectExists.components.add(componentExists)
-        projectExists.save()
-        return Response({}, status=status.HTTP_200_OK)
+        # Check component catalog mataches project catalog
+        if projectExists.catalog.id == componentExists.catalog.id:
+            print("projectExists.catalog", projectExists.catalog.id)
+            print("componentExists.catalog", componentExists.catalog.id)
+            # Connect the component to the project
+            projectExists.components.add(componentExists)
+            projectExists.save()
+            return Response({}, status=status.HTTP_200_OK)
+        return Response(
+            {"response": "Incompatable catalog selected"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
