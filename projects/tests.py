@@ -1,8 +1,7 @@
-from guardian.shortcuts import get_perms
-from rest_framework import status
-
 from django.test import Client, TestCase
 from django.urls import reverse
+from guardian.shortcuts import get_perms
+from rest_framework import status
 
 from catalogs.models import Catalog
 from components.models import Component
@@ -138,6 +137,7 @@ class ProjectModelTest(TestCase):
         self.assertEqual("view_project" in get_perms(user, project), True)
         self.assertEqual("manage_project_users" in get_perms(user, project), True)
 
+
 class ProjectComponentsTest(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -158,7 +158,7 @@ class ProjectComponentsTest(TestCase):
         )
 
         cls.test_component_2 = Component.objects.create(
-            title="Cool Component",
+            title="Cool Components",
             description="Probably the coolest component you ever did see. It's magical.",
             catalog=Catalog.objects.get(id=cls.test_catalog.id),
             controls=["ac-2.1", "ac-6.10", "ac-8", "au-6.1", "sc-2"],
@@ -203,3 +203,56 @@ class ProjectComponentsTest(TestCase):
 
         # ensure that response includes accurate components_count
         self.assertEqual(received_components_count, expected_num_components)
+
+
+class ProjectAddComponentViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.test_user = User.objects.create()
+        cls.test_catalog = Catalog.objects.create(
+            name="NIST_SP-800", file_name="NIST_SP-800.json"
+        )
+        cls.test_component = Component.objects.create(
+            title="Cool Component",
+            description="Probably the coolest component you ever did see. It's magical.",
+            catalog=Catalog.objects.get(id=cls.test_catalog.id),
+            controls=["ac-2.1", "ac-6.10", "ac-8", "au-6.1", "sc-2"],
+            search_terms=["cool", "magic", "software"],
+            type="software",
+            component_json=TEST_COMPONENT_JSON_BLOB,
+        )
+        cls.test_project = Project.objects.create(
+            title="Pretty Ordinary Project",
+            acronym="POP",
+            impact_level="low",
+            location="other",
+            creator=User.objects.get(id=cls.test_user.id),
+            # components=cls.test_component.id
+        )
+
+    def test_invalid_project(self):
+        resp = self.client.post(
+            "/api/projects/0/add-component", {"creator": 1, "component_id": 1}
+        )
+        self.assertEqual(resp.status_code, 400)
+
+    def test_invalid_project_permissions(self):
+        resp = self.client.post(
+            "/api/projects/" + str(self.test_project.id) + "/add-component",
+            {"creator": 0, "component_id": 1},
+        )
+        self.assertEqual(resp.status_code, 401)
+
+    def test_invalid_component(self):
+        resp = self.client.post(
+            "/api/projects/" + str(self.test_project.id) + "/add-component",
+            {"creator": self.test_user.id, "component_id": 0},
+        )
+        self.assertEqual(resp.status_code, 400)
+
+    def test_happy_path(self):
+        resp = self.client.post(
+            "/api/projects/" + str(self.test_project.id) + "/add-component",
+            {"creator": self.test_user.id, "component_id": self.test_component.id},
+        )
+        self.assertEqual(resp.status_code, 200)
