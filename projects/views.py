@@ -111,8 +111,6 @@ class ProjectAddComponentView(APIView):
             )
         # Check component catalog mataches project catalog
         if projectExists.catalog.id == componentExists.catalog.id:
-            print("projectExists.catalog", projectExists.catalog.id)
-            print("componentExists.catalog", componentExists.catalog.id)
             # Connect the component to the project
             projectExists.components.add(componentExists)
             projectExists.save()
