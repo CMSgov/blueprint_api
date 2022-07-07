@@ -40,74 +40,74 @@ class ProjectModelTest(TestCase):
             acronym="POP",
             impact_level="low",
             location="other",
-            creator=User.objects.get(id=cls.test_user.id),
-            catalog=Catalog.objects.get(id=cls.test_catalog.id),
+            creator=cls.test_user,
+            catalog=cls.test_catalog,
         )
 
     # Tests for field labels
     def test_title_label(self):
-        project = Project.objects.get(id=self.test_project.id)
+        project = self.test_project
         field_label = project._meta.get_field("title").verbose_name
         self.assertEqual(field_label, "title")
 
     def test_acronym_label(self):
-        project = Project.objects.get(id=self.test_project.id)
+        project = self.test_project
         field_label = project._meta.get_field("acronym").verbose_name
         self.assertEqual(field_label, "acronym")
 
     def test_impact_level_label(self):
-        project = Project.objects.get(id=self.test_project.id)
+        project = self.test_project
         field_label = project._meta.get_field("impact_level").verbose_name
         self.assertEqual(field_label, "impact level")
 
     def test_location_label(self):
-        project = Project.objects.get(id=self.test_project.id)
+        project = self.test_project
         field_label = project._meta.get_field("location").verbose_name
         self.assertEqual(field_label, "location")
 
     def test_status_label(self):
-        project = Project.objects.get(id=self.test_project.id)
+        project = self.test_project
         field_label = project._meta.get_field("status").verbose_name
         self.assertEqual(field_label, "status")
 
     def test_creator_label(self):
-        project = Project.objects.get(id=self.test_project.id)
+        project = self.test_project
         field_label = project._meta.get_field("creator_id").verbose_name
         self.assertEqual(field_label, "creator")
 
     def test_created_label(self):
-        project = Project.objects.get(id=self.test_project.id)
+        project = self.test_project
         field_label = project._meta.get_field("created").verbose_name
         self.assertEqual(field_label, "created")
 
     def test_updated_label(self):
-        project = Project.objects.get(id=self.test_project.id)
+        project = self.test_project
         field_label = project._meta.get_field("updated").verbose_name
         self.assertEqual(field_label, "updated")
 
     # Tests for max length
     def test_title_max_length(self):
-        project = Project.objects.get(id=self.test_project.id)
+        project = self.test_project
         max_length = project._meta.get_field("title").max_length
         self.assertEqual(max_length, 100)
 
     def test_acronym_max_length(self):
-        project = Project.objects.get(id=self.test_project.id)
+        project = self.test_project
         max_length = project._meta.get_field("acronym").max_length
         self.assertEqual(max_length, 20)
 
     def test_impact_level_max_length(self):
-        project = Project.objects.get(id=self.test_project.id)
+        project = self.test_project
         max_length = project._meta.get_field("impact_level").max_length
         self.assertEqual(max_length, 20)
 
     def test_location_max_length(self):
-        project = Project.objects.get(id=self.test_project.id)
+        project = self.test_project
         max_length = project._meta.get_field("location").max_length
         self.assertEqual(max_length, 100)
 
     def test_status_max_length(self):
-        project = Project.objects.get(id=self.test_project.id)
+        project = self.test_project
         max_length = project._meta.get_field("status").max_length
         self.assertEqual(max_length, 20)
 
@@ -119,8 +119,8 @@ class ProjectModelTest(TestCase):
             acronym="BP",
             impact_level="low",
             location="other",
-            creator=User.objects.get(id=self.test_user.id),
-            catalog=Catalog.objects.get(id=self.test_catalog.id),
+            creator=self.test_user,
+            catalog=self.test_catalog,
         )
 
         # ensure project status defaults as expected
@@ -135,7 +135,7 @@ class ProjectModelTest(TestCase):
             impact_level="low",
             location="other",
             creator=User.objects.get(id=1),
-            catalog=Catalog.objects.get(id=self.test_catalog.id),
+            catalog=self.test_catalog,
         )
         project = Project.objects.get(title="Test Project")
         user = User.objects.get(id=1)
@@ -156,7 +156,7 @@ class ProjectComponentsTest(TestCase):
         cls.test_component = Component.objects.create(
             title="Cool Component",
             description="Probably the coolest component you ever did see. It's magical.",
-            catalog=Catalog.objects.get(id=cls.test_catalog.id),
+            catalog=cls.test_catalog,
             controls=["ac-2.1", "ac-6.10", "ac-8", "au-6.1", "sc-2"],
             search_terms=["cool", "magic", "software"],
             type="software",
@@ -166,7 +166,7 @@ class ProjectComponentsTest(TestCase):
         cls.test_component_2 = Component.objects.create(
             title="Cool Components",
             description="Probably the coolest component you ever did see. It's magical.",
-            catalog=Catalog.objects.get(id=cls.test_catalog.id),
+            catalog=cls.test_catalog,
             controls=["ac-2.1", "ac-6.10", "ac-8", "au-6.1", "sc-2"],
             search_terms=["cool", "magic", "software"],
             type="software",
@@ -178,15 +178,15 @@ class ProjectComponentsTest(TestCase):
             acronym="POP",
             impact_level="low",
             location="other",
-            creator=User.objects.get(id=cls.test_user.id),
-            catalog=Catalog.objects.get(id=cls.test_catalog.id),
+            creator=cls.test_user,
+            catalog=cls.test_catalog,
             # components=cls.test_component.id
         )
 
         cls.test_project.components.set(
             [
-                Component.objects.get(id=cls.test_component.id),
-                Component.objects.get(id=cls.test_component_2.id),
+                cls.test_component,
+                cls.test_component_2,
             ]
         )
 
@@ -195,7 +195,7 @@ class ProjectComponentsTest(TestCase):
             reverse("project-detail", kwargs={"project_id": self.test_project.pk})
         )
 
-        project = Project.objects.get(pk=self.test_project.pk)
+        project = self.test_project
         serializer = ProjectSerializer(project)
 
         self.assertEqual(response.data, serializer.data)
@@ -225,7 +225,7 @@ class ProjectAddComponentViewTest(TestCase):
         cls.test_component = Component.objects.create(
             title="Cool Component",
             description="Probably the coolest component you ever did see. It's magical.",
-            catalog=Catalog.objects.get(id=cls.test_catalog.id),
+            catalog=cls.test_catalog,
             controls=["ac-2.1", "ac-6.10", "ac-8", "au-6.1", "sc-2"],
             search_terms=["cool", "magic", "software"],
             type="software",
@@ -234,7 +234,7 @@ class ProjectAddComponentViewTest(TestCase):
         cls.test_component_2 = Component.objects.create(
             title="New Cool Component",
             description="Probably the coolest component you ever did see. It's magical.",
-            catalog=Catalog.objects.get(id=cls.test_catalog_2.id),
+            catalog=cls.test_catalog_2,
             controls=["ac-2.1", "ac-6.10", "ac-8", "au-6.1", "sc-2"],
             search_terms=["cool", "magic", "software"],
             type="software",
@@ -245,8 +245,8 @@ class ProjectAddComponentViewTest(TestCase):
             acronym="POP",
             impact_level="low",
             location="other",
-            creator=User.objects.get(id=cls.test_user.id),
-            catalog=Catalog.objects.get(id=cls.test_catalog.id),
+            creator=cls.test_user,
+            catalog=cls.test_catalog,
             # components=cls.test_component.id
         )
 
