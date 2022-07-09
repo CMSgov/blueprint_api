@@ -79,6 +79,9 @@ class Project(models.Model):
             manage_project_users_permission,
         ]
 
+    def __str__(self):
+        return self.title
+
 
 @receiver(post_save, sender=Project)
 def create_groups_for_project(sender, instance, **kwargs):

@@ -32,7 +32,7 @@ class ComponentDetailView(APIView):
 
     def get(self, request, pk):
         component = get_object_or_404(Component, pk=pk)
-        serializer = ComponentSerializer(component)
+        serializer = ComponentSerializer(component, context={"request": request})
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 

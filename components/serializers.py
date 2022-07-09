@@ -1,8 +1,11 @@
+from django.contrib.auth.models import AnonymousUser
 from rest_framework import serializers
 
 from catalogs.catalogio import CatalogTools
 from components.componentio import ComponentTools
 from components.models import Component
+from projects.models import Project
+from users.models import User
 
 
 class ComponentListSerializer(serializers.ModelSerializer):
@@ -26,13 +29,27 @@ class ComponentListSerializer(serializers.ModelSerializer):
 class ComponentSerializer(serializers.ModelSerializer):
     catalog_data = serializers.SerializerMethodField()
     component_data = serializers.SerializerMethodField()
+    project_data = serializers.SerializerMethodField()
 
     def get_catalog_data(self, obj):
-        data = get_catalog_data(obj.controls, obj.catalog)
+        data = collect_catalog_data(obj.controls, obj.catalog)
         return data
 
     def get_component_data(self, obj):
-        data = get_component_data(obj.component_json)
+        data = collect_component_data(obj.component_json)
+        return data
+
+    def get_project_data(self, obj):
+        data: dict = {}
+        request = self.context.get("request")
+        user = request.user
+
+        """
+        @todo - Remove this when we can corrolate a request to a user.
+        """
+        if isinstance(user, AnonymousUser):
+            user = User.objects.get(pk=2)
+        data = collect_project_data(obj.id, user)
         return data
 
     class Meta:
@@ -48,10 +65,11 @@ class ComponentSerializer(serializers.ModelSerializer):
             "status",
             "catalog_data",
             "component_data",
+            "project_data",
         )
 
 
-def get_catalog_data(controls: list, catalog):
+def collect_catalog_data(controls: list, catalog):
     """Return the Catalog data for the given Controls."""
     cat_data = CatalogTools(catalog.file_name.path)
     data: dict = {}
@@ -62,15 +80,13 @@ def get_catalog_data(controls: list, catalog):
     return data
 
 
-def get_component_data(component: dict):
+def collect_component_data(component: dict):
     comp = ComponentTools(component)
 
     component_data: dict = {}
     control_list = comp.get_controls()
-    print(control_list)
     controls: dict = {}
     for c in control_list:
-        print(c)
         controls[c.get("control-id")] = {
             "narrative": c.get("description"),
             "responsibility": get_control_responsibility(c, "security_control_type"),
@@ -93,3 +109,17 @@ def get_control_responsibility(control, prop):
         for p in control.get("props"):
             if p.get("name") == prop:
                 return p.get("value")
+
+
+def collect_project_data(component_id, user):
+    remove = Project.objects.filter(creator_id=user).filter(components=component_id)
+    form_values = {
+        "add": [],
+        "remove": [],
+    }
+    for r in remove:
+        form_values["remove"].append({"value": r.id, "label": r.title})
+    add = Project.objects.filter(creator_id=user).exclude(pk__in=remove)
+    for a in add:
+        form_values["add"].append({"value": a.id, "label": a.title})
+    return form_values
