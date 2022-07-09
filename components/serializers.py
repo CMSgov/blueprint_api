@@ -41,14 +41,18 @@ class ComponentSerializer(serializers.ModelSerializer):
 
     def get_project_data(self, obj):
         data: dict = {}
+        user: dict = {}
         request = self.context.get("request")
-        user = request.user
+        if hasattr(request, "user"):
+            user = request.user
 
         """
         @todo - Remove this when we can corrolate a request to a user.
         """
-        if isinstance(user, AnonymousUser):
-            user = User.objects.get(pk=2)
+        if not user or isinstance(user, AnonymousUser):
+            user = User.objects.exclude(username=AnonymousUser).first()
+        """end @todo"""
+
         data = collect_project_data(obj.id, user)
         return data
 
@@ -81,10 +85,10 @@ def collect_catalog_data(controls: list, catalog):
 
 
 def collect_component_data(component: dict):
-    comp = ComponentTools(component)
+    tools = ComponentTools(component)
 
     component_data: dict = {}
-    control_list = comp.get_controls()
+    control_list = tools.get_controls()
     controls: dict = {}
     for c in control_list:
         controls[c.get("control-id")] = {
@@ -93,7 +97,7 @@ def collect_component_data(component: dict):
             "provider": get_control_responsibility(c, "provider"),
         }
 
-    cp = comp.get_components()[0]
+    cp = tools.get_components()[0]
     component_data = {
         "title": cp.get("title"),
         "description": cp.get("description"),

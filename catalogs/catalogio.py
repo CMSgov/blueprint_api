@@ -1,5 +1,5 @@
 import json
-from typing import List
+from typing import Any, List, Optional
 
 
 class CatalogTools(object):
@@ -160,6 +160,7 @@ class CatalogTools(object):
         value: str = ""
         if control is None:
             return None
+        prop: Optional[Any] = None
         # ARS 3.1 uses "properties" but 5.0 uses "props"
         if "properties" in control:
             prop = self.find_dict_by_value(

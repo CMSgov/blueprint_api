@@ -16,7 +16,7 @@ class ComponentListView(generics.ListCreateAPIView):
     """
 
     queryset = Component.objects.all().order_by("pk")
-    serializer_class = ComponentSerializer
+    serializer_class = ComponentListSerializer
 
     def list(self, request):
         queryset = self.get_queryset()
