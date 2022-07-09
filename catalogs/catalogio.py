@@ -204,6 +204,31 @@ class CatalogTools(object):
                     params[pid] = p.get("label")
         return params
 
+    def get_control_data_simplified(self, control_id) -> dict:
+        control_data: dict = {}
+        control = self.get_control_by_id(control_id)
+        family_id = self.get_group_id_by_control_id(control_id)
+        desc = self.get_control_statement(control)
+        implementation = self.get_control_part_by_name(control, "implementation")
+        guidance = self.get_control_part_by_name(control, "guidance")
+        control_data = {
+            "label": self.get_control_property_by_name(control, "label"),
+            "title": control.get("title"),
+            "family": self.get_group_title_by_id(family_id),
+            "description": self.__get_simplified_prose(desc),
+            "implementation": implementation.get("prose") if implementation else "",
+            "guidance": guidance.get("prose") if guidance else "",
+        }
+
+        return control_data
+
+    def __get_simplified_prose(self, prose: list):
+        """"""
+        if prose:
+            text = prose[0]
+            key = list(text.get("prose").keys())[0]
+            return text.get("prose").get(key)
+
     @property
     def catalog_title(self) -> str:
         metadata = self.oscal.get("metadata", {})
