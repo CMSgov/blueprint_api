@@ -22,6 +22,7 @@ class ComponentListSerializer(serializers.ModelSerializer):
             "description",
             "type",
             "catalog",
+            "component_json",
             "controls_count",
         )
 
