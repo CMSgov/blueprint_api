@@ -51,7 +51,7 @@ class ComponentSerializer(serializers.ModelSerializer):
         @todo - Remove this when we can corrolate a request to a user.
         """
         if not user or isinstance(user, AnonymousUser):
-            user = User.objects.exclude(username=AnonymousUser).first()
+            user = User.objects.exclude(username="AnonymousUser").first()
         """end @todo"""
 
         data = collect_project_data(obj.id, user)
