@@ -117,13 +117,17 @@ def get_control_responsibility(control, prop):
 
 
 def collect_project_data(component_id, user):
-    remove = Project.objects.filter(creator_id=user).filter(components=component_id)
+    all_projects = Project.objects.filter(creator_id=user)
+    remove = Project.components.through.objects.filter(
+        component_id=component_id, project_id__in=all_projects
+    ).select_related()
     form_values = {
         "add": [],
         "remove": [],
     }
     for r in remove:
-        form_values["remove"].append({"value": r.id, "label": r.title})
+        project_data = Project.objects.get(pk=r.id)
+        form_values["remove"].append({"value": r.id, "label": project_data.title})
     add = Project.objects.filter(creator_id=user).exclude(pk__in=remove)
     for a in add:
         form_values["add"].append({"value": a.id, "label": a.title})
