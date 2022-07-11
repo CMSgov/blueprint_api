@@ -8,6 +8,7 @@ from access_management.permission_constants import (
     manage_project_users_permission,
 )
 from access_management.utils import generate_groups_and_permission
+from catalogs.models import Catalog
 from components.models import Component
 from users.models import User
 
@@ -30,6 +31,14 @@ class Project(models.Model):
         Component,
         related_name="used_by_projects",
         help_text="Components that exist in the project",
+    )
+    catalog = models.ForeignKey(
+        Catalog,
+        null=False,
+        default=None,
+        on_delete=models.PROTECT,
+        related_name="projects_catalog",
+        help_text="Catalog id that this project uses",
     )
     IMPACT_LEVEL_CHOICES = [
         ("low", "Low"),
@@ -78,6 +87,9 @@ class Project(models.Model):
             ("can_delete_members", "Can delete members"),
             manage_project_users_permission,
         ]
+
+    def __str__(self):
+        return self.title
 
 
 @receiver(post_save, sender=Project)
