@@ -1,3 +1,5 @@
+import json
+
 from django.test import Client, TestCase
 from django.urls import reverse
 from guardian.shortcuts import get_perms
@@ -144,6 +146,65 @@ class ProjectModelTest(TestCase):
         self.assertEqual("manage_project_users" in get_perms(user, project), True)
 
 
+class ProjectRequiredFieldsTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.test_user = User.objects.create()
+
+        cls.test_catalog = Catalog.objects.create(
+            name="NIST_SP-800", file_name="NIST_SP-800.json"
+        )
+
+        cls.no_title_project = {
+            "acronym": "NTP",
+            "impact_level": "low",
+            "location": "other",
+            "creator": cls.test_user.id,
+            "catalog": cls.test_catalog.id,
+        }
+
+        cls.no_acronym_project = {
+            "title": "No Acronym Project",
+            "impact_level": "low",
+            "location": "other",
+            "creator": cls.test_user.id,
+            "catalog": cls.test_catalog.id,
+        }
+
+        cls.no_catalog_project = {
+            "title": "No Catalog Project",
+            "acronym": "NCP",
+            "impact_level": "low",
+            "location": "other",
+            "creator": cls.test_user.id,
+            "catalog": None,
+        }
+
+    def test_title_required(self):
+        response = client.post(
+            reverse("project-list"),
+            data=json.dumps(self.no_title_project),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_acronym_required(self):
+        response = client.post(
+            reverse("project-list"),
+            data=json.dumps(self.no_acronym_project),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_catalog_required(self):
+        response = client.post(
+            reverse("project-list"),
+            data=json.dumps(self.no_catalog_project),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+
 class ProjectComponentsTest(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -180,7 +241,6 @@ class ProjectComponentsTest(TestCase):
             location="other",
             creator=cls.test_user,
             catalog=cls.test_catalog,
-            # components=cls.test_component.id
         )
 
         cls.test_project.components.set(
@@ -247,7 +307,6 @@ class ProjectAddComponentViewTest(TestCase):
             location="other",
             creator=cls.test_user,
             catalog=cls.test_catalog,
-            # components=cls.test_component.id
         )
 
     def test_invalid_project(self):
