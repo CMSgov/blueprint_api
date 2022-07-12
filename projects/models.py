@@ -29,6 +29,7 @@ class Project(models.Model):
     )
     components = models.ManyToManyField(
         Component,
+        blank=True,
         related_name="used_by_projects",
         help_text="Components that exist in the project",
     )
