@@ -62,12 +62,35 @@ class ProjectsDetailView(APIView):
 
 
 class ProjectAddComponentView(APIView):
-    def get_object(self, project_id):
-        try:
-            return Project.objects.get(id=project_id)
-        except Project.DoesNotExist:
-            return None
+    def post(self, request, *args, **kwargs):
+        project = get_object_or_404(Project, pk=request.data.get("project_id"))
+        owner_id = project.creator.id
 
+        creator_id = int(request.data.get("creator"))
+        if owner_id != creator_id:
+            return Response(
+                {"response": "You are not authorized to access this page"},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        component_id = int(request.data.get("component_id"))
+        component = get_object_or_404(Component, pk=component_id)
+        if component is None:
+            return Response(
+                {"response": "The selected component does not exist"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if project.catalog.id == component.catalog.id:
+            project.components.add(component.id)
+            return Response({}, status=status.HTTP_200_OK)
+        return Response(
+            {"response": "Incompatable catalog selected"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+
+class ProjectRemoveComponentView(APIView):
     def get_component_object(self, component_id):
         try:
             return Component.objects.get(pk=component_id)
@@ -75,37 +98,18 @@ class ProjectAddComponentView(APIView):
             return None
 
     def post(self, request, *args, **kwargs):
-        # Make sure project is valid
-        projectExists = self.get_object(request.data.get("project_id"))
-        if projectExists is None:
-            return Response(
-                {"response": "The project you are looking for does not exist"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        # check user is for this project
-        projectOwnerId = projectExists.creator.pk
-        passedInCreatorId = int(request.data.get("creator"))
-        if projectOwnerId != passedInCreatorId:
+        project = get_object_or_404(Project, pk=request.data.get("project_id"))
+        owner_id = project.creator.pk
+        creator_id = int(request.data.get("creator"))
+        if owner_id != creator_id:
             return Response(
                 {"response": "You are not authorized to access this page"},
                 status=status.HTTP_401_UNAUTHORIZED,
             )
-        # Make sure that the component is valid
-        passedInComponentId = int(request.data.get("component_id"))
-        componentExists = self.get_component_object(passedInComponentId)
-        # componentExists = Component.objects.get(pk=passedInComponentId)
-        if componentExists is None:
-            return Response(
-                {"response": "The selected component does not exist"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        # Check component catalog mataches project catalog
-        if projectExists.catalog.id == componentExists.catalog.id:
-            # Connect the component to the project
-            projectExists.components.add(componentExists)
-            projectExists.save()
-            return Response({}, status=status.HTTP_200_OK)
-        return Response(
-            {"response": "Incompatable catalog selected"},
-            status=status.HTTP_400_BAD_REQUEST,
-        )
+
+        component_id = int(request.data.get("component_id"))
+        try:
+            project.components.remove(component_id)
+        except Exception:
+            return Response({}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"status": "Component removed."}, status=status.HTTP_200_OK)
