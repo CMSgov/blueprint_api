@@ -119,12 +119,12 @@ def create_groups_for_project(sender, instance, **kwargs):
 def add_components_for_project(sender, instance, **kwargs):
     if kwargs["created"]:
         try:
-            ociso_component = Component.objects.get(title="ociso")
+            ociso_component = Component.objects.get(title__iexact="ociso")
             instance.components.add(ociso_component)
             instance.save()
             # if location aws add the aws component
             if instance.location == "cms_aws":
-                aws_component = Component.objects.get(title="aws")
+                aws_component = Component.objects.get(title__iexact="aws")
                 instance.components.add(aws_component)
                 instance.save()
         except Exception as e:
