@@ -114,3 +114,20 @@ def create_groups_for_project(sender, instance, **kwargs):
             raise e
     else:
         print("Object not created yet.")
+
+
+@receiver(post_save, sender=Project)
+def add_components_for_project(sender, instance, **kwargs):
+    if kwargs["created"]:
+        try:
+            ociso_component = Component.objects.get(title="ociso")
+            instance.components.add(ociso_component)
+            instance.save()
+            # if location aws add the aws component
+            if instance.location == "cms_aws":
+                aws_component = Component.objects.get(title="aws")
+                instance.components.add(aws_component)
+                instance.save()
+        except Exception as e:
+            # TODO: log failure
+            raise e
