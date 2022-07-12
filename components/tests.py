@@ -75,9 +75,12 @@ client = Client()
 class ComponentModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.test_catalog = Catalog.objects.create(
-            name="NIST_SP-800", file_name="NIST_SP-800.json"
-        )
+        with open("components/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
+            catalog = File(f)
+            cls.test_catalog = Catalog.objects.create(
+                name="NIST Test Catalog",
+                file_name=catalog,
+            )
 
         cls.test_component = Component.objects.create(
             title="Cool Component",
@@ -153,9 +156,12 @@ TEST_COMPONENT_CONTROLS = ["ac-2.1", "ac-6.10", "ac-8", "au-6.1", "sc-2"]
 class GetAllComponentsTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.test_catalog = Catalog.objects.create(
-            name="NIST_SP-800", file_name="NIST_SP-800.json"
-        )
+        with open("components/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
+            catalog = File(f)
+            cls.test_catalog = Catalog.objects.create(
+                name="NIST Test Catalog",
+                file_name=catalog,
+            )
 
         Component.objects.create(
             title="Cool Component",
@@ -204,9 +210,12 @@ class GetAllComponentsTest(TestCase):
 class GetSingleComponentTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.test_catalog = Catalog.objects.create(
-            name="NIST_SP-800", file_name="NIST_SP-800.json"
-        )
+        with open("components/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
+            catalog = File(f)
+            cls.test_catalog = Catalog.objects.create(
+                name="NIST Test Catalog",
+                file_name=catalog,
+            )
 
         cls.test_component = Component.objects.create(
             title="Cool Component",
@@ -239,9 +248,12 @@ class GetSingleComponentTest(TestCase):
 class CreateNewComponentTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.test_catalog = Catalog.objects.create(
-            name="NIST_SP-800", file_name="NIST_SP-800.json"
-        )
+        with open("components/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
+            catalog = File(f)
+            cls.test_catalog = Catalog.objects.create(
+                name="NIST Test Catalog",
+                file_name=catalog,
+            )
 
     def test_create_valid_component(self):
         self.valid_payload = {
@@ -330,7 +342,7 @@ class CreateNewComponentTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_type_field_is_lowercase(self):
-        self.uppercase_type_field = {
+        uppercase_type_field = {
             "title": "Cool Component",
             "description": "Probably the coolest component you ever did see. It's magical.",
             "catalog": self.test_catalog.id,
@@ -342,7 +354,7 @@ class CreateNewComponentTest(TestCase):
 
         response = client.post(
             reverse("component-list"),
-            data=json.dumps(self.uppercase_type_field),
+            data=json.dumps(uppercase_type_field),
             content_type="application/json",
         )
 
@@ -356,9 +368,13 @@ class CreateNewComponentTest(TestCase):
 class ComponentViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.test_catalog = Catalog.objects.create(
-            name="NIST_SP-800", file_name="NIST_SP-800.json"
-        )
+        with open("components/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
+            catalog = File(f)
+            cls.test_catalog = Catalog.objects.create(
+                name="NIST Test Catalog",
+                file_name=catalog,
+            )
+
         cls.test_component = Component.objects.create(
             title="Cool Component",
             description="Probably the coolest component you ever did see. It's magical.",
@@ -405,7 +421,7 @@ class ComponentViewTest(TestCase):
 
 class ComponentioTest(TestCase):
     def setUp(self):
-        with open("catalogs/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
+        with open("components/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
             catalog = File(f)
             self.cat = Catalog.objects.create(
                 name="Test Catalog",

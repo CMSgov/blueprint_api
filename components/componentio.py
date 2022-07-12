@@ -6,7 +6,7 @@ class ComponentTools(object):
         if isinstance(component, dict):
             self.component = component.get("component-definition")
         else:
-            return False
+            return None
 
     def get_components(self):
         components: List[dict] = []
