@@ -1,28 +1,22 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import status
+from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from components.models import Component
 
 from .models import Project
-from .serializers import ProjectSerializer
+from .serializers import ProjectListSerializer, ProjectSerializer
 
 
-class ProjectsListViews(APIView):
+class ProjectsListViews(generics.ListCreateAPIView):
 
-    # @api_view('POST')
-    def post(self, request, *args, **kwargs):
-        serializer = ProjectSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    queryset = Project.objects.all().order_by("pk")
+    serializer_class = ProjectListSerializer
 
-    # @api_view('GET')
-    def get(request, *args, **kwargs):
-        projects = Project.objects.all()
-        serializer = ProjectSerializer(projects, many=True)
+    def list(self, request, *args, **kwargs):
+        projects = self.get_queryset()
+        serializer = ProjectListSerializer(projects, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
