@@ -314,7 +314,7 @@ class ProjectAddComponentViewTest(TestCase):
             "/api/projects/add-component/",
             {"creator": 1, "component_id": 1, "project_id": 0},
         )
-        self.assertEqual(resp.status_code, 400)
+        self.assertEqual(resp.status_code, 404)
 
     def test_invalid_project_permissions(self):
         resp = self.client.post(
@@ -332,7 +332,7 @@ class ProjectAddComponentViewTest(TestCase):
                 "project_id": self.test_project.id,
             },
         )
-        self.assertEqual(resp.status_code, 400)
+        self.assertEqual(resp.status_code, 404)
 
     def test_different_catalog(self):
         resp = self.client.post(
