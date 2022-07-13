@@ -45,3 +45,14 @@ class CatalogModelTest(TestCase):
             reverse("get_control_by_id", kwargs={"catalog": cid, "control_id": "ac-1"})
         )
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
+class CatalogEndpointTest(TestCase):
+    def test_valid_catalog(self):
+        with open("catalogs/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
+            catalog = File(f)
+            resp = self.client.post(
+                "/api/catalogs/",
+                {"name": "Test Catalog", "file_name": catalog},
+            )
+            self.assertEqual(resp.status_code, 201)

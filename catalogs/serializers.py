@@ -9,4 +9,5 @@ class CatalogListSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "name",
+            "file_name",
         )
