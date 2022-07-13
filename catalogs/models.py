@@ -1,13 +1,31 @@
+import json
 import os
 
+import jsonschema
 from django.db import models
 from django.dispatch import receiver
+from jsonschema.exceptions import SchemaError, ValidationError
+
+
+def validate_catalog(file_name):
+    cat = json.load(file_name.file)
+    with open("catalogs/schemas/oscal_catalog_schema.json", "r") as file:
+        oscal_schema = json.load(file)
+
+    try:
+        jsonschema.validate(instance=cat, schema=oscal_schema)
+    except ValidationError:
+        raise ValidationError("The Catalog is not a valid OSCAL catalog.")
+    except SchemaError:
+        raise ValidationError("The Catalog schema is not a valid OSCAL catalog schema.")
 
 
 class Catalog(models.Model):
     name = models.CharField(max_length=100, help_text="Name of Catalog", unique=True)
     file_name = models.FileField(
-        max_length=100, help_text="Location of static catalog data file", unique=True
+        max_length=100,
+        help_text="Location of static catalog data file",
+        validators=[validate_catalog],
     )
     created = models.DateTimeField(auto_now_add=True, db_index=True)
     updated = models.DateTimeField(auto_now=True, db_index=True, null=True)
