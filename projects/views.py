@@ -75,11 +75,6 @@ class ProjectAddComponentView(APIView):
 
         component_id = int(request.data.get("component_id"))
         component = get_object_or_404(Component, pk=component_id)
-        if component is None:
-            return Response(
-                {"response": "The selected component does not exist"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
 
         if project.catalog.id == component.catalog.id:
             project.components.add(component.id)
@@ -92,12 +87,6 @@ class ProjectAddComponentView(APIView):
 
 
 class ProjectRemoveComponentView(APIView):
-    def get_component_object(self, component_id):
-        try:
-            return Component.objects.get(pk=component_id)
-        except Component.DoesNotExist:
-            return None
-
     def post(self, request, *args, **kwargs):
         project = get_object_or_404(Project, pk=request.data.get("project_id"))
         component = get_object_or_404(
