@@ -1,11 +1,27 @@
 from pathlib import Path
 
-from rest_framework import status
+from rest_framework import generics, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from .catalogio import CatalogTools as Tools
 from .models import Catalog
+from .serializers import CatalogListSerializer
+
+
+class CatalogListView(generics.ListCreateAPIView):
+    """
+    Use for read-write endpoints to represent a collection of model instances.
+    Provides get and post method handlers.
+    """
+
+    queryset = Catalog.objects.all().order_by("pk")
+    serializer_class = CatalogListSerializer
+
+    def list(self, request):
+        queryset = self.get_queryset()
+        serializer = CatalogListSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(["GET"])
