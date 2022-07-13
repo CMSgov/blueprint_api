@@ -83,7 +83,8 @@ class ProjectAddComponentView(APIView):
 
         if project.catalog.id == component.catalog.id:
             project.components.add(component.id)
-            return Response({}, status=status.HTTP_200_OK)
+            response = {"message": f"{component.title} added to {project.title}."}
+            return Response(response, status=status.HTTP_200_OK)
         return Response(
             {"response": "Incompatable catalog selected"},
             status=status.HTTP_400_BAD_REQUEST,
@@ -99,6 +100,9 @@ class ProjectRemoveComponentView(APIView):
 
     def post(self, request, *args, **kwargs):
         project = get_object_or_404(Project, pk=request.data.get("project_id"))
+        component = get_object_or_404(
+            Component, pk=int(request.data.get("component_id"))
+        )
         owner_id = project.creator.pk
         creator_id = int(request.data.get("creator"))
         if owner_id != creator_id:
@@ -106,10 +110,9 @@ class ProjectRemoveComponentView(APIView):
                 {"response": "You are not authorized to access this page"},
                 status=status.HTTP_401_UNAUTHORIZED,
             )
-
-        component_id = int(request.data.get("component_id"))
         try:
-            project.components.remove(component_id)
+            project.components.remove(component.id)
+            response = {"message": f"{component.title} removed from {project.title}."}
         except Exception:
             return Response({}, status=status.HTTP_400_BAD_REQUEST)
-        return Response({"status": "Component removed."}, status=status.HTTP_200_OK)
+        return Response(response, status=status.HTTP_200_OK)
