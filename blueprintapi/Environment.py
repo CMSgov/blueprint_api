@@ -35,6 +35,8 @@ class Environment:
         # Log basic environment variables except db related for security reasons.
         logger.info("============== Environment Variables ================")
         logger.info(f"Allowed Hosts         : {self.allowed_hosts}")
+        logger.info(f"db host         :       {self.db_host}")
+        logger.info(f"db name         :       {self.db_name}")
         logger.info(f"Log Level             : {self.log_level}")
         logger.info(f"OIDC Config           : {self.oidc_config}")
         logger.info(f"Metrics Env           : {self.metrics_env}")
