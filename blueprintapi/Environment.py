@@ -19,6 +19,7 @@ class Environment:
             if metadata_uri:
                 container_metadata = requests.get(metadata_uri).json()
                 hosts.append(container_metadata['Networks'][0]['IPv4Addresses'][0])
+        cors_origin = os.environ.get("CORS_ALLOW_ALL_ORIGINS", "True").capitalize()
         self.allowed_hosts      = hosts
         self.log_level          = os.environ.get("LOG_LEVEL", logging.INFO)
         self.oidc_config        = os.environ.get("OIDC_CONFIG")
@@ -28,7 +29,7 @@ class Environment:
         self.db_name            = os.environ.get("POSTGRES_DB_NAME")
         self.db_host            = os.environ.get("POSTGRES_DB_HOST")
         self.db_port            = os.environ.get("POSTGRES_DB_PORT", "5432")
-        self.cors_allow_origins = os.environ.get("CORS_ALLOW_ALL_ORIGINS", True)
+        self.cors_allow_origins = cors_origin
         self.debug              = os.environ.get("API_DEBUG", True)
         self.secret_key         = os.environ.get("SECRET_KEY", defaul_secret_key)
 
