@@ -355,3 +355,59 @@ class ProjectAddComponentViewTest(TestCase):
             },
         )
         self.assertEqual(resp.status_code, 200)
+
+
+class ProjectPostSaveAddComponentTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.test_user = User.objects.create()
+        cls.test_catalog = Catalog.objects.create(
+            name="NIST_SP-800", file_name="NIST_SP-800.json"
+        )
+        cls.test_component = Component.objects.create(
+            title="ociso",
+            description="Probably the coolest component you ever did see. It's magical.",
+            catalog=cls.test_catalog,
+            controls=["ac-2.1", "ac-6.10", "ac-8", "au-6.1", "sc-2"],
+            search_terms=["cool", "magic", "software"],
+            type="software",
+            component_json=TEST_COMPONENT_JSON_BLOB,
+        )
+        cls.test_component_2 = Component.objects.create(
+            title="aws",
+            description="Probably the coolest component you ever did see. It's magical.",
+            catalog=cls.test_catalog,
+            controls=["ac-2.1", "ac-6.10", "ac-8", "au-6.1", "sc-2"],
+            search_terms=["cool", "magic", "software"],
+            type="software",
+            component_json=TEST_COMPONENT_JSON_BLOB,
+        )
+
+    def test_post_save_component_added_ocisco(self):
+        Project.objects.create(
+            title="Basic Project",
+            acronym="BP",
+            impact_level="low",
+            location="other",
+            creator=self.test_user,
+            catalog=self.test_catalog,
+        )
+
+        project = Project.objects.get(title="Basic Project")
+        componentList = project.components.all()
+        self.assertEqual(componentList[0], self.test_component)
+
+    def test_post_save_component_added_both(self):
+        Project.objects.create(
+            title="Basic Project",
+            acronym="BP",
+            impact_level="low",
+            location="cms_aws",
+            creator=self.test_user,
+            catalog=self.test_catalog,
+        )
+
+        project = Project.objects.get(title="Basic Project")
+        componentList = project.components.all()
+        self.assertEqual(componentList[0], self.test_component)
+        self.assertEqual(componentList[1], self.test_component_2)
