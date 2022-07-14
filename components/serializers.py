@@ -23,6 +23,7 @@ class ComponentListSerializer(serializers.ModelSerializer):
             "type",
             "catalog",
             "component_json",
+            "component_file",
             "controls_count",
         )
 
