@@ -19,7 +19,7 @@ class Environment:
             if metadata_uri:
                 container_metadata = requests.get(metadata_uri).json()
                 hosts.append(container_metadata['Networks'][0]['IPv4Addresses'][0])
-        cors_origin = os.environ.get("CORS_ALLOW_ALL_ORIGINS", "True").capitalize()
+        cors_origin = (os.environ.get("CORS_ALLOW_ALL_ORIGINS", "True").capitalize() == 'True')
         self.allowed_hosts      = hosts
         self.log_level          = os.environ.get("LOG_LEVEL", logging.INFO)
         self.oidc_config        = os.environ.get("OIDC_CONFIG")
