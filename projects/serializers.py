@@ -47,7 +47,6 @@ class ProjectSerializer(serializers.ModelSerializer):
 class ProjectControlSerializer(serializers.ModelSerializer):
     catalog_data = serializers.SerializerMethodField()
     component_data = serializers.SerializerMethodField()
-    responsibility = serializers.SerializerMethodField()
 
     def get_catalog_data(self, obj):
         """
@@ -70,19 +69,6 @@ class ProjectControlSerializer(serializers.ModelSerializer):
             components = self.get_control_data(obj.components, control_id)
         return components
 
-    def get_responsibility(self, obj):
-        """
-        Calculate the user's responsibility.
-        """
-        responsibility = "Allocated"
-        if hasattr(self, "component_data"):
-            if self.component_data.len() == 1:
-                component = list(self.component_data.items())[0]
-                responsibility = component.get("responsibility")
-            else:
-                responsibility = "Shared"
-        return responsibility
-
     class Meta:
         model = Project
         fields = (
@@ -91,21 +77,35 @@ class ProjectControlSerializer(serializers.ModelSerializer):
             "acronym",
             "catalog_data",
             "component_data",
-            "responsibility",
         )
 
     def get_control_data(self, components, control_id):
-        component_data: dict = {}
+        component_data = {
+            "responsibility": "Allocated",
+            "components": {},
+        }
+        count = 0
+        responsibility: str = ""
         for c in components.all():
             if control_id in c.controls:
+                count += 1
                 controls = ComponentTools(c.component_json)
                 control_data = controls.get_control_by_id(control_id)
-                component_data[c.title] = {
-                    "description": control_data[0].get("description"),
-                    "responsibility": controls.get_control_props(
-                        control_data[0], "security_control_type"
+                responsibility = (
+                    controls.get_control_props(
+                        control_data[0],
+                        "security_control_type",
                     ),
+                )
+                component_data["components"][c.title] = {
+                    "description": control_data[0].get("description"),
+                    "responsibility": responsibility,
                     "provider": controls.get_control_props(control_data[0], "provider"),
                 }
+
+        if count > 1:
+            component_data["responsibility"] = "Hybrid"
+        elif count == 1:
+            component_data["responsibility"] = responsibility
 
         return component_data
