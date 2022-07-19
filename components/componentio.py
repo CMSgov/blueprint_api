@@ -39,3 +39,14 @@ class ComponentTools(object):
         controls = self.get_controls()
         ids = [item.get("control-id") for item in controls]
         return ids
+
+    def get_control_by_id(self, control_id):
+        controls = self.get_controls()
+        control = [(c) for c in controls if c.get("control-id") == control_id]
+        return control
+
+    def get_control_props(self, control, prop):
+        if "props" in control and isinstance(control.get("props"), list):
+            for p in control.get("props"):
+                if p.get("name") == prop:
+                    return p.get("value")
