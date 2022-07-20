@@ -82,11 +82,12 @@ class ProjectControlSerializer(serializers.ModelSerializer):
     def get_control_data(self, components, control_id):
         component_data = {
             "responsibility": "Allocated",
-            "components": {},
+            "components": {"inherited": {}, "private": {}},
         }
         count = 0
         responsibility: str = ""
         for c in components.all():
+            status = "inherited" if c.status == 2 else "private"
             if control_id in c.controls:
                 count += 1
                 controls = ComponentTools(c.component_json)
@@ -97,7 +98,7 @@ class ProjectControlSerializer(serializers.ModelSerializer):
                         "security_control_type",
                     ),
                 )
-                component_data["components"][c.title] = {
+                component_data["components"][status][c.title] = {
                     "description": control_data[0].get("description"),
                     "responsibility": responsibility,
                     "provider": controls.get_control_props(control_data[0], "provider"),

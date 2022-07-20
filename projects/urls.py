@@ -22,7 +22,7 @@ urlpatterns = [
         name="project-remove-component",
     ),
     path(
-        "<int:project_id>/control/<str:control_id>/",
+        "<int:project_id>/controls/<str:control_id>/",
         ProjectGetControlData.as_view(),
         name="project-get-control",
     ),
