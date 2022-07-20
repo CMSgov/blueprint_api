@@ -2,6 +2,7 @@ from django.urls import path
 
 from .views import (
     ProjectAddComponentView,
+    ProjectComponentListSearchView,
     ProjectGetControlData,
     ProjectRemoveComponentView,
     ProjectsDetailView,
@@ -25,5 +26,10 @@ urlpatterns = [
         "<int:project_id>/controls/<str:control_id>/",
         ProjectGetControlData.as_view(),
         name="project-get-control",
+    ),
+    path(
+        "<int:project_id>/search/",
+        ProjectComponentListSearchView.as_view(),
+        name="component-search",
     ),
 ]

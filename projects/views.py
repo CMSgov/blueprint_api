@@ -1,9 +1,12 @@
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from components.filters import ComponentFilter
 from components.models import Component
+from components.serializers import ComponentListBasicSerializer
 
 from .models import Project
 from .serializers import (
@@ -122,3 +125,37 @@ class ProjectGetControlData(APIView):
         )
 
         return Response(serlializer.data, status=status.HTTP_200_OK)
+
+
+class ProjectComponentListSearchView(APIView):
+    def get_object(self, project_id):
+        try:
+            return Project.objects.get(id=project_id)
+        except Project.DoesNotExist:
+            return None
+
+    def get(self, request, project_id, *args, **kwargs):
+        page_number = self.request.query_params.get("page", default=1)
+        project_instance = get_object_or_404(Project, pk=project_id)
+
+        filtered_qs = ComponentFilter(
+            self.request.GET,
+            queryset=project_instance.components.all().order_by("pk"),
+        ).qs
+        paginator = Paginator(filtered_qs, 20)
+        try:
+            page_obj = paginator.page(page_number)
+        except PageNotAnInteger:
+            page_obj = paginator.page(1)
+        except EmptyPage:
+            page_obj = paginator.page(paginator.num_pages)
+
+        serializer_class = ComponentListBasicSerializer
+        serializer = serializer_class(page_obj, many=True)
+        project_serializer = ProjectListSerializer(project_instance, many=False)
+
+        response = []
+        response.append({"project": project_serializer.data})
+        response.append({"components": serializer.data})
+        response.append({"total_item_count": paginator.count})
+        return Response(response, status=status.HTTP_200_OK)
