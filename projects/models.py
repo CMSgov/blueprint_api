@@ -1,4 +1,7 @@
+import logging
+
 from django.contrib.auth.models import Group
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -11,6 +14,8 @@ from access_management.utils import generate_groups_and_permission
 from catalogs.models import Catalog
 from components.models import Component
 from users.models import User
+
+logger = logging.getLogger(__name__)
 
 
 class Project(models.Model):
@@ -126,6 +131,5 @@ def add_components_for_project(sender, instance, **kwargs):
             if instance.location == "cms_aws":
                 aws_component = Component.objects.get(title__iexact="aws")
                 instance.components.add(aws_component)
-        except Exception as e:
-            # TODO: log failure
-            raise e
+        except ObjectDoesNotExist as e:
+            logger.warning(f"Inherited components not found: {e}")

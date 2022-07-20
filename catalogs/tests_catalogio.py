@@ -10,7 +10,7 @@ from .models import Catalog
 class CatalogModelTest(TestCase):
     @classmethod
     def setUp(self):
-        with open("catalogs/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
+        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
             catalog = File(f)
             cat = Catalog.objects.create(
                 name="NIST Test Catalog",

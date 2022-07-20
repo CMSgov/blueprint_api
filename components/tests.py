@@ -75,7 +75,7 @@ client = Client()
 class ComponentModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        with open("components/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
+        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
             catalog = File(f)
             cls.test_catalog = Catalog.objects.create(
                 name="NIST Test Catalog",
@@ -156,7 +156,7 @@ TEST_COMPONENT_CONTROLS = ["ac-2.1", "ac-6.10", "ac-8", "au-6.1", "sc-2"]
 class GetAllComponentsTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        with open("components/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
+        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
             catalog = File(f)
             cls.test_catalog = Catalog.objects.create(
                 name="NIST Test Catalog",
@@ -210,7 +210,7 @@ class GetAllComponentsTest(TestCase):
 class GetSingleComponentTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        with open("components/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
+        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
             catalog = File(f)
             cls.test_catalog = Catalog.objects.create(
                 name="NIST Test Catalog",
@@ -248,7 +248,7 @@ class GetSingleComponentTest(TestCase):
 class CreateNewComponentTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        with open("components/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
+        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
             catalog = File(f)
             cls.test_catalog = Catalog.objects.create(
                 name="NIST Test Catalog",
@@ -368,7 +368,7 @@ class CreateNewComponentTest(TestCase):
 class ComponentViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        with open("components/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
+        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
             catalog = File(f)
             cls.test_catalog = Catalog.objects.create(
                 name="NIST Test Catalog",
@@ -421,7 +421,7 @@ class ComponentViewTest(TestCase):
 
 class ComponentioTest(TestCase):
     def setUp(self):
-        with open("components/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
+        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
             catalog = File(f)
             self.cat = Catalog.objects.create(
                 name="Test Catalog",
