@@ -443,7 +443,33 @@ class ProjectControlPage(TestCase):
         )
 
     def test_get_control_page(self):
-        """ """
+        resp = self.client.get(
+            reverse(
+                "project-get-control",
+                kwargs={
+                    "project_id": self.test_project.id,
+                    "control_id": "ac-2.1",
+                },
+            )
+        )
+        self.assertEqual(resp.status_code, 200)
+
+    def test_get_control_page_data(self):
+        resp = self.client.get(
+            reverse(
+                "project-get-control",
+                kwargs={
+                    "project_id": self.test_project.id,
+                    "control_id": "ac-2.1",
+                },
+            )
+        )
+        self.assertIn("catalog_data", resp.data)
+        self.assertIn("component_data", resp.data)
+        self.assertIn("responsibility", resp.data["component_data"])
+        self.assertIn("components", resp.data["component_data"])
+        self.assertIn("inherited", resp.data["component_data"]["components"])
+        self.assertIn("private", resp.data["component_data"]["components"])
 
 
 class ProjectPostSaveAddComponentTest(TestCase):
