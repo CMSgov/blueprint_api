@@ -6,7 +6,11 @@ from rest_framework.views import APIView
 from components.models import Component
 
 from .models import Project
-from .serializers import ProjectListSerializer, ProjectSerializer
+from .serializers import (
+    ProjectControlSerializer,
+    ProjectListSerializer,
+    ProjectSerializer,
+)
 
 
 class ProjectsListViews(generics.ListCreateAPIView):
@@ -105,3 +109,16 @@ class ProjectRemoveComponentView(APIView):
         except Exception:
             return Response({}, status=status.HTTP_400_BAD_REQUEST)
         return Response(response, status=status.HTTP_200_OK)
+
+
+class ProjectGetControlData(APIView):
+    def get(self, request, project_id, control_id):
+        project_instance = get_object_or_404(Project, pk=project_id)
+        serlializer = ProjectControlSerializer(
+            project_instance,
+            context={
+                "control_id": control_id,
+            },
+        )
+
+        return Response(serlializer.data, status=status.HTTP_200_OK)

@@ -14,7 +14,7 @@ client = Client()
 class CatalogModelTest(TestCase):
     @classmethod
     def setUp(self):
-        with open("catalogs/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
+        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
             catalog = File(f)
             self.cat = Catalog.objects.create(
                 name="NIST Test Catalog",
@@ -49,7 +49,7 @@ class CatalogModelTest(TestCase):
 
 class CatalogEndpointTest(TestCase):
     def test_valid_catalog(self):
-        with open("catalogs/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
+        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
             catalog = File(f)
             resp = self.client.post(
                 "/api/catalogs/",

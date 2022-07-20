@@ -1,9 +1,11 @@
 import logging
 import os
-import requests
+
+import requests  # type: ignore
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
 
 class Environment:
     def __init__(self):
@@ -14,24 +16,29 @@ class Environment:
         env_hosts = os.environ.get("ALLOWED_HOSTS")
         if env_hosts:
             hosts.append(env_hosts)
-            # In case of containerized deployment to ECS/Fargate get the ip address of target group and add it to allowed hosts.
-            metadata_uri = os.environ.get('ECS_CONTAINER_METADATA_URI')
+            """
+            In case of containerized deployment to ECS/Fargate get the ip address of target
+            group and add it to allowed hosts.
+            """
+            metadata_uri = os.environ.get("ECS_CONTAINER_METADATA_URI")
             if metadata_uri:
                 container_metadata = requests.get(metadata_uri).json()
-                hosts.append(container_metadata['Networks'][0]['IPv4Addresses'][0])
-        cors_origin = (os.environ.get("CORS_ALLOW_ALL_ORIGINS", "True").capitalize() == 'True')
-        self.allowed_hosts      = hosts
-        self.log_level          = os.environ.get("LOG_LEVEL", logging.INFO)
-        self.oidc_config        = os.environ.get("OIDC_CONFIG")
-        self.metrics_env        = os.environ.get("METRICS_ENV_NAME")
-        self.db_username        = os.environ.get("POSTGRES_USER")
-        self.db_password        = os.environ.get("POSTGRES_PASSWORD")
-        self.db_name            = os.environ.get("POSTGRES_DB_NAME")
-        self.db_host            = os.environ.get("POSTGRES_DB_HOST")
-        self.db_port            = os.environ.get("POSTGRES_DB_PORT", "5432")
+                hosts.append(container_metadata["Networks"][0]["IPv4Addresses"][0])
+        cors_origin = (
+            os.environ.get("CORS_ALLOW_ALL_ORIGINS", "True").capitalize() == "True"
+        )
+        self.allowed_hosts = hosts
+        self.log_level = os.environ.get("LOG_LEVEL", logging.INFO)
+        self.oidc_config = os.environ.get("OIDC_CONFIG")
+        self.metrics_env = os.environ.get("METRICS_ENV_NAME")
+        self.db_username = os.environ.get("POSTGRES_USER")
+        self.db_password = os.environ.get("POSTGRES_PASSWORD")
+        self.db_name = os.environ.get("POSTGRES_DB_NAME")
+        self.db_host = os.environ.get("POSTGRES_DB_HOST")
+        self.db_port = os.environ.get("POSTGRES_DB_PORT", "5432")
         self.cors_allow_origins = cors_origin
-        self.debug              = os.environ.get("API_DEBUG", True)
-        self.secret_key         = os.environ.get("SECRET_KEY", defaul_secret_key)
+        self.debug = os.environ.get("API_DEBUG", True)
+        self.secret_key = os.environ.get("SECRET_KEY", defaul_secret_key)
 
         # Log basic environment variables except db related for security reasons.
         logger.info("============== Environment Variables ================")
