@@ -141,3 +141,21 @@ def collect_project_data(component_id, user):
         form_values["add"].append({"value": a.id, "label": a.title})
 
     return form_values
+
+
+class ComponentListBasicSerializer(serializers.ModelSerializer):
+    controls_count = serializers.SerializerMethodField()
+
+    def get_controls_count(self, obj):
+        return len(obj.controls)
+
+    class Meta:
+        model = Component
+        fields = (
+            "id",
+            "title",
+            "description",
+            "type",
+            "catalog",
+            "controls_count",
+        )

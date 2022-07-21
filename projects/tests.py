@@ -80,6 +80,16 @@ class ProjectModelTest(TestCase):
             name="NIST_SP-800", file_name="NIST_SP-800.json"
         )
 
+        cls.test_component = Component.objects.create(
+            title="OCISO",
+            description="OCISO Inheritable Controls",
+            catalog=cls.test_catalog,
+            controls=["ac-2.1", "ac-6.10", "ac-8", "au-6.1", "sc-2"],
+            search_terms=[],
+            type="software",
+            component_json=TEST_COMPONENT_JSON_BLOB,
+        )
+
         cls.test_project = Project.objects.create(
             title="Pretty Ordinary Project",
             acronym="POP",
@@ -275,6 +285,16 @@ class ProjectComponentsTest(TestCase):
             component_json=TEST_COMPONENT_JSON_BLOB,
         )
 
+        cls.test_component_3 = Component.objects.create(
+            title="OCISO",
+            description="OCISO Inheritable Controls",
+            catalog=cls.test_catalog,
+            controls=["ac-2.1", "ac-6.10", "ac-8", "au-6.1", "sc-2"],
+            search_terms=[],
+            type="software",
+            component_json=TEST_COMPONENT_JSON_BLOB,
+        )
+
         cls.test_project = Project.objects.create(
             title="Pretty Ordinary Project",
             acronym="POP",
@@ -336,6 +356,15 @@ class ProjectAddComponentViewTest(TestCase):
             description="Probably the coolest component you ever did see. It's magical.",
             catalog=cls.test_catalog_2,
             search_terms=["cool", "magic", "software"],
+            type="software",
+            component_json=TEST_COMPONENT_JSON_BLOB,
+        )
+        cls.test_component_3 = Component.objects.create(
+            title="OCISO",
+            description="OCISO Inheritable Controls",
+            catalog=cls.test_catalog,
+            controls=["ac-2.1", "ac-6.10", "ac-8", "au-6.1", "sc-2"],
+            search_terms=[],
             type="software",
             component_json=TEST_COMPONENT_JSON_BLOB,
         )
@@ -524,3 +553,83 @@ class ProjectPostSaveAddComponentTest(TestCase):
         componentList = project.components.all()
         self.assertEqual(componentList[0], self.test_component)
         self.assertEqual(componentList[1], self.test_component_2)
+
+
+class ProjectComponentSearchViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.test_user = User.objects.create()
+        cls.test_catalog = Catalog.objects.create(
+            name="NIST_SP-800", file_name="NIST_SP-800.json"
+        )
+        cls.test_component = Component.objects.create(
+            title="Cool Component",
+            description="Probably the coolest component you ever did see. It's magical.",
+            catalog=cls.test_catalog,
+            controls=["ac-2.1", "ac-6.10", "ac-8", "au-6.1", "sc-2"],
+            search_terms=["cool", "magic", "software"],
+            type="software",
+            component_json=TEST_COMPONENT_JSON_BLOB,
+        )
+        cls.test_component_2 = Component.objects.create(
+            title="New Cool Component",
+            description="Probably the coolest component you ever did see. It's magical.",
+            catalog=cls.test_catalog,
+            controls=["ac-2.1", "ac-6.10", "ac-8", "au-6.1", "sc-2"],
+            search_terms=["cool", "magic", "software"],
+            type="policy",
+            component_json=TEST_COMPONENT_JSON_BLOB,
+        )
+        cls.test_component_3 = Component.objects.create(
+            title="OCISO",
+            description="OCISO Inheritable Controls",
+            catalog=cls.test_catalog,
+            controls=["ac-2.1", "ac-6.10", "ac-8", "au-6.1", "sc-2"],
+            search_terms=[],
+            type="software",
+            component_json=TEST_COMPONENT_JSON_BLOB,
+        )
+        cls.test_project = Project.objects.create(
+            title="Pretty Ordinary Project",
+            acronym="POP",
+            impact_level="low",
+            location="other",
+            creator=cls.test_user,
+            catalog=cls.test_catalog,
+        )
+        cls.test_project.components.set(
+            [
+                cls.test_component,
+                cls.test_component_2,
+                cls.test_component_3,
+            ]
+        )
+
+    def test_search_empty_request(self):
+        resp = self.client.get(
+            "/api/projects/" + str(self.test_project.id) + "/search/", format="json"
+        )
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(json.loads(resp.content)[2].get("total_item_count"), 3)
+
+    def test_search_term_ociso(self):
+        resp = self.client.get(
+            "/api/projects/" + str(self.test_project.id) + "/search/?search=OCISO",
+            format="json",
+        )
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(
+            json.loads(resp.content)[1].get("components")[0].get("title"), "OCISO"
+        )
+        self.assertEqual(json.loads(resp.content)[2].get("total_item_count"), 1)
+
+    def test_search_filter_type_software(self):
+        resp = self.client.get(
+            "/api/projects/" + str(self.test_project.id) + "/search/?type=software",
+            format="json",
+        )
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(
+            json.loads(resp.content)[1].get("components")[0].get("type"), "software"
+        )
+        self.assertEqual(json.loads(resp.content)[2].get("total_item_count"), 2)
