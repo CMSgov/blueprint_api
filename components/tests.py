@@ -458,3 +458,39 @@ class ComponentioTest(TestCase):
         ids = self.tools.get_control_ids()
         self.assertEquals(len(ids), 5)
         self.assertEquals(ids[0], "ac-2.1")
+
+
+class ComponentTypesViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
+            catalog = File(f)
+            cls.test_catalog = Catalog.objects.create(
+                name="NIST Test Catalog",
+                file_name=catalog,
+            )
+
+        cls.test_component = Component.objects.create(
+            title="Cool Component",
+            description="Probably the coolest component you ever did see. It's magical.",
+            catalog=Catalog.objects.get(id=cls.test_catalog.id),
+            controls=["ac-2.1", "ac-6.10", "ac-8", "au-6.1", "sc-2"],
+            search_terms=["cool", "magic", "software"],
+            type="software",
+            component_json=TEST_COMPONENT_JSON_BLOB,
+        )
+        cls.test_component_2 = Component.objects.create(
+            title="testing title",
+            description="testing description",
+            catalog=Catalog.objects.get(id=cls.test_catalog.id),
+            controls=["ac-2.1"],
+            search_terms=["cool", "magic", "software"],
+            type="policy",
+            component_json=TEST_COMPONENT_JSON_BLOB,
+        )
+
+    def test_get_types_list(self):
+        resp = self.client.get("/api/components/types/", format="json")
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(json.loads(resp.content)[0][0], "policy")
+        self.assertEqual(json.loads(resp.content)[1][0], "software")

@@ -59,3 +59,9 @@ class ComponentListSearchView(APIView):
         response = serializer.data
         response.append({"total_item_count": paginator.count})
         return Response(response, status=status.HTTP_200_OK)
+
+
+class ComponentTypeListView(APIView):
+    def get(self, *args, **kwargs):
+        type_list = Component.objects.order_by().values_list("type").distinct()
+        return Response(type_list, status=status.HTTP_200_OK)
