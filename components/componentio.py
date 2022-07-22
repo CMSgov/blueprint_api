@@ -95,4 +95,4 @@ class EmptyComponent(object):
     def create_component(self):
         self.add_component_definition()
         self.component = oscal_component.Model(component_definition=self.cd)
-        return self.component.json(indent=None)
+        return self.component.json(indent=4)

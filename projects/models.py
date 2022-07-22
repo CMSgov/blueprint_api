@@ -1,3 +1,4 @@
+import json
 import logging
 
 from django.contrib.auth.models import Group
@@ -111,7 +112,7 @@ def add_default_component(sender, instance, **kwargs):
         default = Component(
             title=f"{instance.title} private",
             description=f"{instance.title} default system component",
-            component_json=default_json,
+            component_json=json.loads(default_json),
             catalog_id=instance.catalog.id,
             status=1,
         )
