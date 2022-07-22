@@ -128,12 +128,6 @@ class ProjectGetControlData(APIView):
 
 
 class ProjectComponentListSearchView(APIView):
-    def get_object(self, project_id):
-        try:
-            return Project.objects.get(id=project_id)
-        except Project.DoesNotExist:
-            return None
-
     def get(self, request, project_id, *args, **kwargs):
         page_number = self.request.query_params.get("page", default=1)
         project_instance = get_object_or_404(Project, pk=project_id)
@@ -154,8 +148,14 @@ class ProjectComponentListSearchView(APIView):
         serializer = serializer_class(page_obj, many=True)
         project_serializer = ProjectListSerializer(project_instance, many=False)
 
+        type_list = (
+            project_instance.components.all().order_by().values_list("type").distinct()
+        )
+
         response = []
         response.append({"project": project_serializer.data})
         response.append({"components": serializer.data})
         response.append({"total_item_count": paginator.count})
+        response.append({"type_list": type_list})
+
         return Response(response, status=status.HTTP_200_OK)
