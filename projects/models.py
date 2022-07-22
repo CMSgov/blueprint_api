@@ -12,6 +12,7 @@ from access_management.permission_constants import (
 )
 from access_management.utils import generate_groups_and_permission
 from catalogs.models import Catalog
+from components.componentio import EmptyComponent
 from components.models import Component
 from users.models import User
 
@@ -96,6 +97,30 @@ class Project(models.Model):
 
     def __str__(self):
         return self.title
+
+
+@receiver(post_save, sender=Project)
+def add_default_component(sender, instance, **kwargs):
+    if kwargs["created"]:
+        default_component = EmptyComponent(
+            title=f"{instance.title} private",
+            description=f"{instance.title} default system component",
+            catalog=instance.catalog,
+        )
+        default_json = default_component.create_component()
+        default = Component(
+            title=f"{instance.title} private",
+            description=f"{instance.title} default system component",
+            component_json=default_json,
+            catalog_id=instance.catalog.id,
+            status=1,
+        )
+        default.save()
+
+        try:
+            instance.components.add(default)
+        except Exception as e:
+            logger.error(f"Could not create default component: {e}")
 
 
 @receiver(post_save, sender=Project)
