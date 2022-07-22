@@ -18,6 +18,7 @@ django-guardian = "^2.4.0"
 pathlib = "^1.0.1"
 jsonschema = "^4.6.0"
 django-filter = "^22.1"
+pydantic = "^1.9.1"
 
 [tool.poetry.dev-dependencies]
 
