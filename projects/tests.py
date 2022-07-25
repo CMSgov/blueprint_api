@@ -611,6 +611,8 @@ class ProjectComponentSearchViewTest(TestCase):
         )
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(json.loads(resp.content)[2].get("total_item_count"), 3)
+        self.assertEqual(json.loads(resp.content)[3].get("type_list")[0][0], "policy")
+        self.assertEqual(json.loads(resp.content)[3].get("type_list")[1][0], "software")
 
     def test_search_term_ociso(self):
         resp = self.client.get(
