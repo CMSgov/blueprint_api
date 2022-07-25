@@ -9,7 +9,7 @@ from rest_framework import status
 from catalogs.models import Catalog
 from testing_utils import prevent_request_warnings
 
-from .componentio import ComponentTools
+from .componentio import ComponentTools, EmptyComponent
 from .models import Component
 from .serializers import ComponentListSerializer, ComponentSerializer
 
@@ -494,3 +494,36 @@ class ComponentTypesViewTest(TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(json.loads(resp.content)[0][0], "policy")
         self.assertEqual(json.loads(resp.content)[1][0], "software")
+
+
+class CreateEmptComponentTest(TestCase):
+    @classmethod
+    def setUpTestData(self):
+        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
+            catalog = File(f)
+            self.test_catalog = Catalog.objects.create(
+                name="NIST Test Catalog",
+                file_name=catalog,
+            )
+        empty_component = EmptyComponent(
+            title="Empty Component",
+            description="An empty Component.",
+            catalog=self.test_catalog,
+        )
+        default_json = empty_component.create_component()
+        self.default = Component(
+            title=f"{empty_component.title} private",
+            description=f"{empty_component.title} default system component",
+            component_json=json.loads(default_json),
+            catalog_id=self.test_catalog.id,
+            status=1,
+        )
+        self.tools = ComponentTools(self.default.component_json)
+
+    def test_no_controls(self):
+        components = self.tools.get_control_ids()
+        self.assertFalse(components)
+
+    def test_status_is_private(self):
+        status = self.default.status
+        self.assertEqual(status, 1)

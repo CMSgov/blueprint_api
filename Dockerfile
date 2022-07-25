@@ -10,6 +10,8 @@ ENV PYTHONFAULTHANDLER=1 \
 
 WORKDIR /usr/local
 
+RUN pip install pydantic
+
 RUN pip install "poetry==$POETRY_VERSION"
 
 COPY poetry.lock pyproject.toml /usr/local/

@@ -198,6 +198,15 @@ class ProjectModelTest(TestCase):
         self.assertEqual("view_project" in get_perms(user, project), True)
         self.assertEqual("manage_project_users" in get_perms(user, project), True)
 
+    def test_default_component(self):
+        project = self.test_project
+        has_default = False
+        for c in project.components.all():
+            if c.title == "Pretty Ordinary Project private" and c.status == 1:
+                has_default = True
+
+        self.assertTrue(has_default)
+
 
 class ProjectRequiredFieldsTest(TestCase):
     @classmethod
@@ -526,7 +535,7 @@ class ProjectPostSaveAddComponentTest(TestCase):
         )
 
     def test_post_save_component_added_ocisco(self):
-        Project.objects.create(
+        project = Project.objects.create(
             title="Basic Project",
             acronym="BP",
             impact_level="low",
@@ -534,13 +543,15 @@ class ProjectPostSaveAddComponentTest(TestCase):
             creator=self.test_user,
             catalog=self.test_catalog,
         )
+        has_ociso = False
+        for c in project.components.all():
+            if c.title == "ociso":
+                has_ociso = True
 
-        project = Project.objects.get(title="Basic Project")
-        componentList = project.components.all()
-        self.assertEqual(componentList[0], self.test_component)
+        self.assertTrue(has_ociso)
 
     def test_post_save_component_added_both(self):
-        Project.objects.create(
+        project = Project.objects.create(
             title="Basic Project",
             acronym="BP",
             impact_level="low",
@@ -548,11 +559,16 @@ class ProjectPostSaveAddComponentTest(TestCase):
             creator=self.test_user,
             catalog=self.test_catalog,
         )
+        has_ociso = False
+        has_aws = False
+        for c in project.components.all():
+            if c.title == "ociso":
+                has_ociso = True
+            elif c.title == "aws":
+                has_aws = True
 
-        project = Project.objects.get(title="Basic Project")
-        componentList = project.components.all()
-        self.assertEqual(componentList[0], self.test_component)
-        self.assertEqual(componentList[1], self.test_component_2)
+        self.assertTrue(has_ociso)
+        self.assertTrue(has_aws)
 
 
 class ProjectComponentSearchViewTest(TestCase):
