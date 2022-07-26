@@ -236,34 +236,3 @@ class OSCALComponentJson(Model):
 
     def save_as(self, f):
         pass
-
-
-def main():
-    md = Metadata(title="Component", version="1.2.3")
-    cd = ComponentDefinition(metadata=md)
-    c = Component(title="My Component", description="Description of my component")
-    ci = ControlImplementation(description="800-53 controls", source="800-53")
-    ir = ImplementedRequirement(control_id="ac-1", description="AC-1 statements")
-    ir.add_statement(
-        Statement(
-            statement_id="ac-1_smt", description="Refers to AC-1 in its entirety."
-        )
-    )
-    ir.add_statement(
-        Statement(statement_id="ac-1_smt.a", description="Refers to part a of AC-1")
-    )
-    ir.add_statement(
-        Statement(
-            statement_id="ac-1_smt.a.1",
-            description="Refers to item 1 of part a of AC-1",
-        )
-    )
-    ci.implemented_requirements = [ir]
-    c.control_implementations = [ci]
-    cd.add_component(c)
-    root = Model(component_definition=cd)
-    print(root.json(indent=2))
-
-
-if __name__ == "__main__":
-    main()
