@@ -27,6 +27,12 @@ class Catalog(models.Model):
         help_text="Location of static catalog data file",
         validators=[validate_catalog],
     )
+    source = models.URLField(
+        max_length=500,
+        null=False,
+        default="https://raw.githubusercontent.com/usnistgov/oscal-content/main/nist.gov/"
+        "SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+    )
     created = models.DateTimeField(auto_now_add=True, db_index=True)
     updated = models.DateTimeField(auto_now=True, db_index=True, null=True)
 
