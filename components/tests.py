@@ -418,6 +418,15 @@ class ComponentViewTest(TestCase):
         self.assertEqual(json.loads(resp.content)[0].get("type"), "policy")
         self.assertEqual(json.loads(resp.content)[1].get("total_item_count"), 1)
 
+    def test_search_filter_catalog_id(self):
+        resp = self.client.get(
+            "/api/components/search/?catalog=" + str(self.test_catalog.id),
+            format="json",
+        )
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(json.loads(resp.content)[0].get("type"), "software")
+        self.assertEqual(json.loads(resp.content)[2].get("total_item_count"), 2)
+
 
 class ComponentioTest(TestCase):
     def setUp(self):
