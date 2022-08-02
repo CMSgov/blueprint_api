@@ -1,27 +1,24 @@
 import json
 
-from django.test import Client, TestCase
 from django.urls import reverse
 from rest_framework import status
 
-from testing_utils import prevent_request_warnings
+from testing_utils import AuthenticatedAPITestCase, prevent_request_warnings
 
 from .models import User
 from .serializers import UserSerializer
 
-# initialize the APIClient app
-client = Client()
 
-
-class GetAllUsersTest(TestCase):
-    def setUp(self):
-        self.tester = User.objects.create(
+class GetAllUsersTest(AuthenticatedAPITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.tester = User.objects.create(
             username="tester",
             first_name="Testy",
             last_name="Testerson",
             email="testing4lyfe@theworldisatest.com",
         )
-        self.muggle = User.objects.create(
+        cls.muggle = User.objects.create(
             username="muggle",
             first_name="Boring",
             last_name="Person",
@@ -29,7 +26,7 @@ class GetAllUsersTest(TestCase):
         )
 
     def test_get_all_users(self):
-        response = client.get(reverse("user-list"))
+        response = self.client.get(reverse("user-list"))
         users = User.objects.all()
         serializer = UserSerializer(users, many=True)
 
@@ -37,9 +34,10 @@ class GetAllUsersTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
-class GetSingleUserTest(TestCase):
-    def setUp(self):
-        self.tester = User.objects.create(
+class GetSingleUserTest(AuthenticatedAPITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.tester = User.objects.create(
             username="tester",
             first_name="Testy",
             last_name="Testerson",
@@ -47,7 +45,7 @@ class GetSingleUserTest(TestCase):
         )
 
     def test_get_valid_single_user(self):
-        response = client.get(reverse("user-detail", kwargs={"pk": self.tester.pk}))
+        response = self.client.get(reverse("user-detail", kwargs={"pk": self.tester.pk}))
         user = User.objects.get(pk=self.tester.pk)
         serializer = UserSerializer(user)
 
@@ -57,12 +55,12 @@ class GetSingleUserTest(TestCase):
     @prevent_request_warnings
     def test_get_invalid_single_user(self):
         invalid_id = 0
-        response = client.get(reverse("user-detail", kwargs={"pk": invalid_id}))
+        response = self.client.get(reverse("user-detail", kwargs={"pk": invalid_id}))
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
-class CreateNewUserTest(TestCase):
+class CreateNewUserTest(AuthenticatedAPITestCase):
     def test_create_valid_user(self):
         self.valid_payload = {
             "username": "tester",
@@ -71,7 +69,7 @@ class CreateNewUserTest(TestCase):
             "email": "testing4lyfe@theworldisatest.com",
         }
 
-        response = client.post(
+        response = self.client.post(
             reverse("user-list"),
             data=json.dumps(self.valid_payload),
             content_type="application/json",
@@ -88,7 +86,7 @@ class CreateNewUserTest(TestCase):
             "email": "testing4lyfe@theworldisatest.com",
         }
 
-        response = client.post(
+        response = self.client.post(
             reverse("user-list"),
             data=json.dumps(self.invalid_payload),
             content_type="application/json",
@@ -96,8 +94,10 @@ class CreateNewUserTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
-class UpdateSingleUserTest(TestCase):
+class UpdateSingleUserTest(AuthenticatedAPITestCase):
     def setUp(self):
+        super().setUp()
+
         self.tester = User.objects.create(
             username="tester",
             first_name="Testy",
@@ -112,7 +112,7 @@ class UpdateSingleUserTest(TestCase):
             "last_name": "Sleeper",
             "email": "naps4ever@iluvnaps.com",
         }
-        response = client.put(
+        response = self.client.put(
             reverse("user-detail", kwargs={"pk": self.tester.pk}),
             data=json.dumps(self.valid_payload),
             content_type="application/json",
@@ -127,7 +127,7 @@ class UpdateSingleUserTest(TestCase):
             "last_name": "Sleeper",
             "email": "naps4ever@iluvnaps.com",
         }
-        response = client.put(
+        response = self.client.put(
             reverse("user-detail", kwargs={"pk": self.tester.pk}),
             data=json.dumps(self.invalid_payload),
             content_type="application/json",
