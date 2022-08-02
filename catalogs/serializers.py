@@ -6,8 +6,4 @@ from .models import Catalog
 class CatalogListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Catalog
-        fields = (
-            "id",
-            "name",
-            "file_name",
-        )
+        fields = ("id", "name", "file_name", "source", "version", "impact_level")

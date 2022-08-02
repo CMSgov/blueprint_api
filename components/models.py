@@ -73,6 +73,9 @@ class Component(models.Model):
     def __str__(self):
         return self.title
 
+    def get_status(self):
+        return self.Status(self.status).label
+
 
 @receiver(pre_save, sender=Component)
 def parse_component_json(sender, instance, *args, **kwargs):

@@ -33,6 +33,24 @@ class Catalog(models.Model):
         default="https://raw.githubusercontent.com/usnistgov/oscal-content/main/nist.gov/"
         "SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
     )
+    version = models.CharField(
+        max_length=64,
+        blank=False,
+        default="CMS ARS 3.1",
+    )
+    IMPACT_LEVEL_CHOICES = [
+        ("low", "Low"),
+        ("moderate", "Moderate"),
+        ("high", "High"),
+        ("pii/phi", "PII or PHI"),
+    ]
+    impact_level = models.CharField(
+        choices=IMPACT_LEVEL_CHOICES,
+        max_length=20,
+        blank=False,
+        default="moderate",
+        help_text="FISMA impact level of the project",
+    )
     created = models.DateTimeField(auto_now_add=True, db_index=True)
     updated = models.DateTimeField(auto_now=True, db_index=True, null=True)
 

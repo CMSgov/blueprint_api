@@ -48,6 +48,12 @@ class Project(models.Model):
         related_name="projects_catalog",
         help_text="Catalog id that this project uses",
     )
+    catalog_version = models.CharField(
+        max_length=64,
+        default="CMS ARS 3.1",
+        blank=False,
+        help_text="The Catalog version, for example, NIST 800-53r5",
+    )
     IMPACT_LEVEL_CHOICES = [
         ("low", "Low"),
         ("moderate", "Moderate"),
@@ -57,8 +63,8 @@ class Project(models.Model):
     impact_level = models.CharField(
         choices=IMPACT_LEVEL_CHOICES,
         max_length=20,
-        default=None,
         null=True,
+        default="moderate",
         help_text="FISMA impact level of the project",
     )
     LOCATION_CHOICES = [
@@ -87,14 +93,27 @@ class Project(models.Model):
     created = models.DateTimeField(auto_now_add=True, db_index=True)
     updated = models.DateTimeField(auto_now=True, db_index=True, null=True)
 
-    # Additional permissions to manage members.
-    # (Add, change, delete, and view permissions are automatically created)
     class Meta:
+        """
+        Additional permissions to manage members.
+        (Add, change, delete, and view permissions are automatically created)
+        """
+
         permissions = [
             ("can_add_members", "Can add members"),
             ("can_delete_members", "Can delete members"),
             manage_project_users_permission,
         ]
+
+    def save(self, *args, **kwargs):
+        version = getattr(self, "catalog_version")
+        impact = getattr(self, "impact_level")
+        if version and impact:
+            catalog = Catalog.objects.filter(
+                version=version, impact_level=impact
+            ).first()
+            self.catalog = catalog
+        super(Project, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.title
@@ -159,3 +178,48 @@ def add_components_for_project(sender, instance, **kwargs):
                 instance.components.add(aws_component)
         except ObjectDoesNotExist as e:
             logger.warning(f"Inherited components not found: {e}")
+
+
+class Control(models.Model):
+    class Status(models.IntegerChoices):
+        NOT_STARTED = 1, "Not started"
+        INCOMPLETE = 2, "Incomplete"
+        COMPLETE = 3, "Complete"
+
+    class Responsibility(models.IntegerChoices):
+        ALLOCATED = 1, "Allocated"
+        SHARED = 2, "Shared"
+        INHERITED = 3, "Inherited"
+
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    control_id = models.CharField(
+        max_length=12,
+        unique=False,
+        blank=False,
+    )
+    description = models.JSONField(
+        blank=False,
+        help_text="Control description OSCAL JSON formatted.",
+    )
+    implementation = models.TextField(
+        blank=True,
+        help_text="Control implementation text.",
+    )
+    guidance = models.TextField(
+        blank=True,
+        help_text="Control guidance text.",
+    )
+    status = models.IntegerField(
+        default=Status.NOT_STARTED,
+        choices=Status.choices,
+    )
+    responsibility = models.IntegerField(
+        default=Responsibility.ALLOCATED,
+        choices=Responsibility.choices,
+    )
+
+    def get_status(self):
+        return self.Status(self.status).label
+
+    def get_responsibility(self):
+        return self.Responsibility(self.responsibility).label

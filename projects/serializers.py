@@ -13,6 +13,7 @@ class ProjectListSerializer(serializers.ModelSerializer):
             "id",
             "title",
             "acronym",
+            "catalog_version",
             "impact_level",
             "creator",
             "location",
@@ -33,13 +34,13 @@ class ProjectSerializer(serializers.ModelSerializer):
             "id",
             "title",
             "acronym",
+            "catalog_version",
             "impact_level",
             "location",
             "status",
             "creator",
             "components",
             "components_count",
-            "catalog",
         )
         depth = 1
 
