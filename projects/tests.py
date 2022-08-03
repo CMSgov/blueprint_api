@@ -32,13 +32,14 @@ TEST_COMPONENT_JSON_BLOB = {
                 "control-implementations": [
                     {
                         "uuid": "f94a7f03-6ac5-4386-98eb-fa0392f26a1c",
-                        "source": "https://raw.githubusercontent.com/NIST/catalog.json",
+                        "source": "https://raw.githubusercontent.com/usnistgov/oscal-content/main/\
+                            nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
                         "description": "CMS_ARS_3_1",
                         "implemented-requirements": [
                             {
                                 "uuid": "6698d762-5cdc-452e-9f9e-3074df5292c6",
                                 "control-id": "ac-2.1",
-                                "description": "This component statisfies a.",
+                                "description": "This component statisfies 2.1.",
                             },
                             {
                                 "uuid": "73dd3c2e-54eb-43c6-a488-dfb7c79d9413",
@@ -76,9 +77,14 @@ class ProjectModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.test_user = User.objects.create()
-        cls.test_catalog = Catalog.objects.create(
-            name="NIST_SP-800", file_name="NIST_SP-800.json"
-        )
+        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
+            catalog = File(f)
+            cls.test_catalog = Catalog.objects.create(
+                name="NIST Test Catalog",
+                file_name=catalog,
+                version="NIST 800-53r5",
+                impact_level="low",
+            )
 
         cls.test_component = Component.objects.create(
             title="OCISO",
@@ -96,7 +102,7 @@ class ProjectModelTest(TestCase):
             impact_level="low",
             location="other",
             creator=cls.test_user,
-            catalog=cls.test_catalog,
+            catalog_version="NIST 800-53r5",
         )
 
     # Tests for field labels
@@ -175,7 +181,7 @@ class ProjectModelTest(TestCase):
             impact_level="low",
             location="other",
             creator=self.test_user,
-            catalog=self.test_catalog,
+            catalog_version="NIST 800-53r5",
         )
 
         # ensure project status defaults as expected
@@ -190,7 +196,7 @@ class ProjectModelTest(TestCase):
             impact_level="low",
             location="other",
             creator=User.objects.get(id=1),
-            catalog=self.test_catalog,
+            catalog_version="NIST 800-53r5",
         )
         project = Project.objects.get(title="Test Project")
         user = User.objects.get(id=1)
@@ -213,9 +219,14 @@ class ProjectRequiredFieldsTest(TestCase):
     def setUpTestData(cls):
         cls.test_user = User.objects.create()
 
-        cls.test_catalog = Catalog.objects.create(
-            name="NIST_SP-800", file_name="NIST_SP-800.json"
-        )
+        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
+            catalog = File(f)
+            cls.test_catalog = Catalog.objects.create(
+                name="NIST Test Catalog",
+                file_name=catalog,
+                version="NIST 800-53r5",
+                impact_level="low",
+            )
 
         cls.no_title_project = {
             "acronym": "NTP",
@@ -230,7 +241,7 @@ class ProjectRequiredFieldsTest(TestCase):
             "impact_level": "low",
             "location": "other",
             "creator": cls.test_user.id,
-            "catalog": cls.test_catalog.id,
+            "catalog_version": "NIST 800-53r5",
         }
 
         cls.no_catalog_project = {
@@ -239,7 +250,7 @@ class ProjectRequiredFieldsTest(TestCase):
             "impact_level": "low",
             "location": "other",
             "creator": cls.test_user.id,
-            "catalog": None,
+            "catalog_version": None,
         }
 
     def test_title_required(self):
@@ -272,9 +283,14 @@ class ProjectComponentsTest(TestCase):
     def setUpTestData(cls):
         cls.test_user = User.objects.create()
 
-        cls.test_catalog = Catalog.objects.create(
-            name="NIST_SP-800", file_name="NIST_SP-800.json"
-        )
+        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
+            catalog = File(f)
+            cls.test_catalog = Catalog.objects.create(
+                name="NIST Test Catalog",
+                file_name=catalog,
+                version="NIST 800-53r5",
+                impact_level="low",
+            )
 
         cls.test_component = Component.objects.create(
             title="Cool Component",
@@ -310,7 +326,7 @@ class ProjectComponentsTest(TestCase):
             impact_level="low",
             location="other",
             creator=cls.test_user,
-            catalog=cls.test_catalog,
+            catalog_version="NIST 800-53r5",
         )
 
         cls.test_project.components.set(
@@ -346,12 +362,21 @@ class ProjectAddComponentViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.test_user = User.objects.create()
-        cls.test_catalog = Catalog.objects.create(
-            name="NIST_SP-800", file_name="NIST_SP-800.json"
-        )
-        cls.test_catalog_2 = Catalog.objects.create(
-            name="NIST_SP-900", file_name="NIST_SP-900.json"
-        )
+
+        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
+            catalog = File(f)
+            cls.test_catalog = Catalog.objects.create(
+                name="NIST Test Catalog",
+                file_name=catalog,
+                version="NIST 800-53r5",
+                impact_level="low",
+            )
+            cls.test_catalog_2 = Catalog.objects.create(
+                name="NIST Test Catalog 2",
+                file_name=catalog,
+                version="NIST 800-53r5",
+                impact_level="moderate",
+            )
         cls.test_component = Component.objects.create(
             title="Cool Component",
             description="Probably the coolest component you ever did see. It's magical.",
@@ -383,7 +408,7 @@ class ProjectAddComponentViewTest(TestCase):
             impact_level="low",
             location="other",
             creator=cls.test_user,
-            catalog=cls.test_catalog,
+            catalog_version="NIST 800-53r5",
         )
 
     def test_invalid_project(self):
@@ -444,6 +469,8 @@ class ProjectControlPage(TestCase):
             cls.test_catalog = Catalog.objects.create(
                 name="NIST Test Catalog",
                 file_name=catalog,
+                version="NIST 800-53r5",
+                impact_level="low",
             )
 
         cls.test_component = Component.objects.create(
@@ -470,7 +497,7 @@ class ProjectControlPage(TestCase):
             impact_level="low",
             location="other",
             creator=cls.test_user,
-            catalog=cls.test_catalog,
+            catalog_version="NIST 800-53r5",
         )
 
         cls.test_project.components.set(
@@ -514,15 +541,20 @@ class ProjectPostSaveAddComponentTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.test_user = User.objects.create()
-        cls.test_catalog = Catalog.objects.create(
-            name="NIST_SP-800", file_name="NIST_SP-800.json"
-        )
+
+        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
+            catalog = File(f)
+            cls.test_catalog = Catalog.objects.create(
+                name="NIST Test Catalog",
+                file_name=catalog,
+                version="NIST 800-53r5",
+                impact_level="low",
+            )
         cls.test_component = Component.objects.create(
             title="ociso",
             description="Probably the coolest component you ever did see. It's magical.",
             catalog=cls.test_catalog,
-            search_terms=["cool", "magic", "software"],
-            type="software",
+            type="policy",
             component_json=TEST_COMPONENT_JSON_BLOB,
         )
         cls.test_component_2 = Component.objects.create(
@@ -541,7 +573,7 @@ class ProjectPostSaveAddComponentTest(TestCase):
             impact_level="low",
             location="other",
             creator=self.test_user,
-            catalog=self.test_catalog,
+            catalog_version="NIST 800-53r5",
         )
         has_ociso = False
         for c in project.components.all():
@@ -557,7 +589,7 @@ class ProjectPostSaveAddComponentTest(TestCase):
             impact_level="low",
             location="cms_aws",
             creator=self.test_user,
-            catalog=self.test_catalog,
+            catalog_version="NIST 800-53r5",
         )
         has_ociso = False
         has_aws = False
@@ -575,9 +607,15 @@ class ProjectComponentSearchViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.test_user = User.objects.create()
-        cls.test_catalog = Catalog.objects.create(
-            name="NIST_SP-800", file_name="NIST_SP-800.json"
-        )
+
+        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
+            catalog = File(f)
+            cls.test_catalog = Catalog.objects.create(
+                name="NIST Test Catalog",
+                file_name=catalog,
+                version="NIST 800-53r5",
+                impact_level="low",
+            )
         cls.test_component = Component.objects.create(
             title="Cool Component",
             description="Probably the coolest component you ever did see. It's magical.",
@@ -611,7 +649,7 @@ class ProjectComponentSearchViewTest(TestCase):
             impact_level="low",
             location="other",
             creator=cls.test_user,
-            catalog=cls.test_catalog,
+            catalog_version="NIST 800-53r5",
         )
         cls.test_project.components.set(
             [

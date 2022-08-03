@@ -13,12 +13,14 @@ client = Client()
 
 class CatalogModelTest(TestCase):
     @classmethod
-    def setUp(self):
+    def setUp(cls):
         with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
             catalog = File(f)
-            self.cat = Catalog.objects.create(
+            cls.cat = Catalog.objects.create(
                 name="NIST Test Catalog",
                 file_name=catalog,
+                version="NIST 800-53r5",
+                impact_level="moderate",
             )
 
     def test_load_catalog(self):

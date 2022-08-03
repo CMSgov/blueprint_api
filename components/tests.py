@@ -80,6 +80,8 @@ class ComponentModelTest(TestCase):
             cls.test_catalog = Catalog.objects.create(
                 name="NIST Test Catalog",
                 file_name=catalog,
+                version="NIST 800-53r5",
+                impact_level="moderate",
             )
 
         cls.test_component = Component.objects.create(
@@ -161,6 +163,8 @@ class GetAllComponentsTest(TestCase):
             cls.test_catalog = Catalog.objects.create(
                 name="NIST Test Catalog",
                 file_name=catalog,
+                version="NIST 800-53r5",
+                impact_level="moderate",
             )
 
         Component.objects.create(
@@ -253,6 +257,8 @@ class CreateNewComponentTest(TestCase):
             cls.test_catalog = Catalog.objects.create(
                 name="NIST Test Catalog",
                 file_name=catalog,
+                version="NIST 800-53r5",
+                impact_level="moderate",
             )
 
     def test_create_valid_component(self):
@@ -373,6 +379,8 @@ class ComponentViewTest(TestCase):
             cls.test_catalog = Catalog.objects.create(
                 name="NIST Test Catalog",
                 file_name=catalog,
+                version="NIST 800-53r5",
+                impact_level="moderate",
             )
 
         cls.test_component = Component.objects.create(
@@ -435,6 +443,8 @@ class ComponentioTest(TestCase):
             self.cat = Catalog.objects.create(
                 name="Test Catalog",
                 file_name=catalog,
+                version="NIST 800-53r5",
+                impact_level="moderate",
             )
         self.test_component = Component.objects.create(
             title="Cool Component",
@@ -477,6 +487,8 @@ class ComponentTypesViewTest(TestCase):
             cls.test_catalog = Catalog.objects.create(
                 name="NIST Test Catalog",
                 file_name=catalog,
+                version="NIST 800-53r5",
+                impact_level="moderate",
             )
 
         cls.test_component = Component.objects.create(
@@ -513,6 +525,8 @@ class CreateEmptComponentTest(TestCase):
             self.test_catalog = Catalog.objects.create(
                 name="NIST Test Catalog",
                 file_name=catalog,
+                version="NIST 800-53r5",
+                impact_level="moderate",
             )
         empty_component = EmptyComponent(
             title="Empty Component",
