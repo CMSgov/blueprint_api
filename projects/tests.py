@@ -213,6 +213,10 @@ class ProjectModelTest(TestCase):
 
         self.assertTrue(has_default)
 
+    def test_controls(self):
+        controls = Project.objects.get(pk=self.test_project.id).control_set.all()
+        self.assertEqual(len(controls), 186)
+
 
 class ProjectRequiredFieldsTest(TestCase):
     @classmethod
