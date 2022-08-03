@@ -3,7 +3,7 @@ from rest_framework import serializers
 from catalogs.catalogio import CatalogTools
 from components.componentio import ComponentTools
 from components.serializers import ComponentListSerializer
-from projects.models import Project
+from projects.models import Control, Project
 
 
 class ProjectListSerializer(serializers.ModelSerializer):
@@ -111,3 +111,15 @@ class ProjectControlSerializer(serializers.ModelSerializer):
             component_data["responsibility"] = responsibility
 
         return component_data
+
+
+class ControlsListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Control
+        fields = (
+            "project",
+            "control_id",
+            "control_label",
+            "title",
+            "status",
+        )

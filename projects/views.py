@@ -8,8 +8,10 @@ from components.filters import ComponentFilter
 from components.models import Component
 from components.serializers import ComponentListBasicSerializer
 
-from .models import Project
+from .filters import ControlsFilter
+from .models import Control, Project
 from .serializers import (
+    ControlsListSerializer,
     ProjectControlSerializer,
     ProjectListSerializer,
     ProjectSerializer,
@@ -111,6 +113,33 @@ class ProjectRemoveComponentView(APIView):
             response = {"message": f"{component.title} removed from {project.title}."}
         except Exception:
             return Response({}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(response, status=status.HTTP_200_OK)
+
+
+class ProjectGetControlList(APIView):
+    def get(self, request, project_id):
+        page_number = self.request.query_params.get("page", default=1)
+
+        filtered_qs = ControlsFilter(
+            self.request.GET,
+            queryset=Control.objects.filter(project_id=project_id).order_by(
+                "control_id"
+            ),
+        ).qs
+
+        paginator = Paginator(filtered_qs, 20)
+        try:
+            page_obj = paginator.page(page_number)
+        except PageNotAnInteger:
+            page_obj = paginator.page(1)
+        except EmptyPage:
+            page_obj = paginator.page(paginator.num_pages)
+
+        serializer_class = ControlsListSerializer
+        serializer = serializer_class(page_obj, many=True)
+
+        response = serializer.data
+        response.append({"total_item_count": paginator.count})
         return Response(response, status=status.HTTP_200_OK)
 
 

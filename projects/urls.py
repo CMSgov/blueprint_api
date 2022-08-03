@@ -5,6 +5,7 @@ from .views import (
     ProjectComponentListSearchView,
     ProjectComponentNotAddedListView,
     ProjectGetControlData,
+    ProjectGetControlList,
     ProjectRemoveComponentView,
     ProjectsDetailView,
     ProjectsListViews,
@@ -22,6 +23,11 @@ urlpatterns = [
         "remove-component/",
         ProjectRemoveComponentView.as_view(),
         name="project-remove-component",
+    ),
+    path(
+        "<int:project_id>/controls/",
+        ProjectGetControlList.as_view(),
+        name="project-controls",
     ),
     path(
         "<int:project_id>/controls/<str:control_id>/",

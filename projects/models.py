@@ -12,6 +12,7 @@ from access_management.permission_constants import (
     manage_project_users_permission,
 )
 from access_management.utils import generate_groups_and_permission
+from catalogs.catalogio import CatalogTools
 from catalogs.models import Catalog
 from components.componentio import EmptyComponent
 from components.models import Component
@@ -180,6 +181,26 @@ def add_components_for_project(sender, instance, **kwargs):
             logger.warning(f"Inherited components not found: {e}")
 
 
+@receiver(post_save, sender=Project)
+def add_controls(sender, instance, **kwargs):
+    if kwargs["created"]:
+        catalog = CatalogTools(instance.catalog.file_name.path)
+        controls = catalog.get_controls_all_ids()
+        if controls:
+            for c in controls:
+                control_data = catalog.get_control_data_simplified(c)
+                ctrl = Control(
+                    project=instance,
+                    control_id=c,
+                    control_label=control_data.get("label"),
+                    title=control_data.get("title"),
+                    description=control_data.get("description"),
+                    implementation=control_data.get("implementation"),
+                    guidance=control_data.get("guidance"),
+                )
+                ctrl.save()
+
+
 class Control(models.Model):
     class Status(models.IntegerChoices):
         NOT_STARTED = 1, "Not started"
@@ -194,6 +215,16 @@ class Control(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     control_id = models.CharField(
         max_length=12,
+        unique=False,
+        blank=False,
+    )
+    control_label = models.CharField(
+        max_length=12,
+        unique=False,
+        blank=False,
+    )
+    title = models.CharField(
+        max_length=124,
         unique=False,
         blank=False,
     )
@@ -217,6 +248,9 @@ class Control(models.Model):
         default=Responsibility.ALLOCATED,
         choices=Responsibility.choices,
     )
+
+    def __str__(self):
+        return self.control_id
 
     def get_status(self):
         return self.Status(self.status).label
