@@ -159,3 +159,15 @@ class ProjectComponentListSearchView(APIView):
         response.append({"type_list": type_list})
 
         return Response(response, status=status.HTTP_200_OK)
+
+
+class ProjectComponentNotAddedListView(APIView):
+    def get(self, request, project_id, *args, **kwargs):
+        project_instance = get_object_or_404(Project, pk=project_id)
+        queryset = (
+            Component.objects.exclude(used_by_projects=project_instance)
+            .exclude(status=1)
+            .order_by("pk")
+        )
+        serializer = ComponentListBasicSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

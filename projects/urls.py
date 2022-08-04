@@ -3,6 +3,7 @@ from django.urls import path
 from .views import (
     ProjectAddComponentView,
     ProjectComponentListSearchView,
+    ProjectComponentNotAddedListView,
     ProjectGetControlData,
     ProjectRemoveComponentView,
     ProjectsDetailView,
@@ -31,5 +32,10 @@ urlpatterns = [
         "<int:project_id>/search/",
         ProjectComponentListSearchView.as_view(),
         name="component-search",
+    ),
+    path(
+        "<int:project_id>/components-not-added/",
+        ProjectComponentNotAddedListView.as_view(),
+        name="components-not-in-project",
     ),
 ]
