@@ -1,6 +1,7 @@
 from django.contrib.auth.models import Group
-from access_management.permission_constants import *
 from guardian.shortcuts import assign_perm
+
+from access_management.permission_constants import *
 
 PERMISSION_GROUP_SUFFIX = "_permission_group"
 current_module_variables = vars()
