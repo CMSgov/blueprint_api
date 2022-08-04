@@ -1,7 +1,7 @@
 import json
 
 from django.core.files import File
-from django.test import TestCase
+from django.test import Client, TestCase
 from django.urls import reverse
 from guardian.shortcuts import get_perms
 from rest_framework import status
@@ -9,7 +9,6 @@ from rest_framework import status
 from catalogs.models import Catalog
 from components.models import Component
 from projects.models import Project
-from testing_utils import AuthenticatedAPITestCase
 from users.models import User
 
 from .serializers import ProjectSerializer
@@ -68,6 +67,9 @@ TEST_COMPONENT_JSON_BLOB = {
         ],
     }
 }
+
+# initialize the APIClient app
+client = Client()
 
 
 class ProjectModelTest(TestCase):
@@ -206,7 +208,7 @@ class ProjectModelTest(TestCase):
         self.assertTrue(has_default)
 
 
-class ProjectRequiredFieldsTest(AuthenticatedAPITestCase):
+class ProjectRequiredFieldsTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.test_user = User.objects.create()
@@ -241,7 +243,7 @@ class ProjectRequiredFieldsTest(AuthenticatedAPITestCase):
         }
 
     def test_title_required(self):
-        response = self.client.post(
+        response = client.post(
             reverse("project-list"),
             data=json.dumps(self.no_title_project),
             content_type="application/json",
@@ -249,7 +251,7 @@ class ProjectRequiredFieldsTest(AuthenticatedAPITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_acronym_required(self):
-        response = self.client.post(
+        response = client.post(
             reverse("project-list"),
             data=json.dumps(self.no_acronym_project),
             content_type="application/json",
@@ -257,7 +259,7 @@ class ProjectRequiredFieldsTest(AuthenticatedAPITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_catalog_required(self):
-        response = self.client.post(
+        response = client.post(
             reverse("project-list"),
             data=json.dumps(self.no_catalog_project),
             content_type="application/json",
@@ -265,7 +267,7 @@ class ProjectRequiredFieldsTest(AuthenticatedAPITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
-class ProjectComponentsTest(AuthenticatedAPITestCase):
+class ProjectComponentsTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.test_user = User.objects.create()
@@ -319,7 +321,7 @@ class ProjectComponentsTest(AuthenticatedAPITestCase):
         )
 
     def test_get_project_with_components(self):
-        response = self.client.get(
+        response = client.get(
             reverse("project-detail", kwargs={"project_id": self.test_project.pk})
         )
 
@@ -340,7 +342,7 @@ class ProjectComponentsTest(AuthenticatedAPITestCase):
         self.assertEqual(received_components_count, expected_num_components)
 
 
-class ProjectAddComponentViewTest(AuthenticatedAPITestCase):
+class ProjectAddComponentViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.test_user = User.objects.create()
@@ -432,7 +434,7 @@ class ProjectAddComponentViewTest(AuthenticatedAPITestCase):
         self.assertEqual(resp.status_code, 200)
 
 
-class ProjectControlPage(AuthenticatedAPITestCase):
+class ProjectControlPage(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.test_user = User.objects.create()
@@ -569,7 +571,7 @@ class ProjectPostSaveAddComponentTest(TestCase):
         self.assertTrue(has_aws)
 
 
-class ProjectComponentSearchViewTest(AuthenticatedAPITestCase):
+class ProjectComponentSearchViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.test_user = User.objects.create()

@@ -21,7 +21,6 @@ from . import views
 urlpatterns = [
     path("", views.index, name="index"),
     path("admin/", admin.site.urls),
-    path('api-token-auth/', views.UserObtainTokenView.as_view()),
     path("api/catalogs/", include("catalogs.urls")),
     path("api/components/", include("components.urls")),
     path("api/projects/", include("projects.urls")),
