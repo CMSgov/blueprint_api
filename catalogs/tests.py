@@ -1,19 +1,16 @@
 from django.core.files import File
-from django.test import Client, TestCase
 from django.urls import reverse
 from rest_framework import status
 
-from testing_utils import prevent_request_warnings
+from testing_utils import AuthenticatedAPITestCase, prevent_request_warnings
 
 from .catalogio import CatalogTools as Tools
 from .models import Catalog
 
-client = Client()
 
-
-class CatalogModelTest(TestCase):
-    @classmethod
+class CatalogModelTest(AuthenticatedAPITestCase):
     def setUp(self):
+        super().setUp()
         with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
             catalog = File(f)
             self.cat = Catalog.objects.create(
@@ -33,7 +30,7 @@ class CatalogModelTest(TestCase):
 
     def test_get_control_by_id(self):
         cid = self.cat.id
-        response = client.get(
+        response = self.client.get(
             reverse("get_control_by_id", kwargs={"catalog": cid, "control_id": "ac-1"})
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -41,13 +38,13 @@ class CatalogModelTest(TestCase):
     @prevent_request_warnings
     def test_post_control_by_id(self):
         cid = self.cat.id
-        response = client.post(
+        response = self.client.post(
             reverse("get_control_by_id", kwargs={"catalog": cid, "control_id": "ac-1"})
         )
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
-class CatalogEndpointTest(TestCase):
+class CatalogEndpointTest(AuthenticatedAPITestCase):
     def test_valid_catalog(self):
         with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
             catalog = File(f)
