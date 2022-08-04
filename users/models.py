@@ -1,6 +1,6 @@
 # from django.db import models
-from django.contrib.auth.models import AbstractUser, PermissionsMixin
+from django.contrib.auth.models import AbstractUser
 
 
-class User(AbstractUser, PermissionsMixin):
-    ...
+class User(AbstractUser):
+    pass

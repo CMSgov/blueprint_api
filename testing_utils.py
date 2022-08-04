@@ -1,10 +1,5 @@
 import logging
 
-from rest_framework.authtoken.models import Token
-from rest_framework.test import APITestCase
-
-from users.models import User
-
 
 def prevent_request_warnings(original_function):
     """
@@ -25,10 +20,3 @@ def prevent_request_warnings(original_function):
         logger.setLevel(previous_logging_level)
 
     return new_function
-
-
-class AuthenticatedAPITestCase(APITestCase):
-    def setUp(self):
-        user, _ = User.objects.get_or_create(username='test')
-        token, _ = Token.objects.get_or_create(user=user)
-        self.client.force_authenticate(user=user, token=token)
