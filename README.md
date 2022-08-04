@@ -51,3 +51,8 @@ python3 manage.py test directory
 python3 manage.py test directory.filename
 python3 manage.py test directory.filename.TestClassName
 ```
+
+### SwaggerUI
+This seems like something worth adding to the readme:
+Go to http://localhost:8000/doc/ to see the SwaggerUI
+Go to http://localhost:8000/doc.json or http://localhost:8000/doc.yaml to see the unformatted spec
