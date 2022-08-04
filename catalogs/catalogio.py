@@ -120,6 +120,16 @@ class CatalogTools(object):
         )
         return result_dict
 
+    def get_next_control_by_id(self, control_id: str):
+        search_collection = self.get_control_ids()
+        next = False
+        for item in search_collection:
+            if next is True:
+                return item
+            if item == control_id:
+                next = True
+        return ""
+
     def get_control_statement(self, control: dict) -> List:
         statement = self.get_control_part_by_name(control, "statement")
         text: List[dict] = []
@@ -219,6 +229,7 @@ class CatalogTools(object):
             "description": self.__get_simplified_prose(desc),
             "implementation": implementation.get("prose") if implementation else "",
             "guidance": guidance.get("prose") if guidance else "",
+            "next_id": self.get_next_control_by_id(control_id),
         }
 
         return control_data
