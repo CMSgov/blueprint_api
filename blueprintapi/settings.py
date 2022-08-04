@@ -63,6 +63,8 @@ INSTALLED_APPS = [
     "components.apps.ComponentsConfig",
     "projects.apps.ProjectConfig",
     "users.apps.UsersConfig",
+    'rest_framework_swagger',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -136,6 +138,10 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'
+}
 
 
 # Internationalization
