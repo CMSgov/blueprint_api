@@ -107,3 +107,8 @@ class CatalogModelTest(TestCase):
         )
         self.assertIn("uuid", resource)
         self.assertEquals(resource.get("title"), "32 CFR 2002")
+
+    def test_get_next_control_by_id(self):
+        """Get a control by the Control ID"""
+        control = self.catalog.get_next_control_by_id("ac-1")
+        self.assertEquals(control, "ac-2")
