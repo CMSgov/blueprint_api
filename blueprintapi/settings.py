@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     "django_filters",
     "corsheaders",
     "rest_framework",
+    "rest_framework.authtoken",
     "catalogs.apps.CatalogConfig",
     "guardian",
     "components.apps.ComponentsConfig",
@@ -187,3 +188,12 @@ CORS_ALLOW_HEADERS = [
     "x-csrftoken",
     "x-requested-with",
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
