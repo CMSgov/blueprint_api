@@ -8,7 +8,7 @@ class ComponentFilter(django_filters.FilterSet):
 
     search = django_filters.CharFilter(method="keyword_search", label="Search")
     type = django_filters.CharFilter(lookup_expr="iexact")
-    catalog = django_filters.CharFilter(lookup_expr="iexact")
+    catalog = django_filters.NumberFilter()
 
     class Meta:
         model = Component
