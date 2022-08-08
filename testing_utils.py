@@ -29,6 +29,6 @@ def prevent_request_warnings(original_function):
 
 class AuthenticatedAPITestCase(APITestCase):
     def setUp(self):
-        user, _ = User.objects.get_or_create(username='test')
+        user, _ = User.objects.get_or_create(username='test', is_superuser=True)
         token, _ = Token.objects.get_or_create(user=user)
         self.client.force_authenticate(user=user, token=token)
