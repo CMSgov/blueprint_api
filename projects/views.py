@@ -118,10 +118,9 @@ class ProjectRemoveComponentView(APIView):
 
 class ProjectGetControlList(APIView):
     def get(self, request, project_id):
-        page_number = self.request.query_params.get("page", default=1)
-
+        page_number = request.query_params.get("page", default=1)
         filtered_qs = ControlsFilter(
-            self.request.GET,
+            request.GET,
             queryset=Control.objects.filter(project_id=project_id).order_by(
                 "control_id"
             ),
@@ -137,9 +136,14 @@ class ProjectGetControlList(APIView):
 
         serializer_class = ControlsListSerializer
         serializer = serializer_class(page_obj, many=True)
+        project = Project.objects.get(pk=project_id)
+        project_serializer = ProjectListSerializer(project)
+        response = {
+            "controls": serializer.data,
+            "project_data": project_serializer.data,
+            "total_item_count": paginator.count,
+        }
 
-        response = serializer.data
-        response.append({"total_item_count": paginator.count})
         return Response(response, status=status.HTTP_200_OK)
 
 
