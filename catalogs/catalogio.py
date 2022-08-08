@@ -88,7 +88,7 @@ class CatalogTools(object):
 
     def get_control_ids(self) -> List:
         search_collection = self.get_controls()
-        return [item.get("id") for item in search_collection]
+        return sorted(item.get("id") for item in search_collection)
 
     def get_controls_all(self) -> List:
         controls: List[dict] = []
