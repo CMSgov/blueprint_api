@@ -152,11 +152,12 @@ class ProjectComponentListSearchView(APIView):
             project_instance.components.all().order_by().values_list("type").distinct()
         )
 
-        response = []
-        response.append({"project": project_serializer.data})
-        response.append({"components": serializer.data})
-        response.append({"total_item_count": paginator.count})
-        response.append({"type_list": type_list})
+        response = {
+            "project": project_serializer.data,
+            "components": serializer.data,
+            "total_item_count": paginator.count,
+            "type_list": type_list,
+        }
 
         return Response(response, status=status.HTTP_200_OK)
 
