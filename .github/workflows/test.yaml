@@ -39,4 +39,9 @@ jobs:
       - name: Install dependencies
         run: poetry install --no-dev --no-ansi --no-interaction
       - name: Run tests
+        env:
+          POSTGRES_DB_NAME: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB_HOST: localhost
         run: python3 manage.py test
