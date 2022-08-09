@@ -1,4 +1,4 @@
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, Permission
 from access_management.permission_constants import *
 from guardian.shortcuts import assign_perm
 
@@ -24,9 +24,13 @@ def generate_groups_and_permission(model_name, instance_name, instance):
 
             # loop through the array of partial permissions
             for permission in v:
+                permission_code = permission[0]
+
                 # Add the permission to the associated group that was just created.
                 # The instance indicates the object that this object level permission is for.
-                assign_perm(permission[0], group, instance)
+                permission_obj = Permission.objects.get(codename=permission_code)
+                group.permissions.add(permission_obj)  # Model-level permissions
+                assign_perm(permission[0], group, instance)  # Object-level permissions
 
         except Exception as e:
             raise e
