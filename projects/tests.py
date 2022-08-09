@@ -699,9 +699,15 @@ class ProjectComponentNotAddedListViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.test_user = User.objects.create()
-        cls.test_catalog = Catalog.objects.create(
-            name="NIST_SP-800", file_name="NIST_SP-800.json"
-        )
+
+        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
+            catalog = File(f)
+            cls.test_catalog = Catalog.objects.create(
+                name="NIST Test Catalog",
+                file_name=catalog,
+                version="CMS ARS 3.1",
+                impact_level="low",
+            )
         cls.test_component_0 = Component.objects.create(
             title="OCISO",
             description="OCISO Inheritable Controls",
