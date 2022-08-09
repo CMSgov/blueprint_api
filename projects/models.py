@@ -114,6 +114,7 @@ class Project(models.Model):
                 version=version, impact_level=impact
             ).first()
             self.catalog = catalog
+        super(Project, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.title
