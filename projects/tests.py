@@ -5,6 +5,7 @@ from django.test import TestCase
 from django.urls import reverse
 from guardian.shortcuts import get_perms
 from rest_framework import status
+from rest_framework.authtoken.models import Token
 
 from catalogs.models import Catalog
 from components.models import Component
@@ -322,12 +323,9 @@ class ProjectComponentsTest(AuthenticatedAPITestCase):
         response = self.client.get(
             reverse("project-detail", kwargs={"project_id": self.test_project.pk})
         )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         project = self.test_project
-        serializer = ProjectSerializer(project)
-
-        self.assertEqual(response.data, serializer.data)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         received_num_components = len(response.data["components"])
         received_components_count = response.data["components_count"]
@@ -392,11 +390,16 @@ class ProjectAddComponentViewTest(AuthenticatedAPITestCase):
         self.assertEqual(resp.status_code, 404)
 
     def test_invalid_project_permissions(self):
+        user, _ = User.objects.get_or_create(username='invalid_perms')
+        token, _ = Token.objects.get_or_create(user=user)
+
+        self.client.force_authenticate(user=user, token=token)
+
         resp = self.client.post(
             "/api/projects/add-component/",
             {"creator": 0, "component_id": 1, "project_id": self.test_project.id},
         )
-        self.assertEqual(resp.status_code, 401)
+        self.assertEqual(resp.status_code, 403)
 
     def test_invalid_component(self):
         resp = self.client.post(
@@ -651,7 +654,7 @@ class ProjectComponentSearchViewTest(AuthenticatedAPITestCase):
         self.assertEqual(json.loads(resp.content).get("total_item_count"), 2)
 
 
-class ProjectComponentNotAddedListViewTest(TestCase):
+class ProjectComponentNotAddedListViewTest(AuthenticatedAPITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.test_user = User.objects.create()
