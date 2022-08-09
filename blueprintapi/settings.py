@@ -121,6 +121,7 @@ DATABASES = {
 }
 
 AUTH_USER_MODEL = "users.User"
+AUTH_TOKEN_TTL = 24  # Hours
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -187,7 +188,7 @@ CORS_ALLOW_HEADERS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
+        'blueprintapi.authentication.ExpiringTokenAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'blueprintapi.permissions.StrictDjangoObjectPermissions',
