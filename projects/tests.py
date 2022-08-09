@@ -626,9 +626,9 @@ class ProjectComponentSearchViewTest(TestCase):
             "/api/projects/" + str(self.test_project.id) + "/search/", format="json"
         )
         self.assertEqual(resp.status_code, 200)
-        self.assertEqual(json.loads(resp.content)[2].get("total_item_count"), 3)
-        self.assertEqual(json.loads(resp.content)[3].get("type_list")[0][0], "policy")
-        self.assertEqual(json.loads(resp.content)[3].get("type_list")[1][0], "software")
+        self.assertEqual(json.loads(resp.content).get("total_item_count"), 3)
+        self.assertEqual(json.loads(resp.content).get("type_list")[0][0], "policy")
+        self.assertEqual(json.loads(resp.content).get("type_list")[1][0], "software")
 
     def test_search_term_ociso(self):
         resp = self.client.get(
@@ -637,9 +637,9 @@ class ProjectComponentSearchViewTest(TestCase):
         )
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(
-            json.loads(resp.content)[1].get("components")[0].get("title"), "OCISO"
+            json.loads(resp.content).get("components")[0].get("title"), "OCISO"
         )
-        self.assertEqual(json.loads(resp.content)[2].get("total_item_count"), 1)
+        self.assertEqual(json.loads(resp.content).get("total_item_count"), 1)
 
     def test_search_filter_type_software(self):
         resp = self.client.get(
@@ -648,9 +648,9 @@ class ProjectComponentSearchViewTest(TestCase):
         )
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(
-            json.loads(resp.content)[1].get("components")[0].get("type"), "software"
+            json.loads(resp.content).get("components")[0].get("type"), "software"
         )
-        self.assertEqual(json.loads(resp.content)[2].get("total_item_count"), 2)
+        self.assertEqual(json.loads(resp.content).get("total_item_count"), 2)
 
 
 class ProjectComponentNotAddedListViewTest(TestCase):
