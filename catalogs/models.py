@@ -4,6 +4,7 @@ import os
 import jsonschema
 from django.db import models
 from django.dispatch import receiver
+from django.utils.translation import gettext_lazy as _
 from jsonschema.exceptions import SchemaError, ValidationError
 
 
@@ -21,6 +22,11 @@ def validate_catalog(file_name):
 
 
 class Catalog(models.Model):
+    class ImpactLevel(models.TextChoices):
+        LOW = "low", _("Low")
+        MODERATE = "moderate", _("Moderate")
+        HIGH = "high", _("High")
+
     name = models.CharField(max_length=100, help_text="Name of Catalog", unique=True)
     file_name = models.FileField(
         max_length=100,
@@ -38,17 +44,11 @@ class Catalog(models.Model):
         blank=False,
         default="CMS ARS 3.1",
     )
-    IMPACT_LEVEL_CHOICES = [
-        ("low", "Low"),
-        ("moderate", "Moderate"),
-        ("high", "High"),
-        ("pii/phi", "PII or PHI"),
-    ]
     impact_level = models.CharField(
-        choices=IMPACT_LEVEL_CHOICES,
+        choices=ImpactLevel.choices,
         max_length=20,
         blank=False,
-        default="moderate",
+        default=ImpactLevel.MODERATE,
         help_text="FISMA impact level of the project",
     )
     created = models.DateTimeField(auto_now_add=True, db_index=True)
