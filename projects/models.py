@@ -6,6 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.utils.translation import gettext_lazy as _
 
 from access_management.permission_constants import (
     PROJECT_ADMIN_GROUP,
@@ -22,6 +23,21 @@ logger = logging.getLogger(__name__)
 
 
 class Project(models.Model):
+    class ImpactLevel(models.TextChoices):
+        LOW = "low", _("Low")
+        MODERATE = "moderate", _("Moderate")
+        HIGH = "high", _("High")
+
+    class LocationChoices(models.TextChoices):
+        CMSAWS = "cms_aws", _("CMS AWS Commercial East-West")
+        GOVCLOUD = "govcloud", _("CMS AWS GovCloud")
+        AZURE = "azure", _("Microsoft Azure")
+        OTHER = "other", _("Other")
+
+    class StatusChoices(models.TextChoices):
+        ACTIVE = "active", _("Active")
+        ARCHIVED = "archived", _("Archived")
+
     title = models.CharField(
         max_length=100, help_text="Name of the project", unique=False
     )
@@ -55,40 +71,24 @@ class Project(models.Model):
         blank=False,
         help_text="The Catalog version, for example, NIST 800-53r5",
     )
-    IMPACT_LEVEL_CHOICES = [
-        ("low", "Low"),
-        ("moderate", "Moderate"),
-        ("high", "High"),
-        ("pii/phi", "PII or PHI"),
-    ]
     impact_level = models.CharField(
-        choices=IMPACT_LEVEL_CHOICES,
+        choices=ImpactLevel.choices,
         max_length=20,
-        null=True,
-        default="moderate",
+        null=False,
+        blank=False,
         help_text="FISMA impact level of the project",
     )
-    LOCATION_CHOICES = [
-        ("cms_aws", "CMS AWS Commercial East-West"),
-        ("govcloud", "CMS AWS GovCloud"),
-        ("azure", "Microsoft Azure"),
-        ("other", "Other"),
-    ]
     location = models.CharField(
-        choices=LOCATION_CHOICES,
+        choices=LocationChoices.choices,
         max_length=100,
         default=None,
         null=True,
         help_text="Where the project is located",
     )
-    STATUS_CHOICES = [
-        ("active", "Active"),
-        ("archived", "Archived"),
-    ]
     status = models.CharField(
-        choices=STATUS_CHOICES,
+        choices=StatusChoices.choices,
         max_length=20,
-        default="active",
+        default=StatusChoices.ACTIVE,
         help_text="Status of the project",
     )
     created = models.DateTimeField(auto_now_add=True, db_index=True)
@@ -114,7 +114,6 @@ class Project(models.Model):
                 version=version, impact_level=impact
             ).first()
             self.catalog = catalog
-        super(Project, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.title
@@ -189,10 +188,14 @@ def add_controls(sender, instance, **kwargs):
         if controls:
             for c in controls:
                 control_data = catalog.get_control_data_simplified(c)
+                group = catalog.get_group_id_by_control_id(c)
+                family = catalog.get_group_title_by_id(group)
                 ctrl = Control(
                     project=instance,
                     control_id=c,
                     control_label=control_data.get("label"),
+                    control_family=family,
+                    sort_id=control_data.get("sort_id"),
                     title=control_data.get("title"),
                     description=control_data.get("description"),
                     implementation=control_data.get("implementation"),
@@ -202,15 +205,15 @@ def add_controls(sender, instance, **kwargs):
 
 
 class Control(models.Model):
-    class Status(models.IntegerChoices):
-        NOT_STARTED = 1, "Not started"
-        INCOMPLETE = 2, "Incomplete"
-        COMPLETE = 3, "Complete"
+    class Status(models.TextChoices):
+        NOT_STARTED = "not_started", _("Not started")
+        INCOMPLETE = "incomplete", _("Incomplete")
+        COMPLETE = "completed", _("Completed")
 
-    class Responsibility(models.IntegerChoices):
-        ALLOCATED = 1, "Allocated"
-        SHARED = 2, "Shared"
-        INHERITED = 3, "Inherited"
+    class Responsibility(models.TextChoices):
+        ALLOCATED = "allocated", _("Allocated")
+        SHARED = "shared", _("Shared")
+        INHERITED = "inherited", _("Inherited")
 
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     control_id = models.CharField(
@@ -220,6 +223,16 @@ class Control(models.Model):
     )
     control_label = models.CharField(
         max_length=12,
+        unique=False,
+        blank=False,
+    )
+    sort_id = models.CharField(
+        max_length=12,
+        unique=False,
+        blank=False,
+    )
+    control_family = models.CharField(
+        max_length=128,
         unique=False,
         blank=False,
     )
@@ -240,20 +253,16 @@ class Control(models.Model):
         blank=True,
         help_text="Control guidance text.",
     )
-    status = models.IntegerField(
+    status = models.CharField(
+        max_length=12,
         default=Status.NOT_STARTED,
         choices=Status.choices,
     )
-    responsibility = models.IntegerField(
+    responsibility = models.CharField(
+        max_length=12,
         default=Responsibility.ALLOCATED,
         choices=Responsibility.choices,
     )
 
     def __str__(self):
         return self.control_id
-
-    def get_status(self):
-        return self.Status(self.status).label
-
-    def get_responsibility(self):
-        return self.Responsibility(self.responsibility).label

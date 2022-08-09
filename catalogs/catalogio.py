@@ -213,6 +213,7 @@ class CatalogTools(object):
         guidance = self.get_control_part_by_name(control, "guidance")
         control_data = {
             "label": self.get_control_property_by_name(control, "label"),
+            "sort_id": self.get_control_property_by_name(control, "sort-id"),
             "title": control.get("title"),
             "family": self.get_group_title_by_id(family_id),
             "description": self.get_control_statement(control),

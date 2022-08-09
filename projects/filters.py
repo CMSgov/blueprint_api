@@ -4,14 +4,8 @@ from .models import Control
 
 
 class ControlsFilter(django_filters.FilterSet):
-    status = django_filters.AllValuesMultipleFilter(
-        field_name="status",
-        lookup_expr="in",
-    )
-    responsibility = django_filters.AllValuesMultipleFilter(
-        field_name="responsibility",
-        lookup_expr="in",
-    )
+    status = django_filters.AllValuesMultipleFilter(lookup_expr="iexact")
+    responsibility = django_filters.AllValuesMultipleFilter(lookup_expr="iexact")
 
     class Meta:
         model = Control

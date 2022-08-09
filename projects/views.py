@@ -121,9 +121,7 @@ class ProjectGetControlList(APIView):
         page_number = request.query_params.get("page", default=1)
         filtered_qs = ControlsFilter(
             request.GET,
-            queryset=Control.objects.filter(project_id=project_id).order_by(
-                "control_id"
-            ),
+            queryset=Control.objects.filter(project_id=project_id).order_by("sort_id"),
         ).qs
 
         paginator = Paginator(filtered_qs, 20)
