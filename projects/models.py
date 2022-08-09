@@ -110,11 +110,9 @@ class Project(models.Model):
         version = getattr(self, "catalog_version")
         impact = getattr(self, "impact_level")
         if version and impact:
-            catalog = Catalog.objects.filter(
-                version=version, impact_level=impact
-            ).first()
+            catalog = Catalog.objects.get(version=version, impact_level=impact)
             self.catalog = catalog
-        super(Project, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.title
