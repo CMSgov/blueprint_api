@@ -2,83 +2,35 @@ from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, status
 from rest_framework.response import Response
-from rest_framework.views import APIView
 
 from components.filters import ComponentFilter
 from components.models import Component
 from components.serializers import ComponentListBasicSerializer
 
-from .models import Project
-from .serializers import (
-    ProjectControlSerializer,
-    ProjectListSerializer,
-    ProjectSerializer,
-)
+from blueprintapi.filters import ObjectPermissionsFilter
+from projects.models import Project
+from projects.serializers import ProjectControlSerializer, ProjectListSerializer, ProjectSerializer
 
 
 class ProjectsListViews(generics.ListCreateAPIView):
-
     queryset = Project.objects.all().order_by("pk")
     serializer_class = ProjectListSerializer
-
-    def list(self, request, *args, **kwargs):
-        projects = self.get_queryset()
-        serializer = ProjectListSerializer(projects, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    filter_backends = [ObjectPermissionsFilter, ]
 
 
-class ProjectsDetailView(APIView):
-    def get_object(self, project_id):
-        try:
-            return Project.objects.get(id=project_id)
-        except Project.DoesNotExist:
-            return None
-
-    def get(self, request, project_id, *args, **kwargs):
-        project_instance = get_object_or_404(Project, pk=project_id)
-        serializer = ProjectSerializer(project_instance)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def patch(self, request, project_id, *args, **kwargs):
-        project_instance = self.get_object(project_id)
-        if not project_instance:
-            return Response(
-                {"response": "The project you are looking for does not exist"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        serializer = ProjectSerializer(
-            instance=project_instance, data=request.data, partial=True
-        )
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, project_id, *args, **kwargs):
-        project_instance = self.get_object(project_id)
-        if not project_instance:
-            return Response(
-                {"response": "The project you are looking for does not exist"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        project_instance.delete()
-        return Response(
-            {"response": "You have succesfully deleted the project!"},
-            status=status.HTTP_200_OK,
-        )
+class ProjectsDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializer
+    lookup_url_kwarg = "project_id"
 
 
-class ProjectAddComponentView(APIView):
+class ProjectAddComponentView(generics.GenericAPIView):
+    queryset = Project.objects.all()
+    lookup_field = "pk"
+
     def post(self, request, *args, **kwargs):
         project = get_object_or_404(Project, pk=request.data.get("project_id"))
-        owner_id = project.creator.id
-
-        creator_id = int(request.data.get("creator"))
-        if owner_id != creator_id:
-            return Response(
-                {"response": "You are not authorized to access this page"},
-                status=status.HTTP_401_UNAUTHORIZED,
-            )
+        self.check_object_permissions(request, project)
 
         component_id = int(request.data.get("component_id"))
         component = get_object_or_404(Component, pk=component_id)
@@ -87,50 +39,58 @@ class ProjectAddComponentView(APIView):
             project.components.add(component.id)
             response = {"message": f"{component.title} added to {project.title}."}
             return Response(response, status=status.HTTP_200_OK)
+
         return Response(
-            {"response": "Incompatable catalog selected"},
+            {"response": "Incompatible catalog selected"},
             status=status.HTTP_400_BAD_REQUEST,
         )
 
 
-class ProjectRemoveComponentView(APIView):
+class ProjectRemoveComponentView(generics.GenericAPIView):
+    queryset = Project.objects.prefetch_related('components')
+
     def post(self, request, *args, **kwargs):
         project = get_object_or_404(Project, pk=request.data.get("project_id"))
+        self.check_object_permissions(request, project)
+
         component = get_object_or_404(
             Component, pk=int(request.data.get("component_id"))
         )
-        owner_id = project.creator.pk
-        creator_id = int(request.data.get("creator"))
-        if owner_id != creator_id:
+
+        if not project.components.contains(component):
             return Response(
-                {"response": "You are not authorized to access this page"},
-                status=status.HTTP_401_UNAUTHORIZED,
+                {"message": f"{component.title} is not associated with {project.title} and cannot be removed."},
+                status=status.HTTP_400_BAD_REQUEST
             )
-        try:
-            project.components.remove(component.id)
-            response = {"message": f"{component.title} removed from {project.title}."}
-        except Exception:
-            return Response({}, status=status.HTTP_400_BAD_REQUEST)
-        return Response(response, status=status.HTTP_200_OK)
 
+        project.components.remove(component.id)
 
-class ProjectGetControlData(APIView):
-    def get(self, request, project_id, control_id):
-        project_instance = get_object_or_404(Project, pk=project_id)
-        serlializer = ProjectControlSerializer(
-            project_instance,
-            context={
-                "control_id": control_id,
-            },
+        return Response(
+            {"message": f"{component.title} removed from {project.title}."},
+            status=status.HTTP_200_OK
         )
 
-        return Response(serlializer.data, status=status.HTTP_200_OK)
+
+class ProjectGetControlData(generics.GenericAPIView):
+    queryset = Project.objects.all()
+    serializer_class = ProjectControlSerializer
+    lookup_url_kwarg = "project_id"
+
+    def get(self, request, *args, **kwargs):
+        project_instance = self.get_object()
+        context = {"control_id": kwargs.get('control_id'), **self.get_serializer_context()}
+        serializer = self.get_serializer(project_instance, context=context)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class ProjectComponentListSearchView(APIView):
-    def get(self, request, project_id, *args, **kwargs):
+class ProjectComponentListSearchView(generics.GenericAPIView):
+    queryset = Project.objects.all()
+    lookup_url_kwarg = "project_id"
+
+    def get(self, request, *args, **kwargs):
+        project_instance = self.get_object()
         page_number = self.request.query_params.get("page", default=1)
-        project_instance = get_object_or_404(Project, pk=project_id)
 
         filtered_qs = ComponentFilter(
             self.request.GET,
@@ -148,9 +108,7 @@ class ProjectComponentListSearchView(APIView):
         serializer = serializer_class(page_obj, many=True)
         project_serializer = ProjectListSerializer(project_instance, many=False)
 
-        type_list = (
-            project_instance.components.all().order_by().values_list("type").distinct()
-        )
+        type_list = project_instance.components.all().order_by().values_list("type").distinct()
 
         response = {
             "project": project_serializer.data,
@@ -162,13 +120,19 @@ class ProjectComponentListSearchView(APIView):
         return Response(response, status=status.HTTP_200_OK)
 
 
-class ProjectComponentNotAddedListView(APIView):
-    def get(self, request, project_id, *args, **kwargs):
-        project_instance = get_object_or_404(Project, pk=project_id)
+class ProjectComponentNotAddedListView(generics.GenericAPIView):
+    queryset = Project.objects.all()
+    lookup_url_kwarg = "project_id"
+    serializer_class = ComponentListBasicSerializer
+
+    def get(self, request, *args, **kwargs):
+        project_instance = self.get_object()
+
         queryset = (
             Component.objects.exclude(used_by_projects=project_instance)
             .exclude(status=1)
             .order_by("pk")
         )
-        serializer = ComponentListBasicSerializer(queryset, many=True)
+
+        serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
