@@ -26,7 +26,6 @@ class ProjectsDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 class ProjectAddComponentView(generics.GenericAPIView):
     queryset = Project.objects.all()
-    lookup_field = "pk"
 
     def post(self, request, *args, **kwargs):
         project = get_object_or_404(Project, pk=request.data.get("project_id"))
@@ -47,7 +46,7 @@ class ProjectAddComponentView(generics.GenericAPIView):
 
 
 class ProjectRemoveComponentView(generics.GenericAPIView):
-    queryset = Project.objects.prefetch_related('components')
+    queryset = Project.objects.all()
 
     def post(self, request, *args, **kwargs):
         project = get_object_or_404(Project, pk=request.data.get("project_id"))

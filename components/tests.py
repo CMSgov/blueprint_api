@@ -180,8 +180,6 @@ class GetAllComponentsTest(AuthenticatedAPITestCase):
             component_json=TEST_COMPONENT_JSON_BLOB,
         )
 
-        cls.test_catalog = test_catalog
-
     def test_get_all_components(self):
 
         response = self.client.get(reverse("component-list"))
