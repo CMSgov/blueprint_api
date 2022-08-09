@@ -2,6 +2,7 @@ from rest_framework.permissions import DjangoObjectPermissions
 
 
 class StrictDjangoObjectPermissions(DjangoObjectPermissions):
+    """Extends DjangoObjectPermissions to include GET, OPTIONS, and HEAD permissions requirements."""
     perms_map = {
         'GET': ['%(app_label)s.view_%(model_name)s'],
         'OPTIONS': ['%(app_label)s.view_%(model_name)s'],
