@@ -14,18 +14,25 @@ The following commands can be run to set up your local envionment
 2) Change directory to blueprint
 `cd blueprint`
 3) Clone the UI and API repositories into the blueprint directory
-"""
+
+```bash
+
 git clone git@github.com:CMSgov/blueprint_ui.git
 git clone git@github.com:CMSgov/blueprint_api.git
-"""
+
+```
+
 4) Copy the sample docker-compose.yml file into this directory (you might want to edit the file afterwards to use values specific to your system)
 `cp blueprint_api/docker-compose.yml.sample ../docker-compose.yml`
 5) Docker setup
-"""
+
+```bash
+
 docker-compose build
 docker-compose run ui npm install
 docker-compose up
-"""
+
+```
 
 6) With the docker container running, change directory to API `cd blueprint_api`
 7) Bash into the repo's docker container (e.g. `docker exec -it blueprint-api-1 bash`) to run the following commands.
