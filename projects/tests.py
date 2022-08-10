@@ -399,7 +399,7 @@ class ProjectAddComponentViewTest(AuthenticatedAPITestCase):
             "/api/projects/add-component/",
             {"creator": 0, "component_id": 1, "project_id": self.test_project.id},
         )
-        self.assertEqual(resp.status_code, 403)
+        self.assertEqual(resp.status_code, 404)
 
     def test_invalid_component(self):
         resp = self.client.post(
