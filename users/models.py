@@ -9,9 +9,10 @@ class User(AbstractUser, PermissionsMixin):
 
 
 @receiver(post_save, sender=User)
-def add_default_user_perms(sender, instance, **kwargs):
+def add_default_user_perms(sender, instance, created, **kwargs):
     """After a User is created, assign object permissions to view/edit/delete to that user."""
-    for code in ('change_user', 'delete_user', 'view_user', ):
-        permission = Permission.objects.get(codename=code)
-        instance.user_permissions.add(permission)
-        assign_perm(code, instance, instance)
+    if created:
+        for code in ('change_user', 'delete_user', 'view_user', ):
+            permission = Permission.objects.get(codename=code)
+            instance.user_permissions.add(permission)
+            assign_perm(code, instance, instance)
