@@ -4,7 +4,7 @@ from django.dispatch import receiver
 from guardian.shortcuts import assign_perm
 
 
-class User(AbstractUser, PermissionsMixin):
+class User(AbstractUser):
     pass
 
 
