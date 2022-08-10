@@ -64,6 +64,7 @@ class CreateNewUserTest(AuthenticatedAPITestCase):
     def test_create_valid_user(self):
         self.valid_payload = {
             "username": "tester",
+            "password": "awesomepassword",
             "first_name": "Testy",
             "last_name": "Testerson",
             "email": "testing4lyfe@theworldisatest.com",
@@ -112,7 +113,7 @@ class UpdateSingleUserTest(AuthenticatedAPITestCase):
             "last_name": "Sleeper",
             "email": "naps4ever@iluvnaps.com",
         }
-        response = self.client.put(
+        response = self.client.patch(
             reverse("user-detail", kwargs={"pk": self.tester.pk}),
             data=json.dumps(self.valid_payload),
             content_type="application/json",
@@ -127,7 +128,7 @@ class UpdateSingleUserTest(AuthenticatedAPITestCase):
             "last_name": "Sleeper",
             "email": "naps4ever@iluvnaps.com",
         }
-        response = self.client.put(
+        response = self.client.patch(
             reverse("user-detail", kwargs={"pk": self.tester.pk}),
             data=json.dumps(self.invalid_payload),
             content_type="application/json",

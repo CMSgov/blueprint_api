@@ -9,7 +9,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ("id", "username", "password", "first_name", "last_name", "email", "is_active")
         extra_kwargs = {'password': {'write_only': True}}
 
-    def create(self, validated_data):
+    def create(self, validated_data: dict) -> User:
         password = validated_data.pop('password')
         user = User(**validated_data)
         user.set_password(password)
@@ -17,11 +17,15 @@ class UserSerializer(serializers.ModelSerializer):
 
         return user
 
-    def update(self, instance, validated_data):
-        password = validated_data.pop('password')
-        instance.set_password(password)
+    def update(self, instance: User, validated_data: dict) -> User:
+        password = validated_data.pop('password', None)
+
+        if password:
+            instance.set_password(password)
 
         for name, value in validated_data.items():
             setattr(instance, name, value)
 
         instance.save()
+
+        return instance
