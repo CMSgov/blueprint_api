@@ -21,6 +21,7 @@ from rest_framework import permissions
 
 from . import views
 
+
 schema_view = get_schema_view(
     openapi.Info(
         title="RapidATO API",
@@ -34,6 +35,7 @@ schema_view = get_schema_view(
 urlpatterns = [
     path("", views.index, name="index"),
     path("admin/", admin.site.urls),
+    path('api-token-auth/', views.UserObtainTokenView.as_view()),
     path("api/catalogs/", include("catalogs.urls")),
     path("api/components/", include("components.urls")),
     path("api/projects/", include("projects.urls")),
