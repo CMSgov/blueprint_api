@@ -1,14 +1,14 @@
-import django_filters
 from django.db.models import Q
+from django_filters import rest_framework as filters
 
 from .models import Component
 
 
-class ComponentFilter(django_filters.FilterSet):
+class ComponentFilter(filters.FilterSet):
 
-    search = django_filters.CharFilter(method="keyword_search", label="Search")
-    type = django_filters.CharFilter(lookup_expr="iexact")
-    catalog = django_filters.NumberFilter()
+    search = filters.CharFilter(method="keyword_search", label="Search")
+    type = filters.CharFilter(lookup_expr="iexact")
+    catalog = filters.NumberFilter()
 
     class Meta:
         model = Component

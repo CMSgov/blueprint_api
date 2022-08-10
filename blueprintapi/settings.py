@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     "django_filters",
     "corsheaders",
     "rest_framework",
+    "rest_framework.authtoken",
     "catalogs.apps.CatalogConfig",
     "guardian",
     "components.apps.ComponentsConfig",
@@ -80,8 +81,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "blueprintapi.urls"
-
-REST_FRAMEWORK = {"DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema"}
 
 TEMPLATES = [
     {
@@ -122,6 +121,7 @@ DATABASES = {
 }
 
 AUTH_USER_MODEL = "users.User"
+AUTH_TOKEN_TTL = 24  # Hours
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -185,3 +185,13 @@ CORS_ALLOW_HEADERS = [
     "x-csrftoken",
     "x-requested-with",
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'blueprintapi.authentication.ExpiringTokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'blueprintapi.permissions.StrictDjangoObjectPermissions',
+    ],
+    "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
+}
