@@ -2,6 +2,7 @@ import json
 
 from django.urls import reverse
 from rest_framework import status
+from rest_framework.test import APITestCase
 
 from testing_utils import AuthenticatedAPITestCase, prevent_request_warnings
 
@@ -60,7 +61,7 @@ class GetSingleUserTest(AuthenticatedAPITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
-class CreateNewUserTest(AuthenticatedAPITestCase):
+class CreateNewUserTest(APITestCase):
     def test_create_valid_user(self):
         self.valid_payload = {
             "username": "tester",
@@ -79,7 +80,7 @@ class CreateNewUserTest(AuthenticatedAPITestCase):
 
     @prevent_request_warnings
     def test_create_invalid_user(self):
-        # note that username is required for valid post
+        # note that username and password is required for valid post
         self.invalid_payload = {
             "username": "",
             "first_name": "Testy",
