@@ -13,6 +13,10 @@ def add_default_user_perms(sender, instance, created, **kwargs):
     """After a User is created, assign object permissions to view/edit/delete to that user."""
     if created:
         for code in ('change_user', 'delete_user', 'view_user', ):
-            permission = Permission.objects.get(codename=code)
+            try:
+                permission = Permission.objects.get(codename=code)
+            except Permission.DoesNotExist:
+                break  # If the permissions don't exist, likely a setup step, so don't try and add perms
+
             instance.user_permissions.add(permission)
             assign_perm(code, instance, instance)
