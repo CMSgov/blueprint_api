@@ -122,13 +122,15 @@ class CatalogTools(object):
 
     def get_next_control_by_id(self, control_id: str):
         search_collection = self.get_control_ids()
-        next = False
-        for item in search_collection:
-            if next is True:
-                return item
-            if item == control_id:
-                next = True
-        return ""
+        try:
+            next_idx = search_collection.index(control_id) + 1
+            return search_collection[next_idx]  # control_id was at the end of the list
+        except ValueError as e:
+            raise MissingControlError(
+                "Cannot determine next control. Provided id does not exist"
+            ) from e
+        except IndexError:
+            return ""
 
     def get_control_statement(self, control: dict) -> List:
         statement = self.get_control_part_by_name(control, "statement")
@@ -245,3 +247,7 @@ class CatalogTools(object):
     def catalog_title(self) -> str:
         metadata = self.oscal.get("metadata", {})
         return metadata.get("title", "")
+
+
+class MissingControlError(ValueError):
+    pass
