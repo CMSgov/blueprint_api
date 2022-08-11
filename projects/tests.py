@@ -13,8 +13,6 @@ from projects.models import Project
 from testing_utils import AuthenticatedAPITestCase
 from users.models import User
 
-from .serializers import ProjectSerializer
-
 TEST_COMPONENT_JSON_BLOB = {
     "component-definition": {
         "uuid": "ced875ac-c5e5-44a8-b34c-8ac4f8ab87e6",
@@ -210,8 +208,6 @@ class ProjectModelTest(TestCase):
 class ProjectRequiredFieldsTest(AuthenticatedAPITestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.test_user = User.objects.create()
-
         cls.test_catalog = Catalog.objects.create(
             name="NIST_SP-800", file_name="NIST_SP-800.json"
         )
@@ -220,7 +216,6 @@ class ProjectRequiredFieldsTest(AuthenticatedAPITestCase):
             "acronym": "NTP",
             "impact_level": "low",
             "location": "other",
-            "creator": cls.test_user.id,
             "catalog": cls.test_catalog.id,
         }
 
@@ -228,7 +223,6 @@ class ProjectRequiredFieldsTest(AuthenticatedAPITestCase):
             "title": "No Acronym Project",
             "impact_level": "low",
             "location": "other",
-            "creator": cls.test_user.id,
             "catalog": cls.test_catalog.id,
         }
 
@@ -237,7 +231,6 @@ class ProjectRequiredFieldsTest(AuthenticatedAPITestCase):
             "acronym": "NCP",
             "impact_level": "low",
             "location": "other",
-            "creator": cls.test_user.id,
             "catalog": None,
         }
 
