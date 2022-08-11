@@ -24,7 +24,7 @@ from . import views
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="RapidATO API",
+        title="RapidATO ------------ THIS IS SUCH A MAJOR CHANGE TO PROVE A POINT --------- API",
         default_version="v1",
         description="Welcome to the world of RapidATO",
     ),
