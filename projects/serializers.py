@@ -18,6 +18,10 @@ class ProjectListSerializer(serializers.ModelSerializer):
             "location",
             "catalog",
         )
+        extra_kwargs = {"creator": {"read_only": True}}
+
+    def create(self, validated_data):
+        return Project.objects.create(creator=self.context["request"].user, **validated_data)
 
 
 class ProjectSerializer(serializers.ModelSerializer):

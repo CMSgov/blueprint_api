@@ -2,6 +2,8 @@ import json
 
 from django.urls import reverse
 from rest_framework import status
+from rest_framework.authtoken.models import Token
+from rest_framework.test import APITestCase
 
 from testing_utils import AuthenticatedAPITestCase, prevent_request_warnings
 
@@ -60,10 +62,11 @@ class GetSingleUserTest(AuthenticatedAPITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
-class CreateNewUserTest(AuthenticatedAPITestCase):
+class CreateNewUserTest(APITestCase):
     def test_create_valid_user(self):
         self.valid_payload = {
             "username": "tester",
+            "password": "awesomepassword",
             "first_name": "Testy",
             "last_name": "Testerson",
             "email": "testing4lyfe@theworldisatest.com",
@@ -78,7 +81,7 @@ class CreateNewUserTest(AuthenticatedAPITestCase):
 
     @prevent_request_warnings
     def test_create_invalid_user(self):
-        # note that username is required for valid post
+        # note that username and password is required for valid post
         self.invalid_payload = {
             "username": "",
             "first_name": "Testy",
@@ -112,7 +115,7 @@ class UpdateSingleUserTest(AuthenticatedAPITestCase):
             "last_name": "Sleeper",
             "email": "naps4ever@iluvnaps.com",
         }
-        response = self.client.put(
+        response = self.client.patch(
             reverse("user-detail", kwargs={"pk": self.tester.pk}),
             data=json.dumps(self.valid_payload),
             content_type="application/json",
@@ -127,9 +130,24 @@ class UpdateSingleUserTest(AuthenticatedAPITestCase):
             "last_name": "Sleeper",
             "email": "naps4ever@iluvnaps.com",
         }
-        response = self.client.put(
+        response = self.client.patch(
             reverse("user-detail", kwargs={"pk": self.tester.pk}),
             data=json.dumps(self.invalid_payload),
             content_type="application/json",
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+
+class BasicUserPermissionsTestCase(APITestCase):
+    def setUp(self):
+        self.test_user = User.objects.create(username="TestUser", password="supersecretpassword")
+
+    def test_new_user_has_self_permissions(self):
+        expected_perms = ('view_user', 'change_user', 'delete_user', )
+
+        self.assertTrue(self.test_user.has_perms(expected_perms, self.test_user))
+
+    def test_new_user_has_basic_project_permissions(self):
+        expected_perms = ('projects.add_project', 'projects.change_project', 'projects.view_project', )
+
+        self.assertTrue(self.test_user.has_perms(expected_perms))

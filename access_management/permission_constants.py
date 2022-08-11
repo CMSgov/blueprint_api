@@ -3,11 +3,13 @@ manage_project_users_permission = (
     "manage_project_users",
     "Can manage users on project",
 )
+add_project_permission = ("add_project", "Can add project")
 change_project_permission = ("change_project", "Can edit project")
 view_project_permission = ("view_project", "Can view project")
 
 # # Project permission list associated with groups
 project_admin_permissions = [
+    add_project_permission,
     manage_project_users_permission,
     change_project_permission,
     view_project_permission,

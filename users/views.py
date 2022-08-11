@@ -1,7 +1,9 @@
 from rest_framework import generics
 
-from .models import User
-from .serializers import UserSerializer
+from blueprintapi.filters import ObjectPermissionsFilter
+from users.models import User
+from users.permissions import UserPermissions
+from users.serializers import UserSerializer
 
 
 # Use for read-write endpoints to represent a collection of model instances.
@@ -9,6 +11,8 @@ from .serializers import UserSerializer
 class UserListView(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    permission_classes = [UserPermissions, ]
+    filter_backends = [ObjectPermissionsFilter, ]
 
 
 # Use for read or update endpoints to represent a single model instance.
