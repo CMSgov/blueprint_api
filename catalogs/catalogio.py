@@ -124,12 +124,12 @@ class CatalogTools(object):
         search_collection = self.get_control_ids()
         try:
             next_idx = search_collection.index(control_id) + 1
-            return search_collection[next_idx]  # control_id was at the end of the list
+            return search_collection[next_idx]
         except ValueError as e:
             raise MissingControlError(
                 "Cannot determine next control. Provided id does not exist"
             ) from e
-        except IndexError:
+        except IndexError:  # control_id was at the end of the list
             return ""
 
     def get_control_statement(self, control: dict) -> List:
