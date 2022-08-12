@@ -24,7 +24,22 @@ django-rest-swagger = "^2.2.0"
 drf-yasg = "^1.21.3"
 
 [tool.poetry.dev-dependencies]
+pylint = "^2.14.5"
+pylint-django = "^2.5.3"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+# Pylint config
+[tool.pylint.main]
+recursive = true
+load-plugins = ["pylint_django"]
+ignore = ["migrations/*", "manage.py"]
+
+[tool.pylint.format]
+max-line-length = 120
+
+
+[tool.pylint."messages control"]
+disable = ["missing-module-docstring", "missing-class-docstring", "missing-function-docstring", "django-not-configured"]
