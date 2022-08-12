@@ -42,14 +42,39 @@ docker-compose up
 `python3 manage.py createsuperuser`
 
 10) You will next need to add a catalog, sample one can be found at <https://github.com/CMSgov/ars-machine-readable/blob/main/3.1/oscal/json/CMS_ARS_3_1_catalog.json>
-Once you have a catalog, you can utilize the admin panel <http://localhost:8000/admin/> and add a catalog
-Name: ARS 3.1
-File: the above json file
+Once you have a catalog
+    A) you can utilize the admin panel <http://localhost:8000/admin/> and add a catalog
+    Name: ARS 3.1
+    File: the above json file
+    B) you can use postman
+      i)POST to localhost:8000/api-token-auth/
+        Body form-data
+            key:username    value:`<username set in step 9>`
+            key:password    value:`<password set in step 9>`
+      ii)POST to localhost:8000/api/catalogs/
+        Headers
+            key:Authorization   value:`TOKEN <token returned in previous step>`
+        Body form-data
+            key:name    value:`<catalog name>`
+            key:file_name   (change Text to File)   value:`<select file>`
 
 11) Once you have reached this point, you should be able to start adding components.
-Components can currently found in <https://github.com/CMSgov/component-library> with your components, you can utilize the admin panel <http://localhost:8000/admin/> and add a component.
-Title: OCISO
-File: <https://github.com/CMSgov/component-library/blob/main/ociso/oscal/ociso.json>
+Components can currently found in <https://github.com/CMSgov/component-library> with your components,
+    A) you can utilize the admin panel <http://localhost:8000/admin/> and add a component.
+    Title: OCISO
+    File: <https://github.com/CMSgov/component-library/blob/main/ociso/oscal/ociso.json>
+    B) you can use postman
+      i)POST to localhost:8000/api-token-auth/
+        Body form-data
+            key:username    value:`<username set in step 9>`
+            key:password    value:`<password set in step 9>`
+      ii)POST to localhost:8000/api/catalogs/
+        Headers
+            key:Authorization   value:`TOKEN <token returned in previous step>`
+        Body form-data
+            key:title   value:`<component title>`
+            key:catalog value:`<catalog id created in step 10>`
+            key:file_name   (change Text to File)   value:`<select file>`
 
 At this point, your environment should be setup to start using the UI and creating projects.
 
