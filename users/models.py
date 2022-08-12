@@ -14,8 +14,9 @@ def add_default_user_perms(sender, instance, created, **kwargs):
     if created:
         user_perms = ('change_user', 'delete_user', 'view_user', )
         project_perms = ('add_project', 'change_project', 'view_project', )
+        component_perms = ('add_component', 'change_component', 'view_component', )
 
-        for code in user_perms + project_perms:
+        for code in component_perms + project_perms + user_perms:
             try:
                 permission = Permission.objects.get(codename=code)
             except Permission.DoesNotExist:
