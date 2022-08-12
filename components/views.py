@@ -31,7 +31,7 @@ class ComponentDetailView(generics.RetrieveAPIView):
 
 
 class ComponentListSearchView(generics.ListAPIView):
-    queryset = Component.objects.exlude(status=Component.Status.SYSTEM).order_by("pk")
+    queryset = Component.objects.exclude(status=Component.Status.SYSTEM).order_by("pk")
     permission_classes = [ComponentPermissions, ]
     filterset_class = ComponentFilter
     filter_backends = [filters.DjangoFilterBackend, ]
