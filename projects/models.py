@@ -19,8 +19,6 @@ from components.componentio import EmptyComponent
 
 logger = logging.getLogger(__name__)
 
-component = apps.get_model("components", "Component")
-
 
 class Project(models.Model):
     class ImpactLevel(models.TextChoices):
@@ -79,7 +77,7 @@ class Project(models.Model):
         help_text="FISMA impact level of the project",
     )
     location = models.CharField(
-        choices=StatusChoices.choices,
+        choices=LocationChoices.choices,
         max_length=100,
         default=None,
         null=True,
@@ -122,6 +120,8 @@ def add_project_controls(sender, instance, **kwargs):
 
 
 def add_default_component(instance: Project, group: Group):
+    component = apps.get_model("components", "Component")
+
     default_component = EmptyComponent(
         title=f"{instance.title} private",
         description=f"{instance.title} default system component",
@@ -155,6 +155,7 @@ def add_default_component(instance: Project, group: Group):
 
 
 def add_components_for_project(instance: Project):
+    component = apps.get_model("components", "Component")
     try:
         ociso_component = component.objects.get(title__iexact="ociso")
         instance.components.add(ociso_component)
