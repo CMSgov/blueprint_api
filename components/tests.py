@@ -37,27 +37,27 @@ TEST_COMPONENT_JSON_BLOB = {
                         "implemented-requirements": [
                             {
                                 "uuid": "6698d762-5cdc-452e-9f9e-3074df5292c6",
-                                "control-id": "ac-2.1",
+                                "control-id": "ac-1",
                                 "description": "This component statisfies a.",
                             },
                             {
                                 "uuid": "73dd3c2e-54eb-43c6-a488-dfb7c79d9413",
-                                "control-id": "ac-2.2",
+                                "control-id": "ac-2",
                                 "description": "This component statisfies b.",
                             },
                             {
                                 "uuid": "73dd3c2e-54eb-43c6-a488-dfb7c79d9413",
-                                "control-id": "ac-2.3",
+                                "control-id": "at-1",
                                 "description": "This component statisfies c.",
                             },
                             {
                                 "uuid": "73dd3c2e-54eb-43c6-a488-dfb7c79d9413",
-                                "control-id": "ac-2.4",
+                                "control-id": "at-2",
                                 "description": "This component statisfies d.",
                             },
                             {
                                 "uuid": "73dd3c2e-54eb-43c6-a488-dfb7c79d9413",
-                                "control-id": "ac-2.5",
+                                "control-id": "at-3",
                                 "description": "This component statisfies e.",
                             },
                         ],
@@ -218,7 +218,7 @@ class GetSingleComponentTest(AuthenticatedAPITestCase):
             title="Cool Component",
             description="Probably the coolest component you ever did see. It's magical.",
             catalog=Catalog.objects.get(id=cls.test_catalog.id),
-            controls=["ac-2.1", "ac-6.10", "ac-8", "au-6.1", "sc-2"],
+            controls=["ac-1", "ac-2", "at-1", "at-2", "at-3", "au-1", "au-2"],
             search_terms=["cool", "magic", "software"],
             type="software",
             component_json=TEST_COMPONENT_JSON_BLOB,
@@ -237,7 +237,9 @@ class GetSingleComponentTest(AuthenticatedAPITestCase):
     @prevent_request_warnings
     def test_get_invalid_single_component(self):
         invalid_id = 0
-        response = self.client.get(reverse("component-detail", kwargs={"pk": invalid_id}))
+        response = self.client.get(
+            reverse("component-detail", kwargs={"pk": invalid_id})
+        )
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
@@ -458,12 +460,12 @@ class ComponentioTest(TestCase):
     def test_get_controls(self):
         controls = self.tools.get_controls()
         self.assertEquals(len(controls), 5)
-        self.assertEquals(controls[0].get("control-id"), "ac-2.1")
+        self.assertEquals(controls[0].get("control-id"), "ac-1")
 
     def test_get_control_ids(self):
         ids = self.tools.get_control_ids()
         self.assertEquals(len(ids), 5)
-        self.assertEquals(ids[0], "ac-2.1")
+        self.assertEquals(ids[0], "ac-1")
 
 
 class ComponentTypesViewTest(AuthenticatedAPITestCase):

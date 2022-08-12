@@ -318,8 +318,6 @@ class ProjectComponentsTest(AuthenticatedAPITestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        project = self.test_project
-
         received_num_components = len(response.data["components"])
         received_components_count = response.data["components_count"]
         expected_num_components = 2
@@ -383,7 +381,7 @@ class ProjectAddComponentViewTest(AuthenticatedAPITestCase):
         self.assertEqual(resp.status_code, 404)
 
     def test_invalid_project_permissions(self):
-        user, _ = User.objects.get_or_create(username='invalid_perms')
+        user, _ = User.objects.get_or_create(username="invalid_perms")
         token, _ = Token.objects.get_or_create(user=user)
 
         self.client.force_authenticate(user=user, token=token)
@@ -480,7 +478,7 @@ class ProjectControlPage(AuthenticatedAPITestCase):
                 "project-get-control",
                 kwargs={
                     "project_id": self.test_project.id,
-                    "control_id": "ac-2.1",
+                    "control_id": "ac-2",
                 },
             )
         )
@@ -492,7 +490,7 @@ class ProjectControlPage(AuthenticatedAPITestCase):
                 "project-get-control",
                 kwargs={
                     "project_id": self.test_project.id,
-                    "control_id": "ac-2.1",
+                    "control_id": "ac-2",
                 },
             )
         )

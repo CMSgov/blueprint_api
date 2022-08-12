@@ -3,19 +3,25 @@ from django.shortcuts import get_object_or_404
 from rest_framework import generics, status
 from rest_framework.response import Response
 
+from blueprintapi.filters import ObjectPermissionsFilter
+from catalogs.catalogio import MissingControlError
 from components.filters import ComponentFilter
 from components.models import Component
 from components.serializers import ComponentListBasicSerializer
-
-from blueprintapi.filters import ObjectPermissionsFilter
 from projects.models import Project
-from projects.serializers import ProjectControlSerializer, ProjectListSerializer, ProjectSerializer
+from projects.serializers import (
+    ProjectControlSerializer,
+    ProjectListSerializer,
+    ProjectSerializer,
+)
 
 
 class ProjectsListViews(generics.ListCreateAPIView):
     queryset = Project.objects.all().order_by("pk")
     serializer_class = ProjectListSerializer
-    filter_backends = [ObjectPermissionsFilter, ]
+    filter_backends = [
+        ObjectPermissionsFilter,
+    ]
 
 
 class ProjectsDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -58,15 +64,18 @@ class ProjectRemoveComponentView(generics.GenericAPIView):
 
         if not project.components.contains(component):
             return Response(
-                {"message": f"{component.title} is not associated with {project.title} and cannot be removed."},
-                status=status.HTTP_400_BAD_REQUEST
+                {
+                    "message": f"{component.title} is not associated with"
+                    " {project.title} and cannot be removed."
+                },
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
         project.components.remove(component.id)
 
         return Response(
             {"message": f"{component.title} removed from {project.title}."},
-            status=status.HTTP_200_OK
+            status=status.HTTP_200_OK,
         )
 
 
@@ -77,8 +86,17 @@ class ProjectGetControlData(generics.GenericAPIView):
 
     def get(self, request, *args, **kwargs):
         project_instance = self.get_object()
-        context = {"control_id": kwargs.get('control_id'), **self.get_serializer_context()}
-        serializer = self.get_serializer(project_instance, context=context)
+        context = {
+            "control_id": kwargs.get("control_id"),
+            **self.get_serializer_context(),
+        }
+        try:
+            serializer = self.get_serializer(project_instance, context=context)
+        except MissingControlError:
+            return Response(
+                {"response": "Control not found"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -107,7 +125,9 @@ class ProjectComponentListSearchView(generics.GenericAPIView):
         serializer = serializer_class(page_obj, many=True)
         project_serializer = ProjectListSerializer(project_instance, many=False)
 
-        type_list = project_instance.components.all().order_by().values_list("type").distinct()
+        type_list = (
+            project_instance.components.all().order_by().values_list("type").distinct()
+        )
 
         response = {
             "project": project_serializer.data,
