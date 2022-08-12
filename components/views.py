@@ -4,19 +4,20 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 
 from blueprintapi.filters import ObjectPermissionsFilter
-from components.filters import ComponentFilter
+from components.filters import ComponentFilter, ComponentPermissionsFilter
 from components.models import Component
+from components.permissions import ComponentPermissions
 from components.serializers import ComponentListSerializer, ComponentSerializer
 
 
 class ComponentListView(generics.ListCreateAPIView):
-    """
-    Use for read-write endpoints to represent a collection of model instances.
+    """Use for read-write endpoints to represent a collection of model instances.
     Provides get and post method handlers.
     """
     queryset = Component.objects.all().order_by("pk")
     serializer_class = ComponentListSerializer
-    filter_backends = [ObjectPermissionsFilter, ]
+    permission_classes = [ComponentPermissions, ]
+    filter_backends = [ComponentPermissionsFilter, ]
 
 
 class ComponentDetailView(generics.RetrieveAPIView):
@@ -25,13 +26,15 @@ class ComponentDetailView(generics.RetrieveAPIView):
     Provides get, put, and patch method handlers.
     """
     queryset = Component.objects.all()
+    permission_classes = [ComponentPermissions, ]
     serializer_class = ComponentSerializer
 
 
 class ComponentListSearchView(generics.ListAPIView):
-    queryset = Component.objects.all().order_by("pk")
+    queryset = Component.objects.exclude(status=Component.Status.SYSTEM).order_by("pk")
+    permission_classes = [ComponentPermissions, ]
     filterset_class = ComponentFilter
-    filter_backends = [ObjectPermissionsFilter, filters.DjangoFilterBackend, ]
+    filter_backends = [filters.DjangoFilterBackend, ]
     serializer_class = ComponentListSerializer
 
     def list(self, request, *args, **kwargs):
@@ -55,6 +58,7 @@ class ComponentListSearchView(generics.ListAPIView):
 
 class ComponentTypeListView(generics.ListAPIView):
     queryset = Component.objects.order_by().values_list("type").distinct()
+    permission_classes = [ComponentPermissions, ]
     filter_backends = [ObjectPermissionsFilter, ]
 
     def list(self, request, *args, **kwargs):
