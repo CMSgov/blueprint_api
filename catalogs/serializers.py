@@ -10,4 +10,7 @@ class CatalogListSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "file_name",
+            "source",
+            "version",
+            "impact_level",
         )

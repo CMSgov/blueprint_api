@@ -12,15 +12,13 @@ class CatalogTools(object):
             self.status = "ok"
             self.status_message = "Success loading catalog"
             self.catalog_id = self.oscal.get("id")
-            self.info = {}
-            self.info["groups"] = self.get_groups()
+            self.info = {"groups": self.get_groups()}
         except Exception:
             self.oscal = None
             self.status = "error"
             self.status_message = "Error loading catalog"
             self.catalog_id = None
-            self.info = {}
-            self.info["groups"] = None
+            self.info = {"groups": None}
 
     def _load_catalog_json(self, source, text):
         """Read catalog file - JSON"""
@@ -226,6 +224,7 @@ class CatalogTools(object):
         guidance = self.get_control_part_by_name(control, "guidance")
         control_data = {
             "label": self.get_control_property_by_name(control, "label"),
+            "sort_id": self.get_control_property_by_name(control, "sort-id"),
             "title": control.get("title"),
             "family": self.get_group_title_by_id(family_id),
             "description": self.__get_simplified_prose(desc),

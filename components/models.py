@@ -5,8 +5,6 @@ from django.db import models
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 
-from catalogs.models import Catalog
-
 from .componentio import ComponentTools as Tools
 
 
@@ -34,7 +32,7 @@ class Component(models.Model):
         help_text="Type category of the component",
     )
     catalog = models.ForeignKey(
-        Catalog,
+        to="catalogs.Catalog",
         null=False,
         on_delete=models.PROTECT,
         related_name="components_for_catalog",
