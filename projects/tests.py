@@ -208,8 +208,6 @@ class ProjectModelTest(TestCase):
 class ProjectRequiredFieldsTest(AuthenticatedAPITestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.test_user = User.objects.create()
-
         cls.test_catalog = Catalog.objects.create(
             name="NIST_SP-800", file_name="NIST_SP-800.json"
         )
@@ -218,7 +216,6 @@ class ProjectRequiredFieldsTest(AuthenticatedAPITestCase):
             "acronym": "NTP",
             "impact_level": "low",
             "location": "other",
-            "creator": cls.test_user.id,
             "catalog": cls.test_catalog.id,
         }
 
@@ -226,7 +223,6 @@ class ProjectRequiredFieldsTest(AuthenticatedAPITestCase):
             "title": "No Acronym Project",
             "impact_level": "low",
             "location": "other",
-            "creator": cls.test_user.id,
             "catalog": cls.test_catalog.id,
         }
 
@@ -235,7 +231,6 @@ class ProjectRequiredFieldsTest(AuthenticatedAPITestCase):
             "acronym": "NCP",
             "impact_level": "low",
             "location": "other",
-            "creator": cls.test_user.id,
             "catalog": None,
         }
 
@@ -395,7 +390,7 @@ class ProjectAddComponentViewTest(AuthenticatedAPITestCase):
             "/api/projects/add-component/",
             {"creator": 0, "component_id": 1, "project_id": self.test_project.id},
         )
-        self.assertEqual(resp.status_code, 403)
+        self.assertEqual(resp.status_code, 404)
 
     def test_invalid_component(self):
         resp = self.client.post(
