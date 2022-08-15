@@ -76,6 +76,12 @@ class Project(models.Model):
         null=True,
         help_text="FISMA impact level of the project",
     )
+    catalog_version = models.CharField(
+        max_length=32,
+        default=None,
+        null=False,
+        help_text="The Catalog version, for example ARS 3.1",
+    )
     location = models.CharField(
         choices=LocationChoices.choices,
         max_length=100,
@@ -100,6 +106,17 @@ class Project(models.Model):
             ("can_delete_members", "Can delete members"),
             manage_project_users_permission,
         ]
+
+    def save(self, *args, **kwargs):
+        cat = apps.get_model("catalogs", "Catalog")
+        if self.impact_level and self.catalog_version:
+            catalog = cat.objects.get(
+                impact_level=self.impact_level, version=self.catalog_version
+            )
+
+        self.catalog = catalog
+        self.full_clean()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.title
