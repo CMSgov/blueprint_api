@@ -502,8 +502,11 @@ class ComponentTypesViewTest(AuthenticatedAPITestCase):
     def test_get_types_list(self):
         resp = self.client.get("/api/components/types/", format="json")
         self.assertEqual(resp.status_code, 200)
-        self.assertEqual(json.loads(resp.content)[0][0], "policy")
-        self.assertEqual(json.loads(resp.content)[1][0], "software")
+
+        content = resp.json()
+        # Data structure in response is [["type1"], ["type2"], ..]
+        flattened = sorted(value for item in content for value in item)
+        self.assertEqual(flattened, ["policy", "software"])
 
     def test_types_without_superuser(self):
         # Create a non-super user with default permissions
@@ -530,7 +533,6 @@ class ComponentTypesViewTest(AuthenticatedAPITestCase):
         # Data structure in response is [["type1"], ["type2"], ..]
         flattened = sorted(value for item in content for value in item)
 
-        self.assertEqual(len(flattened), 2)
         self.assertEqual(flattened, ["policy", "software"])
 
 
