@@ -1,5 +1,8 @@
 import json
+import logging
 from typing import Any, List, Optional
+
+logger = logging.getLogger("catalogs.catalogio")
 
 
 class CatalogTools(object):
@@ -8,17 +11,15 @@ class CatalogTools(object):
     def __init__(self, source, text=False):
         try:
             self.oscal = self._load_catalog_json(source, text)
-            json.dumps(self.oscal)
-            self.status = "ok"
-            self.status_message = "Success loading catalog"
-            self.catalog_id = self.oscal.get("id")
-            self.info = {"groups": self.get_groups()}
-        except CatalogLoadError:
-            self.oscal = None
-            self.status = "error"
-            self.status_message = "Error loading catalog"
-            self.catalog_id = None
-            self.info = {"groups": None}
+        except (IOError, FileNotFoundError, json.decoder.JSONDecodeError) as e:
+            logger.error(f"Unable to load catalog {source}: {e}")
+            raise CatalogLoadError(f"Could not load catalog {source}") from e
+
+        json.dumps(self.oscal)
+        self.status = "ok"
+        self.status_message = "Success loading catalog"
+        self.catalog_id = self.oscal.get("id")
+        self.info = {"groups": self.get_groups()}
 
     def _load_catalog_json(self, source, text):
         """Read catalog file - JSON"""
