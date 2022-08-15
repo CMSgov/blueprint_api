@@ -195,7 +195,7 @@ class ProjectControl(models.Model):
         COMPLETE = "completed", _("Completed")
 
     project = models.ForeignKey(to="projects.Project", on_delete=models.CASCADE)
-    controls = models.ForeignKey(to="catalogs.Controls", on_delete=models.PROTECT)
+    control = models.ForeignKey(to="catalogs.Controls", on_delete=models.PROTECT)
     status = models.CharField(
         choices=Status.choices,
         max_length=20,

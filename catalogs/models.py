@@ -112,12 +112,6 @@ def auto_delete_file_on_change(sender, instance, **kwargs):
             os.remove(old_file.path)
 
 
-@receiver(post_save, sender=Catalog)
-def post_create_setup(sender, instance, created, **kwargs):
-    if created:
-        add_controls
-
-
 class Controls(models.Model):
     catalog = models.ForeignKey(to="catalogs.Catalog", on_delete=models.CASCADE)
     control_id = models.CharField(
