@@ -21,7 +21,8 @@ class CatalogTools(object):
         self.catalog_id = self.oscal.get("id")
         self.info = {"groups": self.get_groups()}
 
-    def _load_catalog_json(self, source, text):
+    @staticmethod
+    def _load_catalog_json(source, text):
         """Read catalog file - JSON"""
         oscal: dict = {}
         if text:
@@ -31,7 +32,8 @@ class CatalogTools(object):
                 oscal = json.load(f)
         return oscal.get("catalog")
 
-    def find_dict_by_value(self, search_in, search_key: str, search_value: str):
+    @staticmethod
+    def find_dict_by_value(search_in, search_key: str, search_value: str):
         """
         Return the dictionary in an array of dictionaries with a key matching a value
         :param search_in: a list of dicts to search in
@@ -199,7 +201,8 @@ class CatalogTools(object):
             resource = self.find_dict_by_value(resources, "uuid", uuid)
         return resource
 
-    def __get_control_parameter_values(self, control) -> dict:
+    @staticmethod
+    def __get_control_parameter_values(control) -> dict:
         params: dict = {}
         if "params" in control:
             for p in control.get("params"):
@@ -235,7 +238,8 @@ class CatalogTools(object):
 
         return control_data
 
-    def __get_simplified_prose(self, prose: list):
+    @staticmethod
+    def __get_simplified_prose(prose: list):
         """"""
         if prose:
             text = prose[0]

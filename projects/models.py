@@ -106,17 +106,13 @@ class Project(models.Model):
 
 
 def add_project_controls(instance: Project):
-    try:
-        controls = apps.get_model("catalogs", "Controls")
-        catalog_controls = controls.objects.filter(catalog_id=instance.catalog)
-        print(catalog_controls)
-        if catalog_controls:
-            instance.controls.set(
-                catalog_controls,
-                through_defaults={"status": ProjectControl.Status.NOT_STARTED},
-            )
-    except ObjectDoesNotExist as e:
-        logger.warning(f"Controls not found: {e}")
+    controls = apps.get_model("catalogs", "Controls")
+    catalog_controls = controls.objects.filter(catalog_id=instance.catalog)
+    if catalog_controls.exists():
+        instance.controls.set(
+            catalog_controls,
+            through_defaults={"status": ProjectControl.Status.NOT_STARTED},
+        )
 
 
 def add_default_component(instance: Project, group: Group):

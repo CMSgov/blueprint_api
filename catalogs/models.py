@@ -1,5 +1,6 @@
 import json
 import os
+from typing import List
 
 import jsonschema
 from django.db import models
@@ -62,21 +63,24 @@ class Catalog(models.Model):
 
 
 @receiver(post_save, sender=Catalog)
-def add_controls(sender, instance, **kwargs):
-    if kwargs["created"]:
+def add_controls(sender, instance, created, **kwargs):
+    if created:
         catalog = CatalogTools(instance.file_name.path)
-        controls = catalog.get_controls_all_ids()
-        if controls:
-            for c in controls:
+        control_ids = catalog.get_controls_all_ids()
+        if control_ids:
+            control_objects: List = []
+            for c in control_ids:
                 control_data = catalog.get_control_data_simplified(c)
-                ctrl = Controls(
-                    catalog=instance,
-                    control_id=c,
-                    control_label=control_data.get("label"),
-                    sort_id=control_data.get("sort_id"),
-                    title=control_data.get("title"),
+                control_objects.append(
+                    Controls(
+                        catalog=instance,
+                        control_id=c,
+                        control_label=control_data.get("label"),
+                        sort_id=control_data.get("sort_id"),
+                        title=control_data.get("title"),
+                    )
                 )
-                ctrl.save()
+            Controls.objects.bulk_create(control_objects)
 
 
 @receiver(models.signals.post_delete, sender=Catalog)
@@ -106,6 +110,12 @@ def auto_delete_file_on_change(sender, instance, **kwargs):
     if not old_file == new_file:
         if os.path.isfile(old_file.path):
             os.remove(old_file.path)
+
+
+@receiver(post_save, sender=Catalog)
+def post_create_setup(sender, instance, created, **kwargs):
+    if created:
+        add_controls
 
 
 class Controls(models.Model):
