@@ -116,23 +116,19 @@ class Controls(models.Model):
     catalog = models.ForeignKey(to="catalogs.Catalog", on_delete=models.CASCADE)
     control_id = models.CharField(
         max_length=12,
-        unique=False,
-        blank=False,
+        help_text="Catalog control ID, for example ac-1",
     )
     control_label = models.CharField(
         max_length=12,
-        unique=False,
-        blank=False,
+        help_text="Catalog control label, for example AC-01",
     )
     sort_id = models.CharField(
         max_length=12,
-        unique=False,
-        blank=False,
+        help_text="Catalog ID used for sorting, for example ac-01",
     )
     title = models.CharField(
         max_length=124,
-        unique=False,
-        blank=False,
+        help_text="Catalog control title, for example Access Control Policy and Procedures.",
     )
 
     def __str__(self):

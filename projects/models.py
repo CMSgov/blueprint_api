@@ -66,7 +66,6 @@ class Project(models.Model):
     controls = models.ManyToManyField(
         to="catalogs.Controls",
         through="ProjectControl",
-        blank=True,
         related_name="project_controls",
     )
     impact_level = models.CharField(
