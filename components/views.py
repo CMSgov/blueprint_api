@@ -3,7 +3,6 @@ from django_filters import rest_framework as filters
 from rest_framework import generics, status
 from rest_framework.response import Response
 
-from blueprintapi.filters import ObjectPermissionsFilter
 from components.filters import ComponentFilter, ComponentPermissionsFilter
 from components.models import Component
 from components.permissions import ComponentPermissions
@@ -59,7 +58,7 @@ class ComponentListSearchView(generics.ListAPIView):
 class ComponentTypeListView(generics.ListAPIView):
     queryset = Component.objects.order_by().values_list("type").distinct()
     permission_classes = [ComponentPermissions, ]
-    filter_backends = [ObjectPermissionsFilter, ]
+    filter_backends = [ComponentPermissionsFilter, ]
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
