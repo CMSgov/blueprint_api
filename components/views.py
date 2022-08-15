@@ -13,7 +13,7 @@ class ComponentListView(generics.ListCreateAPIView):
     """Use for read-write endpoints to represent a collection of model instances.
     Provides get and post method handlers.
     """
-    queryset = Component.objects.all().order_by("pk")
+    queryset = Component.objects.all()
     serializer_class = ComponentListSerializer
     permission_classes = [ComponentPermissions, ]
     filter_backends = [ComponentPermissionsFilter, ]
