@@ -183,7 +183,7 @@ class GetAllComponentsTest(AuthenticatedAPITestCase):
     def test_get_all_components(self):
 
         response = self.client.get(reverse("component-list"))
-        components = Component.objects.all()
+        components = Component.objects.all().order_by("pk")
         serializer = ComponentListSerializer(components, many=True)
 
         expected_num_components = 2
