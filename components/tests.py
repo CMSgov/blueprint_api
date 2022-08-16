@@ -5,13 +5,15 @@ from django.core.files import File
 from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
+from rest_framework.authtoken.models import Token
 
 from catalogs.models import Catalog
 from testing_utils import AuthenticatedAPITestCase, prevent_request_warnings
 
-from .componentio import ComponentTools, EmptyComponent
-from .models import Component
-from .serializers import ComponentListSerializer, ComponentSerializer
+from components.componentio import ComponentTools, EmptyComponent
+from components.models import Component
+from components.serializers import ComponentListSerializer, ComponentSerializer
+from users.models import User
 
 TEST_COMPONENT_JSON_BLOB = {
     "component-definition": {
@@ -183,7 +185,7 @@ class GetAllComponentsTest(AuthenticatedAPITestCase):
     def test_get_all_components(self):
 
         response = self.client.get(reverse("component-list"))
-        components = Component.objects.all()
+        components = Component.objects.all().order_by("pk")
         serializer = ComponentListSerializer(components, many=True)
 
         expected_num_components = 2
@@ -500,8 +502,38 @@ class ComponentTypesViewTest(AuthenticatedAPITestCase):
     def test_get_types_list(self):
         resp = self.client.get("/api/components/types/", format="json")
         self.assertEqual(resp.status_code, 200)
-        self.assertEqual(json.loads(resp.content)[0][0], "policy")
-        self.assertEqual(json.loads(resp.content)[1][0], "software")
+
+        content = resp.json()
+        # Data structure in response is [["type1"], ["type2"], ..]
+        flattened = sorted(value for item in content for value in item)
+        self.assertEqual(flattened, ["policy", "software"])
+
+    def test_types_without_superuser(self):
+        # Create a non-super user with default permissions
+        user = User.objects.create(username="TestUser", password="password")
+        token = Token.objects.create(user=user)
+        self.client.force_authenticate(user=user, token=token)
+
+        # Create a private component (result should not be available to types endpoint)
+        Component.objects.create(
+            title="Private component",
+            description="testing description",
+            catalog=self.test_catalog,
+            controls=["ac-2.1"],
+            search_terms=["cool", "magic", "software"],
+            type="crazy-type",
+            component_json=TEST_COMPONENT_JSON_BLOB,
+            status=Component.Status.SYSTEM,
+        )
+
+        response = self.client.get("/api/components/types/")
+        self.assertEqual(response.status_code, 200)
+
+        content = response.json()
+        # Data structure in response is [["type1"], ["type2"], ..]
+        flattened = sorted(value for item in content for value in item)
+
+        self.assertEqual(flattened, ["policy", "software"])
 
 
 class CreateEmptComponentTest(TestCase):

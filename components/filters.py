@@ -37,5 +37,6 @@ class ComponentPermissionsFilter(BaseFilterBackend):
 
         return (
                 get_objects_for_user(user, permission, queryset, accept_global_perms=False)
-                | queryset.filter(status=Component.Status.PUBLIC)
+                .union(queryset.filter(status=Component.Status.PUBLIC))
+                .order_by("pk")
         )
