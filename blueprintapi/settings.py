@@ -187,11 +187,13 @@ CORS_ALLOW_HEADERS = [
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'blueprintapi.authentication.ExpiringTokenAuthentication',
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "blueprintapi.authentication.ExpiringTokenAuthentication",
     ],
-    'DEFAULT_PERMISSION_CLASSES': [
-        'blueprintapi.permissions.StrictDjangoObjectPermissions',
+    "DEFAULT_PERMISSION_CLASSES": [
+        "blueprintapi.permissions.StrictDjangoObjectPermissions",
     ],
     "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+    "PAGE_SIZE": 20,
 }

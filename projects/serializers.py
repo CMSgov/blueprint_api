@@ -1,9 +1,10 @@
 from rest_framework import serializers
 
 from catalogs.catalogio import CatalogTools
+from catalogs.serializers import ControlSerializer
 from components.componentio import ComponentTools
 from components.serializers import ComponentListSerializer
-from projects.models import Project
+from projects.models import Project, ProjectControl
 
 
 class ProjectListSerializer(serializers.ModelSerializer):
@@ -117,3 +118,27 @@ class ProjectControlSerializer(serializers.ModelSerializer):
             component_data["responsibility"] = responsibility
 
         return component_data
+
+
+class ProjectBasicDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Project
+        fields = (
+            "id",
+            "title",
+            "acronym",
+            "impact_level",
+        )
+
+
+class ProjectControlListSerializer(serializers.ModelSerializer):
+    project = ProjectBasicDataSerializer()
+    control = ControlSerializer()
+
+    class Meta:
+        model = ProjectControl
+        fields = (
+            "status",
+            "control",
+            "project",
+        )

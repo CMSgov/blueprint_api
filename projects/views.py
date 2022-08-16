@@ -8,8 +8,9 @@ from catalogs.catalogio import MissingControlError
 from components.filters import ComponentFilter
 from components.models import Component
 from components.serializers import ComponentListBasicSerializer
-from projects.models import Project
+from projects.models import Project, ProjectControl
 from projects.serializers import (
+    ProjectControlListSerializer,
     ProjectControlSerializer,
     ProjectListSerializer,
     ProjectSerializer,
@@ -155,3 +156,10 @@ class ProjectComponentNotAddedListView(generics.GenericAPIView):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ProjectGetControlList(generics.ListAPIView):
+    queryset = ProjectControl.objects.all()
+    lookup_field = "project"
+    lookup_url_kwarg = "project_id"
+    serializer_class = ProjectControlListSerializer
