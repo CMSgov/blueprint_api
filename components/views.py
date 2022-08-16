@@ -2,6 +2,7 @@ from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django_filters import rest_framework as filters
 from rest_framework import generics, status
 from rest_framework.response import Response
+from rest_framework.request import Request
 
 from components.filters import ComponentFilter, ComponentPermissionsFilter
 from components.models import Component
@@ -13,7 +14,7 @@ class ComponentListView(generics.ListCreateAPIView):
     """Use for read-write endpoints to represent a collection of model instances.
     Provides get and post method handlers.
     """
-    queryset = Component.objects.all()
+    queryset = Component.objects.order_by("pk")
     serializer_class = ComponentListSerializer
     permission_classes = [ComponentPermissions, ]
     filter_backends = [ComponentPermissionsFilter, ]
@@ -56,11 +57,11 @@ class ComponentListSearchView(generics.ListAPIView):
 
 
 class ComponentTypeListView(generics.ListAPIView):
-    queryset = Component.objects.order_by().values_list("type").distinct()
+    queryset = Component.objects.values_list("type")
     permission_classes = [ComponentPermissions, ]
     filter_backends = [ComponentPermissionsFilter, ]
 
-    def list(self, request, *args, **kwargs):
+    def list(self, request: Request, *args, **kwargs) -> Response:
         queryset = self.filter_queryset(self.get_queryset())
 
-        return Response(queryset, status=status.HTTP_200_OK)
+        return Response(set(queryset), status=status.HTTP_200_OK)
