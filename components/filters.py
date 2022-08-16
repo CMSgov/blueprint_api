@@ -36,6 +36,6 @@ class ComponentPermissionsFilter(BaseFilterBackend):
         }
 
         return (
-                get_objects_for_user(user, permission, queryset, accept_global_perms=False)
-                .union(queryset.filter(status=Component.Status.PUBLIC))
+            get_objects_for_user(user, permission, queryset, accept_global_perms=False)
+            .union(queryset.filter(status=Component.Status.PUBLIC))
         )
