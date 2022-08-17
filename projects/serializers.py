@@ -120,19 +120,7 @@ class ProjectControlSerializer(serializers.ModelSerializer):
         return component_data
 
 
-class ProjectBasicDataSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Project
-        fields = (
-            "id",
-            "title",
-            "acronym",
-            "impact_level",
-        )
-
-
 class ProjectControlListSerializer(serializers.ModelSerializer):
-    project = ProjectBasicDataSerializer()
     control = ControlSerializer()
 
     class Meta:

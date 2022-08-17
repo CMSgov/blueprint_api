@@ -9,7 +9,6 @@ from catalogs.catalogio import MissingControlError
 from components.filters import ComponentFilter
 from components.models import Component
 from components.serializers import ComponentListBasicSerializer
-from projects.filters import ProjectControlListFilter
 from projects.models import Project, ProjectControl
 from projects.serializers import (
     ProjectControlListSerializer,
@@ -165,7 +164,9 @@ class ProjectGetControlList(generics.ListAPIView):
     lookup_field = "project"
     lookup_url_kwarg = "project_id"
     serializer_class = ProjectControlListSerializer
-    filterset_class = ProjectControlListFilter
     filter_backends = [
         filters.DjangoFilterBackend,
     ]
+    filterset_fields = {
+        "status": ["in", "iexact"],
+    }
