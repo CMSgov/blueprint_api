@@ -2,7 +2,6 @@ import json
 
 from django.urls import reverse
 from rest_framework import status
-from rest_framework.authtoken.models import Token
 from rest_framework.test import APITestCase
 
 from testing_utils import AuthenticatedAPITestCase, prevent_request_warnings
@@ -32,7 +31,7 @@ class GetAllUsersTest(AuthenticatedAPITestCase):
         users = User.objects.all()
         serializer = UserSerializer(users, many=True)
 
-        self.assertEqual(response.data, serializer.data)
+        self.assertEqual(response.data.get("results"), serializer.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
@@ -47,7 +46,9 @@ class GetSingleUserTest(AuthenticatedAPITestCase):
         )
 
     def test_get_valid_single_user(self):
-        response = self.client.get(reverse("user-detail", kwargs={"pk": self.tester.pk}))
+        response = self.client.get(
+            reverse("user-detail", kwargs={"pk": self.tester.pk})
+        )
         user = User.objects.get(pk=self.tester.pk)
         serializer = UserSerializer(user)
 
@@ -140,14 +141,24 @@ class UpdateSingleUserTest(AuthenticatedAPITestCase):
 
 class BasicUserPermissionsTestCase(APITestCase):
     def setUp(self):
-        self.test_user = User.objects.create(username="TestUser", password="supersecretpassword")
+        self.test_user = User.objects.create(
+            username="TestUser", password="supersecretpassword"
+        )
 
     def test_new_user_has_self_permissions(self):
-        expected_perms = ('view_user', 'change_user', 'delete_user', )
+        expected_perms = (
+            "view_user",
+            "change_user",
+            "delete_user",
+        )
 
         self.assertTrue(self.test_user.has_perms(expected_perms, self.test_user))
 
     def test_new_user_has_basic_project_permissions(self):
-        expected_perms = ('projects.add_project', 'projects.change_project', 'projects.view_project', )
+        expected_perms = (
+            "projects.add_project",
+            "projects.change_project",
+            "projects.view_project",
+        )
 
         self.assertTrue(self.test_user.has_perms(expected_perms))
