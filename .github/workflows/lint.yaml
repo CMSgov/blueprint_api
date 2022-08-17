@@ -13,16 +13,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3.0.2
+      - name: Upgrade pip
+        run: pip install --upgrade pip
+      - name: Install poetry
+        run: pip install poetry
       - name: Set up python 3.9
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
           cache: 'poetry'
-      - name: Upgrade pip
-        run: pip install --upgrade pip
-      - name: Install poetry
-        run: pip install poetry
-      - run: poetry config virtualenvs.create false
       - name: Install dependencies
         run: poetry install --dev --no-ansi --no-interaction --no-root
       - name: Run pylint
