@@ -167,6 +167,4 @@ class ProjectGetControlList(generics.ListAPIView):
     filter_backends = [
         filters.DjangoFilterBackend,
     ]
-    filterset_fields = {
-        "status": ["in", "iexact"],
-    }
+    filterset_fields = {"status": ["in", "iexact"]}
