@@ -31,13 +31,14 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
+          cache: 'poetry'
       - name: Upgrade pip
         run: pip install --upgrade pip
       - name: Install poetry  # This is not ideal; should investigate available actions for installing/using poetry properly
         run: pip install poetry
       - run: poetry config virtualenvs.create false
       - name: Install dependencies
-        run: poetry install --no-dev --no-ansi --no-interaction
+        run: poetry install --no-dev --no-ansi --no-interaction --no-root
       - name: Run tests
         env:
           POSTGRES_DB_NAME: postgres
