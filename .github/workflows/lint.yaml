@@ -23,6 +23,6 @@ jobs:
         run: pip install poetry
       - run: poetry config virtualenvs.create false
       - name: Install dependencies
-        run: poetry install --with dev --no-ansi --no-interaction --no-root
+        run: poetry install --no-ansi --no-interaction --no-root
       - name: Run pylint
         run: pylint .
