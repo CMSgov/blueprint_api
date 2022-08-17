@@ -31,6 +31,7 @@ jobs:
         run: pip install --upgrade pip
       - name: Install poetry  # This is not ideal; should investigate available actions for installing/using poetry properly
         run: pip install poetry
+      - run: poetry config virtualenvs.create false
       - name: Set up python 3.9
         uses: actions/setup-python@v4
         with:
