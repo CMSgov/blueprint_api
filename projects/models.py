@@ -210,8 +210,16 @@ class ProjectControl(models.Model):
         INCOMPLETE = "incomplete", _("Incomplete")
         COMPLETE = "completed", _("Completed")
 
-    project = models.ForeignKey(to="projects.Project", on_delete=models.CASCADE)
-    control = models.ForeignKey(to="catalogs.Controls", on_delete=models.PROTECT)
+    project = models.ForeignKey(
+        "projects.Project",
+        on_delete=models.CASCADE,
+        related_name="to_project",
+    )
+    control = models.ForeignKey(
+        "catalogs.Controls",
+        on_delete=models.PROTECT,
+        related_name="to_control",
+    )
     status = models.CharField(
         choices=Status.choices,
         max_length=20,
@@ -221,4 +229,4 @@ class ProjectControl(models.Model):
     )
 
     def __str__(self):
-        return self.controls.control_id
+        return self.control.control_id

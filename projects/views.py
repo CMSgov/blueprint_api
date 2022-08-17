@@ -1,5 +1,6 @@
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.shortcuts import get_object_or_404
+from django_filters import rest_framework as filters
 from rest_framework import generics, status
 from rest_framework.response import Response
 
@@ -8,6 +9,7 @@ from catalogs.catalogio import MissingControlError
 from components.filters import ComponentFilter
 from components.models import Component
 from components.serializers import ComponentListBasicSerializer
+from projects.filters import ProjectControlListFilter
 from projects.models import Project, ProjectControl
 from projects.serializers import (
     ProjectControlListSerializer,
@@ -159,7 +161,11 @@ class ProjectComponentNotAddedListView(generics.GenericAPIView):
 
 
 class ProjectGetControlList(generics.ListAPIView):
-    queryset = ProjectControl.objects.all()
+    queryset = ProjectControl.objects.all().order_by("control_id")
     lookup_field = "project"
     lookup_url_kwarg = "project_id"
     serializer_class = ProjectControlListSerializer
+    filterset_class = ProjectControlListFilter
+    filter_backends = [
+        filters.DjangoFilterBackend,
+    ]
