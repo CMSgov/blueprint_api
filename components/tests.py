@@ -483,7 +483,7 @@ class ComponentTypesViewTest(AuthenticatedAPITestCase):
         cls.test_component = Component.objects.create(
             title="Cool Component",
             description="Probably the coolest component you ever did see. It's magical.",
-            catalog=Catalog.objects.get(id=cls.test_catalog.id),
+            catalog=cls.test_catalog,
             controls=["ac-2.1", "ac-6.10", "ac-8", "au-6.1", "sc-2"],
             search_terms=["cool", "magic", "software"],
             type="software",
@@ -492,10 +492,21 @@ class ComponentTypesViewTest(AuthenticatedAPITestCase):
         cls.test_component_2 = Component.objects.create(
             title="testing title",
             description="testing description",
-            catalog=Catalog.objects.get(id=cls.test_catalog.id),
+            catalog=cls.test_catalog,
             controls=["ac-2.1"],
             search_terms=["cool", "magic", "software"],
             type="policy",
+            component_json=TEST_COMPONENT_JSON_BLOB,
+        )
+
+        # Create component with duplicate type
+        Component.objects.create(
+            title="Duplicate Type Component",
+            description="Component with duplicate type",
+            catalog=cls.test_catalog,
+            controls=["ac-2.1", ],
+            search_terms=["cool", ],
+            type="software",
             component_json=TEST_COMPONENT_JSON_BLOB,
         )
 
