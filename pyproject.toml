@@ -42,4 +42,4 @@ max-line-length = 120
 
 
 [tool.pylint."messages control"]
-disable = ["missing-module-docstring", "missing-class-docstring", "missing-function-docstring", "django-not-configured"]
+disable = ["missing-module-docstring", "missing-class-docstring", "missing-function-docstring", "django-not-configured", "unspecified-encoding", "inconsistent-return-statements", "duplicate-code"]
