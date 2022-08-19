@@ -563,22 +563,22 @@ class ProjectPostSaveAddComponentTest(TestCase):
             component_json=TEST_COMPONENT_JSON_BLOB,
         )
 
-    def test_post_save_component_added_ocisco(cls):
+    def test_post_save_component_added_ocisco(self):
         project = Project.objects.create(
             title="Basic Project",
             acronym="BP",
             catalog_version="NIST 800-53",
             impact_level="low",
             location="other",
-            creator=cls.test_user,
-            catalog=cls.test_catalog,
+            creator=self.test_user,
+            catalog=self.test_catalog,
         )
         has_ociso = False
         for c in project.components.all():
             if c.title == "ociso":
                 has_ociso = True
 
-        cls.assertTrue(has_ociso)
+        self.assertTrue(has_ociso)
 
     def test_post_save_component_added_both(self):
         project = Project.objects.create(

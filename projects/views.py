@@ -2,6 +2,7 @@ from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from rest_framework import generics, status
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
 from blueprintapi.filters import ObjectPermissionsFilter
@@ -9,7 +10,7 @@ from catalogs.catalogio import MissingControlError
 from components.filters import ComponentFilter
 from components.models import Component
 from components.serializers import ComponentListBasicSerializer
-from projects.models import Project, ProjectControl
+from projects.models import Project
 from projects.serializers import (
     ProjectControlListSerializer,
     ProjectControlSerializer,
@@ -160,11 +161,23 @@ class ProjectComponentNotAddedListView(generics.GenericAPIView):
 
 
 class ProjectGetControlList(generics.ListAPIView):
-    queryset = ProjectControl.objects.all().order_by("control_id")
-    lookup_field = "project"
+    queryset = Project.objects.all()
     lookup_url_kwarg = "project_id"
     serializer_class = ProjectControlListSerializer
-    filter_backends = [
-        filters.DjangoFilterBackend,
-    ]
-    filterset_fields = {"status": ["in", "iexact"]}
+    filter_backends = (filters.DjangoFilterBackend,)
+    pagination_class = PageNumberPagination
+
+    def list(self, request, *args, **kwargs):
+        project_id = self.kwargs["project_id"]
+        project = self.get_object()
+        queryset = self.filter_queryset(
+            project.controls.through.objects.filter(project_id=project_id).order_by(
+                "control_id"
+            )
+        )
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
