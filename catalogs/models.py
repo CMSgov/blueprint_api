@@ -9,7 +9,7 @@ from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from jsonschema.exceptions import SchemaError, ValidationError
 
-from .catalogio import CatalogTools
+from catalogs.catalogio import CatalogTools
 
 
 def validate_catalog(file_name):
