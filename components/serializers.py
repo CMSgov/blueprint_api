@@ -207,26 +207,14 @@ class ComponentControlSerializer(serializers.ModelSerializer):
         )
 
     def update(self, instance, validated_data):
-        # print("controlId:", validated_data.get("control_id"))
-        # if control_id := validated_data.get("control_id"):
-        #     print("controlId:", control_id)
-        print("starting json", instance.component_json)
         if controls := validated_data.get(
             "controls"
         ):  # and controls not in instance.controls:
-            print("controls", controls)
-            print("existing controls", instance.controls)
             existing_control = controls not in instance.controls
-            print("existing_control", existing_control)
-            # instance.controls.append(controls)
             if not existing_control:
                 instance.controls = list(set(instance.controls).union(controls))
 
-            print(controls)
             if description := validated_data.get("description"):
-                # data = collect_component_data(component_json)
-                print(description)
-                # print("existing json", instance.component_json)
                 implemented_requirement = {
                     "uuid": str(uuid.uuid4()),
                     "props": [
@@ -247,9 +235,7 @@ class ComponentControlSerializer(serializers.ModelSerializer):
                         .get("control-implementations")[0]
                         .get("implemented-requirements")
                     ):
-                        # form_values["add"].append({"value": a.id, "label": a.title})
                         if implemented.get("control-id") == controls[0]:
-                            print("found", implemented)
                             instance.component_json.get("component-definition").get(
                                 "components"
                             )[0].get("control-implementations")[0].get(
@@ -257,13 +243,7 @@ class ComponentControlSerializer(serializers.ModelSerializer):
                             ).remove(
                                 implemented
                             )
-                    print(
-                        "implemented...",
-                        instance.component_json.get("component-definition")
-                        .get("components")[0]
-                        .get("control-implementations")[0]
-                        .get("implemented-requirements"),
-                    )
+
                     instance.component_json.get("component-definition").get(
                         "components"
                     )[0].get("control-implementations")[0].get(
@@ -279,8 +259,6 @@ class ComponentControlSerializer(serializers.ModelSerializer):
                     ).append(
                         implemented_requirement
                     )
-                print("ending json", instance.component_json)
 
-        print(instance)
-        # instance.save()
+        instance.save()
         return instance
