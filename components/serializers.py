@@ -74,7 +74,6 @@ class ComponentSerializer(serializers.ModelSerializer):
             "catalog_data",
             "component_data",
             "project_data",
-            "component_json",
         )
 
 
