@@ -31,7 +31,7 @@ class GetAllUsersTest(AuthenticatedAPITestCase):
         users = User.objects.all()
         serializer = UserSerializer(users, many=True)
 
-        self.assertEqual(response.data.get("results"), serializer.data)
+        self.assertEqual(response.data, serializer.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 

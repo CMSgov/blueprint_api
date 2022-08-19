@@ -1,18 +1,18 @@
 import json
 from typing import List
 
-from catalogs.models import Catalog
 from django.core.files import File
 from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.authtoken.models import Token
-from testing_utils import AuthenticatedAPITestCase, prevent_request_warnings
-from users.models import User
 
+from catalogs.models import Catalog
 from components.componentio import ComponentTools, EmptyComponent
 from components.models import Component
 from components.serializers import ComponentListSerializer, ComponentSerializer
+from testing_utils import AuthenticatedAPITestCase, prevent_request_warnings
+from users.models import User
 
 TEST_COMPONENT_JSON_BLOB = {
     "component-definition": {
@@ -190,15 +190,15 @@ class GetAllComponentsTest(AuthenticatedAPITestCase):
         components = Component.objects.all().order_by("pk")
         serializer = ComponentListSerializer(components, many=True)
         expected_num_components = 2
-        received_num_components = response.data.get("count")
+        received_num_components = len(response.data)
 
-        self.assertEqual(response.data.get("results"), serializer.data)
+        self.assertEqual(response.data, serializer.data)
         self.assertEqual(received_num_components, expected_num_components)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_controls_count_is_returned(self):
         response = self.client.get(reverse("component-list"))
-        component = response.data.get("results")
+        component = response.data
 
         expected_controls_count = len(TEST_COMPONENT_CONTROLS)
         received_controls_count = component[0].get("controls_count")
@@ -507,8 +507,12 @@ class ComponentTypesViewTest(AuthenticatedAPITestCase):
             title="Duplicate Type Component",
             description="Component with duplicate type",
             catalog=cls.test_catalog,
-            controls=["ac-2.1", ],
-            search_terms=["cool", ],
+            controls=[
+                "ac-2.1",
+            ],
+            search_terms=[
+                "cool",
+            ],
             type="software",
             component_json=TEST_COMPONENT_JSON_BLOB,
         )
