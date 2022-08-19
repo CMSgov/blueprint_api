@@ -23,7 +23,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='project',
             name='catalog_version',
-            field=models.CharField(default=None, help_text='The Catalog version, for example ARS 3.1', max_length=32),
+            field=models.CharField(default="ARS 3.1", help_text='The Catalog version, for example ARS 3.1', max_length=32),
+            preserve_default=False,
         ),
         migrations.AddField(
             model_name='project',
