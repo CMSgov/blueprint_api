@@ -7,8 +7,12 @@ from rest_framework.request import Request
 
 from components.filters import ComponentFilter, ComponentPermissionsFilter
 from components.models import Component
-from components.permissions import ComponentPermissions
-from components.serializers import ComponentListSerializer, ComponentSerializer
+from components.permissions import ComponentPermissions, ComponentPrivatePermissions
+from components.serializers import (
+    ComponentControlSerializer,
+    ComponentListSerializer,
+    ComponentSerializer,
+)
 
 
 class ComponentListView(generics.ListCreateAPIView):
@@ -25,7 +29,7 @@ class ComponentListView(generics.ListCreateAPIView):
         return super().filter_queryset(queryset).order_by("pk")
 
 
-class ComponentDetailView(generics.RetrieveAPIView):
+class ComponentDetailView(generics.RetrieveUpdateAPIView):
     """
     Use for read or update endpoints to represent a single model instance.
     Provides get, put, and patch method handlers.
@@ -70,3 +74,17 @@ class ComponentTypeListView(generics.ListAPIView):
         queryset = self.filter_queryset(self.get_queryset())
 
         return Response(queryset, status=status.HTTP_200_OK)
+
+
+class ComponentNarrativeView(generics.RetrieveUpdateAPIView):
+    queryset = Component.objects.all()
+    permission_classes = [
+        ComponentPrivatePermissions,
+    ]
+    serializer_class = ComponentControlSerializer
+
+    # def patch(self, request, *args, **kwargs):
+    #     return self.partial_update(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)

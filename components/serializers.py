@@ -1,3 +1,5 @@
+import uuid
+
 from django.contrib.auth.models import AnonymousUser
 from rest_framework import serializers
 
@@ -72,7 +74,37 @@ class ComponentSerializer(serializers.ModelSerializer):
             "catalog_data",
             "component_data",
             "project_data",
+            "component_json",
         )
+
+    def partial_update(self, instance, validated_data):
+        if controls := validated_data.get("controls"):  # && controls not in:
+            print(controls)
+            # instance.controls.append(controls)
+            instance.controls = list(set(instance.controls).union(controls))
+
+        if description := validated_data.get("description"):
+            implemented_requirement = {
+                "uuid": str(uuid.uuid4()),
+                "props": [
+                    {
+                        "name": "security_control_type",
+                        "uuid": str(uuid.uuid4()),
+                        "value": "Hybrid",
+                    },
+                    {"name": "provider", "uuid": str(uuid.uuid4()), "value": "No"},
+                ],
+                "control-id": controls[0],
+                "description": description,
+            }
+            instance.component_json.get("component-definition").get("components")[
+                0
+            ].get("control-implementations")[0].get("implemented-requirements").append(
+                implemented_requirement
+            )
+
+        instance.save()
+        return instance
 
 
 def collect_catalog_data(controls: list, catalog):
@@ -143,6 +175,10 @@ def collect_project_data(component_id, user):
     return form_values
 
 
+def add_control_narrative():
+    return True
+
+
 class ComponentListBasicSerializer(serializers.ModelSerializer):
     controls_count = serializers.SerializerMethodField()
 
@@ -159,3 +195,92 @@ class ComponentListBasicSerializer(serializers.ModelSerializer):
             "catalog",
             "controls_count",
         )
+
+
+class ComponentControlSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Component
+        fields = (
+            "pk",
+            "controls",
+            "description",
+        )
+
+    def update(self, instance, validated_data):
+        # print("controlId:", validated_data.get("control_id"))
+        # if control_id := validated_data.get("control_id"):
+        #     print("controlId:", control_id)
+        print("starting json", instance.component_json)
+        if controls := validated_data.get(
+            "controls"
+        ):  # and controls not in instance.controls:
+            print("controls", controls)
+            print("existing controls", instance.controls)
+            existing_control = controls not in instance.controls
+            print("existing_control", existing_control)
+            # instance.controls.append(controls)
+            if not existing_control:
+                instance.controls = list(set(instance.controls).union(controls))
+
+            print(controls)
+            if description := validated_data.get("description"):
+                # data = collect_component_data(component_json)
+                print(description)
+                # print("existing json", instance.component_json)
+                implemented_requirement = {
+                    "uuid": str(uuid.uuid4()),
+                    "props": [
+                        {
+                            "name": "security_control_type",
+                            "uuid": str(uuid.uuid4()),
+                            "value": "Hybrid",
+                        },
+                        {"name": "provider", "uuid": str(uuid.uuid4()), "value": "No"},
+                    ],
+                    "control-id": controls[0],
+                    "description": description,
+                }
+                if existing_control:
+                    for implemented in (
+                        instance.component_json.get("component-definition")
+                        .get("components")[0]
+                        .get("control-implementations")[0]
+                        .get("implemented-requirements")
+                    ):
+                        # form_values["add"].append({"value": a.id, "label": a.title})
+                        if implemented.get("control-id") == controls[0]:
+                            print("found", implemented)
+                            instance.component_json.get("component-definition").get(
+                                "components"
+                            )[0].get("control-implementations")[0].get(
+                                "implemented-requirements"
+                            ).remove(
+                                implemented
+                            )
+                    print(
+                        "implemented...",
+                        instance.component_json.get("component-definition")
+                        .get("components")[0]
+                        .get("control-implementations")[0]
+                        .get("implemented-requirements"),
+                    )
+                    instance.component_json.get("component-definition").get(
+                        "components"
+                    )[0].get("control-implementations")[0].get(
+                        "implemented-requirements"
+                    ).append(
+                        implemented_requirement
+                    )
+                else:
+                    instance.component_json.get("component-definition").get(
+                        "components"
+                    )[0].get("control-implementations")[0].get(
+                        "implemented-requirements"
+                    ).append(
+                        implemented_requirement
+                    )
+                print("ending json", instance.component_json)
+
+        print(instance)
+        # instance.save()
+        return instance
