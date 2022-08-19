@@ -14,13 +14,3 @@ class ComponentPermissions(StrictDjangoObjectPermissions):
             return True
 
         return super().has_object_permission(request, view, obj)
-
-
-class ComponentPrivatePermissions(StrictDjangoObjectPermissions):
-    def has_object_permission(
-        self, request: Request, view: APIView, obj: Component
-    ) -> bool:
-        if request.method in SAFE_METHODS:
-            return True
-
-        return super().has_object_permission(request, view, obj)

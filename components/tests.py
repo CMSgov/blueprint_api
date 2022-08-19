@@ -586,3 +586,118 @@ class CreateEmptComponentTest(TestCase):
     def test_status_is_private(self):
         status = self.default.status
         self.assertEqual(status, 1)
+
+
+class ComponentNarrativeViewTest(AuthenticatedAPITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
+            catalog = File(f)
+            cls.test_catalog = Catalog.objects.create(
+                name="NIST Test Catalog",
+                file_name=catalog,
+            )
+
+        cls.test_component = Component.objects.create(
+            title="Cool Component",
+            description="Probably the coolest component you ever did see. It's magical.",
+            catalog=Catalog.objects.get(id=cls.test_catalog.id),
+            controls=["ac-2.1", "ac-6.10", "ac-8", "au-6.1", "sc-2"],
+            search_terms=["cool", "magic", "software"],
+            type="software",
+            component_json=TEST_COMPONENT_JSON_BLOB,
+        )
+
+    def test_happy_path_update_control_description(self):
+        test_control_id = "ac-1"
+        test_description = "updated description of ac-1 narrative"
+        resp = self.client.patch(
+            "/api/components/" + str(self.test_component.id) + "/narratives/",
+            {
+                "controls": test_control_id,
+                "description": test_description,
+            },
+        )
+        self.assertEqual(resp.status_code, 200)
+        content = resp.json()
+        self.assertNotEqual(content.get("component_json"), TEST_COMPONENT_JSON_BLOB)
+        original_length = len(
+            TEST_COMPONENT_JSON_BLOB.get("component-definition")
+            .get("components")[0]
+            .get("control-implementations")[0]
+            .get("implemented-requirements")
+        )
+        new_length = len(
+            content.get("component_json")
+            .get("component-definition")
+            .get("components")[0]
+            .get("control-implementations")[0]
+            .get("implemented-requirements")
+        )
+        self.assertEqual(original_length, new_length)
+        for implemented in (
+            content.get("component_json")
+            .get("component-definition")
+            .get("components")[0]
+            .get("control-implementations")[0]
+            .get("implemented-requirements")
+        ):
+            if implemented.get("control-id") == test_control_id:
+                self.assertEqual(implemented.get("description"), test_description)
+                self.assertEqual(implemented.get("control-id"), test_control_id)
+
+    def test_happy_path_add_control_description(self):
+        test_control_id = "ac-3"
+        test_description = "description of ac-3 narrative"
+        resp = self.client.patch(
+            "/api/components/" + str(self.test_component.id) + "/narratives/",
+            {
+                "controls": test_control_id,
+                "description": test_description,
+            },
+        )
+        self.assertEqual(resp.status_code, 200)
+        content = resp.json()
+        self.assertNotEqual(content.get("component_json"), TEST_COMPONENT_JSON_BLOB)
+        original_length = len(
+            TEST_COMPONENT_JSON_BLOB.get("component-definition")
+            .get("components")[0]
+            .get("control-implementations")[0]
+            .get("implemented-requirements")
+        )
+        new_length = len(
+            content.get("component_json")
+            .get("component-definition")
+            .get("components")[0]
+            .get("control-implementations")[0]
+            .get("implemented-requirements")
+        )
+        self.assertEqual(original_length + 1, new_length)
+        for implemented in (
+            content.get("component_json")
+            .get("component-definition")
+            .get("components")[0]
+            .get("control-implementations")[0]
+            .get("implemented-requirements")
+        ):
+            if implemented.get("control-id") == test_control_id:
+                self.assertEqual(implemented.get("description"), test_description)
+                self.assertEqual(implemented.get("control-id"), test_control_id)
+
+    def test_missing_controls(self):
+        resp = self.client.patch(
+            "/api/components/" + str(self.test_component.id) + "/narratives/",
+            {
+                "controls": "ac-1",
+            },
+        )
+        self.assertEqual(resp.status_code, 400)
+
+    def test_missing_description(self):
+        resp = self.client.patch(
+            "/api/components/" + str(self.test_component.id) + "/narratives/",
+            {
+                "description": "updated description of ac-1 narrative",
+            },
+        )
+        self.assertEqual(resp.status_code, 400)

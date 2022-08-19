@@ -78,30 +78,56 @@ class ComponentSerializer(serializers.ModelSerializer):
         )
 
     def partial_update(self, instance, validated_data):
-        if controls := validated_data.get("controls"):  # && controls not in:
-            print(controls)
-            # instance.controls.append(controls)
-            instance.controls = list(set(instance.controls).union(controls))
+        if controls := validated_data.get("controls"):
+            existing_control = controls not in instance.controls
+            if not existing_control:
+                instance.controls = list(set(instance.controls).union(controls))
 
-        if description := validated_data.get("description"):
-            implemented_requirement = {
-                "uuid": str(uuid.uuid4()),
-                "props": [
-                    {
-                        "name": "security_control_type",
-                        "uuid": str(uuid.uuid4()),
-                        "value": "Hybrid",
-                    },
-                    {"name": "provider", "uuid": str(uuid.uuid4()), "value": "No"},
-                ],
-                "control-id": controls[0],
-                "description": description,
-            }
-            instance.component_json.get("component-definition").get("components")[
-                0
-            ].get("control-implementations")[0].get("implemented-requirements").append(
-                implemented_requirement
-            )
+            if description := validated_data.get("description"):
+                implemented_requirement = {
+                    "uuid": str(uuid.uuid4()),
+                    "props": [
+                        {
+                            "name": "security_control_type",
+                            "uuid": str(uuid.uuid4()),
+                            "value": "Hybrid",
+                        },
+                        {"name": "provider", "uuid": str(uuid.uuid4()), "value": "No"},
+                    ],
+                    "control-id": controls[0],
+                    "description": description,
+                }
+                if existing_control:
+                    for implemented in (
+                        instance.component_json.get("component-definition")
+                        .get("components")[0]
+                        .get("control-implementations")[0]
+                        .get("implemented-requirements")
+                    ):
+                        if implemented.get("control-id") == controls[0]:
+                            instance.component_json.get("component-definition").get(
+                                "components"
+                            )[0].get("control-implementations")[0].get(
+                                "implemented-requirements"
+                            ).remove(
+                                implemented
+                            )
+
+                    instance.component_json.get("component-definition").get(
+                        "components"
+                    )[0].get("control-implementations")[0].get(
+                        "implemented-requirements"
+                    ).append(
+                        implemented_requirement
+                    )
+                else:
+                    instance.component_json.get("component-definition").get(
+                        "components"
+                    )[0].get("control-implementations")[0].get(
+                        "implemented-requirements"
+                    ).append(
+                        implemented_requirement
+                    )
 
         instance.save()
         return instance
@@ -204,26 +230,27 @@ class ComponentControlSerializer(serializers.ModelSerializer):
             "pk",
             "controls",
             "description",
+            "component_json",
         )
 
     def update(self, instance, validated_data):
-        if controls := validated_data.get(
-            "controls"
-        ):  # and controls not in instance.controls:
+        if controls := validated_data.get("controls"):
             existing_control = controls not in instance.controls
-            if not existing_control:
-                instance.controls = list(set(instance.controls).union(controls))
-
             if description := validated_data.get("description"):
+                acronym = acronym_generator(instance.title)
                 implemented_requirement = {
                     "uuid": str(uuid.uuid4()),
                     "props": [
                         {
                             "name": "security_control_type",
                             "uuid": str(uuid.uuid4()),
-                            "value": "Hybrid",
+                            "value": "Allocated",
                         },
-                        {"name": "provider", "uuid": str(uuid.uuid4()), "value": "No"},
+                        {
+                            "name": "provider",
+                            "uuid": str(uuid.uuid4()),
+                            "value": "Blueprint_" + acronym,
+                        },
                     ],
                     "control-id": controls[0],
                     "description": description,
@@ -243,22 +270,28 @@ class ComponentControlSerializer(serializers.ModelSerializer):
                             ).remove(
                                 implemented
                             )
+                instance.component_json.get("component-definition").get("components")[
+                    0
+                ].get("control-implementations")[0].get(
+                    "implemented-requirements"
+                ).append(
+                    implemented_requirement
+                )
+                instance.save()
+                return instance
+            else:
+                raise serializers.ValidationError(
+                    "Description must be provided for the control narrative"
+                )
+        else:
+            raise serializers.ValidationError("Controls must be provided")
 
-                    instance.component_json.get("component-definition").get(
-                        "components"
-                    )[0].get("control-implementations")[0].get(
-                        "implemented-requirements"
-                    ).append(
-                        implemented_requirement
-                    )
-                else:
-                    instance.component_json.get("component-definition").get(
-                        "components"
-                    )[0].get("control-implementations")[0].get(
-                        "implemented-requirements"
-                    ).append(
-                        implemented_requirement
-                    )
 
-        instance.save()
-        return instance
+def acronym_generator(name):
+    xs = name
+    name_list = xs.split()
+    acronym = ""
+    for name in name_list:
+        acronym + name[0]
+    acronym = [name[0] for name in name_list]
+    return "".join(acronym)
