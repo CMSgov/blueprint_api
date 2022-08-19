@@ -1,5 +1,8 @@
 import json
+import logging
 from typing import Any, List, Optional
+
+logger = logging.getLogger("catalogs.catalogio")
 
 
 class CatalogTools(object):
@@ -8,21 +11,18 @@ class CatalogTools(object):
     def __init__(self, source, text=False):
         try:
             self.oscal = self._load_catalog_json(source, text)
-            json.dumps(self.oscal)
-            self.status = "ok"
-            self.status_message = "Success loading catalog"
-            self.catalog_id = self.oscal.get("id")
-            self.info = {}
-            self.info["groups"] = self.get_groups()
-        except Exception:
-            self.oscal = None
-            self.status = "error"
-            self.status_message = "Error loading catalog"
-            self.catalog_id = None
-            self.info = {}
-            self.info["groups"] = None
+        except (IOError, FileNotFoundError, json.decoder.JSONDecodeError) as e:
+            logger.error(f"Unable to load catalog {source}: {e}")
+            raise CatalogLoadError(f"Could not load catalog {source}") from e
 
-    def _load_catalog_json(self, source, text):
+        json.dumps(self.oscal)
+        self.status = "ok"
+        self.status_message = "Success loading catalog"
+        self.catalog_id = self.oscal.get("id")
+        self.info = {"groups": self.get_groups()}
+
+    @staticmethod
+    def _load_catalog_json(source, text):
         """Read catalog file - JSON"""
         oscal: dict = {}
         if text:
@@ -32,7 +32,8 @@ class CatalogTools(object):
                 oscal = json.load(f)
         return oscal.get("catalog")
 
-    def find_dict_by_value(self, search_in, search_key: str, search_value: str):
+    @staticmethod
+    def find_dict_by_value(search_in, search_key: str, search_value: str):
         """
         Return the dictionary in an array of dictionaries with a key matching a value
         :param search_in: a list of dicts to search in
@@ -200,7 +201,8 @@ class CatalogTools(object):
             resource = self.find_dict_by_value(resources, "uuid", uuid)
         return resource
 
-    def __get_control_parameter_values(self, control) -> dict:
+    @staticmethod
+    def __get_control_parameter_values(control) -> dict:
         params: dict = {}
         if "params" in control:
             for p in control.get("params"):
@@ -218,7 +220,6 @@ class CatalogTools(object):
         return params
 
     def get_control_data_simplified(self, control_id) -> dict:
-        control_data: dict = {}
         control = self.get_control_by_id(control_id)
         family_id = self.get_group_id_by_control_id(control_id)
         desc = self.get_control_statement(control)
@@ -226,6 +227,7 @@ class CatalogTools(object):
         guidance = self.get_control_part_by_name(control, "guidance")
         control_data = {
             "label": self.get_control_property_by_name(control, "label"),
+            "sort_id": self.get_control_property_by_name(control, "sort-id"),
             "title": control.get("title"),
             "family": self.get_group_title_by_id(family_id),
             "description": self.__get_simplified_prose(desc),
@@ -236,7 +238,8 @@ class CatalogTools(object):
 
         return control_data
 
-    def __get_simplified_prose(self, prose: list):
+    @staticmethod
+    def __get_simplified_prose(prose: list):
         """"""
         if prose:
             text = prose[0]
@@ -247,6 +250,10 @@ class CatalogTools(object):
     def catalog_title(self) -> str:
         metadata = self.oscal.get("metadata", {})
         return metadata.get("title", "")
+
+
+class CatalogLoadError(ValueError):
+    pass
 
 
 class MissingControlError(ValueError):

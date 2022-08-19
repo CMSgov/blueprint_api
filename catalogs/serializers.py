@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Catalog
+from .models import Catalog, Controls
 
 
 class CatalogListSerializer(serializers.ModelSerializer):
@@ -10,4 +10,13 @@ class CatalogListSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "file_name",
+            "source",
+            "version",
+            "impact_level",
         )
+
+
+class ControlSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Controls
+        fields = "__all__"

@@ -1,6 +1,9 @@
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.shortcuts import get_object_or_404
+from django_filters import rest_framework as filters
+from guardian.shortcuts import get_objects_for_user
 from rest_framework import generics, status
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
 from blueprintapi.filters import ObjectPermissionsFilter
@@ -8,8 +11,10 @@ from catalogs.catalogio import MissingControlError
 from components.filters import ComponentFilter
 from components.models import Component
 from components.serializers import ComponentListBasicSerializer
-from projects.models import Project
+from projects.filters import ProjectControlFilter
+from projects.models import Project, ProjectControl
 from projects.serializers import (
+    ProjectControlListSerializer,
     ProjectControlSerializer,
     ProjectListSerializer,
     ProjectSerializer,
@@ -155,3 +160,17 @@ class ProjectComponentNotAddedListView(generics.GenericAPIView):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ProjectGetControlList(generics.ListAPIView):
+    serializer_class = ProjectControlListSerializer
+    filterset_class = ProjectControlFilter
+    filter_backends = (filters.DjangoFilterBackend,)
+    pagination_class = PageNumberPagination
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = get_objects_for_user(user, "projects.view_project", Project.objects.all(), accept_global_perms=False)
+        project = get_object_or_404(queryset, pk=self.kwargs.get("project_id"))
+
+        return ProjectControl.objects.filter(project=project)

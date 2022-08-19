@@ -1,9 +1,10 @@
 from rest_framework import serializers
 
 from catalogs.catalogio import CatalogTools
+from catalogs.serializers import ControlSerializer
 from components.componentio import ComponentTools
 from components.serializers import ComponentListSerializer
-from projects.models import Project
+from projects.models import Project, ProjectControl
 
 
 class ProjectListSerializer(serializers.ModelSerializer):
@@ -14,6 +15,7 @@ class ProjectListSerializer(serializers.ModelSerializer):
             "title",
             "acronym",
             "impact_level",
+            "catalog_version",
             "creator",
             "location",
             "catalog",
@@ -21,7 +23,9 @@ class ProjectListSerializer(serializers.ModelSerializer):
         extra_kwargs = {"creator": {"read_only": True}}
 
     def create(self, validated_data):
-        return Project.objects.create(creator=self.context["request"].user, **validated_data)
+        return Project.objects.create(
+            creator=self.context["request"].user, **validated_data
+        )
 
 
 class ProjectSerializer(serializers.ModelSerializer):
@@ -114,3 +118,15 @@ class ProjectControlSerializer(serializers.ModelSerializer):
             component_data["responsibility"] = responsibility
 
         return component_data
+
+
+class ProjectControlListSerializer(serializers.ModelSerializer):
+    control = ControlSerializer()
+
+    class Meta:
+        model = ProjectControl
+        fields = (
+            "status",
+            "control",
+            "project",
+        )

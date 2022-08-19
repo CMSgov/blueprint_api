@@ -77,7 +77,7 @@ class CatalogModelTest(TestCase):
     def test_get_controls_all_ids(self):
         controls = self.catalog.get_controls_all_ids()
         self.assertIsInstance(controls, List)
-        self.assertEquals(len(controls), 186)
+        self.assertEquals(len(controls), 53)
 
     def test_get_control_property_by_name(self):
         control = self.catalog.get_control_by_id("ac-2")

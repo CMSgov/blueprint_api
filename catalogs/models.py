@@ -1,10 +1,15 @@
 import json
 import os
+from typing import List
 
 import jsonschema
 from django.db import models
+from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.utils.translation import gettext_lazy as _
 from jsonschema.exceptions import SchemaError, ValidationError
+
+from catalogs.catalogio import CatalogTools
 
 
 def validate_catalog(file_name):
@@ -21,6 +26,11 @@ def validate_catalog(file_name):
 
 
 class Catalog(models.Model):
+    class ImpactLevel(models.TextChoices):
+        LOW = "low", _("Low")
+        MODERATE = "moderate", _("Moderate")
+        HIGH = "high", _("High")
+
     name = models.CharField(max_length=100, help_text="Name of Catalog", unique=True)
     file_name = models.FileField(
         max_length=100,
@@ -33,6 +43,18 @@ class Catalog(models.Model):
         default="https://raw.githubusercontent.com/usnistgov/oscal-content/main/nist.gov/"
         "SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
     )
+    version = models.CharField(
+        max_length=64,
+        blank=False,
+        default="CMS ARS 3.1",
+    )
+    impact_level = models.CharField(
+        choices=ImpactLevel.choices,
+        max_length=20,
+        blank=False,
+        default=ImpactLevel.MODERATE,
+        help_text="FISMA impact level of the project",
+    )
     created = models.DateTimeField(auto_now_add=True, db_index=True)
     updated = models.DateTimeField(auto_now=True, db_index=True, null=True)
 
@@ -40,10 +62,31 @@ class Catalog(models.Model):
         return self.name
 
 
+@receiver(post_save, sender=Catalog)
+def add_controls(sender, instance, created, **kwargs):
+    if created:
+        catalog = CatalogTools(instance.file_name.path)
+        control_ids = catalog.get_controls_all_ids()
+        if control_ids:
+            control_objects: List = []
+            for c in control_ids:
+                control_data = catalog.get_control_data_simplified(c)
+                control_objects.append(
+                    Controls(
+                        catalog=instance,
+                        control_id=c,
+                        control_label=control_data.get("label"),
+                        sort_id=control_data.get("sort_id"),
+                        title=control_data.get("title"),
+                    )
+                )
+            Controls.objects.bulk_create(control_objects)
+
+
 @receiver(models.signals.post_delete, sender=Catalog)
 def auto_delete_file_on_delete(sender, instance, **kwargs):
     """
-    Delete files from the filesystem when a Catalog oject is deleted.
+    Delete files from the filesystem when a Catalog object is deleted.
     """
     if instance.file_name:
         if os.path.isfile(instance.file_name.path):
@@ -67,3 +110,26 @@ def auto_delete_file_on_change(sender, instance, **kwargs):
     if not old_file == new_file:
         if os.path.isfile(old_file.path):
             os.remove(old_file.path)
+
+
+class Controls(models.Model):
+    catalog = models.ForeignKey(to="catalogs.Catalog", on_delete=models.CASCADE)
+    control_id = models.CharField(
+        max_length=12,
+        help_text="Catalog control ID, for example ac-1",
+    )
+    control_label = models.CharField(
+        max_length=12,
+        help_text="Catalog control label, for example AC-01",
+    )
+    sort_id = models.CharField(
+        max_length=12,
+        help_text="Catalog ID used for sorting, for example ac-01",
+    )
+    title = models.CharField(
+        max_length=124,
+        help_text="Catalog control title, for example Access Control Policy and Procedures.",
+    )
+
+    def __str__(self):
+        return self.control_label
