@@ -201,10 +201,6 @@ def collect_project_data(component_id, user):
     return form_values
 
 
-def add_control_narrative():
-    return True
-
-
 class ComponentListBasicSerializer(serializers.ModelSerializer):
     controls_count = serializers.SerializerMethodField()
 

@@ -30,7 +30,7 @@ class ComponentListView(generics.ListCreateAPIView):
         return super().filter_queryset(queryset).order_by("pk")
 
 
-class ComponentDetailView(generics.RetrieveUpdateAPIView):
+class ComponentDetailView(generics.RetrieveAPIView):
     """
     Use for read or update endpoints to represent a single model instance.
     Provides get, put, and patch method handlers.
