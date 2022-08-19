@@ -77,61 +77,6 @@ class ComponentSerializer(serializers.ModelSerializer):
             "component_json",
         )
 
-    def partial_update(self, instance, validated_data):
-        if controls := validated_data.get("controls"):
-            existing_control = controls not in instance.controls
-            if not existing_control:
-                instance.controls = list(set(instance.controls).union(controls))
-
-            if description := validated_data.get("description"):
-                implemented_requirement = {
-                    "uuid": str(uuid.uuid4()),
-                    "props": [
-                        {
-                            "name": "security_control_type",
-                            "uuid": str(uuid.uuid4()),
-                            "value": "Hybrid",
-                        },
-                        {"name": "provider", "uuid": str(uuid.uuid4()), "value": "No"},
-                    ],
-                    "control-id": controls[0],
-                    "description": description,
-                }
-                if existing_control:
-                    for implemented in (
-                        instance.component_json.get("component-definition")
-                        .get("components")[0]
-                        .get("control-implementations")[0]
-                        .get("implemented-requirements")
-                    ):
-                        if implemented.get("control-id") == controls[0]:
-                            instance.component_json.get("component-definition").get(
-                                "components"
-                            )[0].get("control-implementations")[0].get(
-                                "implemented-requirements"
-                            ).remove(
-                                implemented
-                            )
-
-                    instance.component_json.get("component-definition").get(
-                        "components"
-                    )[0].get("control-implementations")[0].get(
-                        "implemented-requirements"
-                    ).append(
-                        implemented_requirement
-                    )
-                else:
-                    instance.component_json.get("component-definition").get(
-                        "components"
-                    )[0].get("control-implementations")[0].get(
-                        "implemented-requirements"
-                    ).append(
-                        implemented_requirement
-                    )
-
-        instance.save()
-        return instance
-
 
 def collect_catalog_data(controls: list, catalog):
     """Return the Catalog data for the given Controls."""
