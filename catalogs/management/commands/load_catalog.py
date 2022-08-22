@@ -27,8 +27,8 @@ class Command(BaseCommand):
                 create_kwargs = {"file_name": file, "name": name}
 
                 for arg in ("source", "catalog_version", "impact_level"):
-                    if arg := options[arg]:
-                        create_kwargs[arg if arg != "catalog_version" else "version"] = arg
+                    if value := options[arg]:
+                        create_kwargs[arg if arg != "catalog_version" else "version"] = value
 
                 Catalog.objects.create(**create_kwargs)
 
