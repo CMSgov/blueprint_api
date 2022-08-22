@@ -113,7 +113,7 @@ class ProjectModelTest(TestCase):
         self.assertEqual(private_component.status, Component.Status.SYSTEM)
 
 
-class ProjectRequiredFieldsTest(AuthenticatedAPITestCase):
+class ProjectCreateViewTestCase(AuthenticatedAPITestCase):
     @classmethod
     def setUpTestData(cls):
         call_command(
@@ -124,56 +124,62 @@ class ProjectRequiredFieldsTest(AuthenticatedAPITestCase):
             impact_level=Catalog.ImpactLevel.LOW,
         )
 
-        test_catalog = Catalog.objects.get(name="NIST Test Catalog")
+        cls.test_catalog = Catalog.objects.get(name="NIST Test Catalog")
 
-        cls.no_title_project = {
-            "acronym": "NTP",
+    def test_missing_fields_returns_400(self):
+        test_cases = (
+            {
+                "acronym": "NTP",
+                "catalog_version": "NIST 800-53",
+                "impact_level": "low",
+                "location": "other",
+                "catalog": self.test_catalog.id,
+            },
+            {
+                "title": "No Acronym Project",
+                "catalog_version": "NIST 800-53",
+                "impact_level": "low",
+                "location": "other",
+                "catalog": self.test_catalog.id,
+            },
+        )
+
+        for test in test_cases:
+            with self.subTest(test=test):
+                response = self.client.post(
+                    reverse("project-list"), data=json.dumps(test), content_type="application/json"
+                )
+                self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_add_new_project(self):
+        # Authenticate as a new user instead of a "super-user"
+        user = User.objects.create()
+        token = Token.objects.create(user=user)
+        self.client.force_authenticate(user=user, token=token)
+
+        project_data = {
+            "title": "Test project",
+            "acronym": "TP",
             "catalog_version": "NIST 800-53",
-            "impact_level": "low",
-            "location": "other",
-            "catalog": test_catalog.id,
+            "impact_level": Project.ImpactLevel.LOW,
+            "location": "other"
         }
 
-        cls.no_acronym_project = {
-            "title": "No Acronym Project",
-            "catalog_version": "NIST 800-53",
-            "impact_level": "low",
-            "location": "other",
-            "catalog": test_catalog.id,
-        }
-
-        cls.no_catalog_project = {
-            "title": "No Catalog Project",
-            "acronym": "NCP",
-            "catalog_version": "NIST 800-53",
-            "impact_level": "low",
-            "location": "other",
-            "catalog": None,
-        }
-
-    def test_title_required(self):
         response = self.client.post(
-            reverse("project-list"),
-            data=json.dumps(self.no_title_project),
-            content_type="application/json",
+            reverse("project-list"), data=json.dumps(project_data), content_type="application/json"
         )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-    def test_acronym_required(self):
-        response = self.client.post(
-            reverse("project-list"),
-            data=json.dumps(self.no_acronym_project),
-            content_type="application/json",
-        )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        content = response.json()
 
-    def test_catalog_required(self):
-        response = self.client.post(
-            reverse("project-list"),
-            data=json.dumps(self.no_catalog_project),
-            content_type="application/json",
-        )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        # Check user and catalog
+        self.assertEqual(content["creator"], user.id)
+        self.assertEqual(content["catalog"], self.test_catalog.id)
+
+        # Check input data was successfully added
+        for field in ("title", "acronym", "catalog_version", "impact_level"):
+            with self.subTest(field=field):
+                self.assertEqual(content[field], project_data[field])
 
 
 class ProjectComponentsTest(AuthenticatedAPITestCase):

@@ -22,7 +22,7 @@ class ProjectListSerializer(serializers.ModelSerializer):
             "location",
             "catalog",
         )
-        read_only_fields = ("id", "creator")
+        read_only_fields = ("id", "creator", "catalog", )
 
     def create(self, validated_data):
         return Project.objects.create(
