@@ -753,7 +753,8 @@ class RetrieveUpdateProjectControlViewTestCase(AuthenticatedAPITestCase):
 
         response = self.client.patch(
             reverse("project-get-control", kwargs={"project_id": self.project.id, "control_id": "ac-1"}),
-            json={"status": ProjectControl.Status.INCOMPLETE}
+            data=json.dumps({"status": ProjectControl.Status.INCOMPLETE}),
+            content_type="application/json"
         )
 
         self.assertEqual(response.status_code, 200)
