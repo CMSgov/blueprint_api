@@ -109,11 +109,10 @@ class Project(models.Model):
     def save(self, *args, **kwargs):
         cat = apps.get_model("catalogs", "Catalog")
         if self.impact_level and self.catalog_version:
-            catalog = cat.objects.get(
+            self.catalog = cat.objects.get(
                 impact_level=self.impact_level, version=self.catalog_version
             )
 
-        self.catalog = catalog
         self.full_clean()
         super().save(*args, **kwargs)
 
