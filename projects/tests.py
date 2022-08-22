@@ -8,7 +8,7 @@ from rest_framework.authtoken.models import Token
 
 from catalogs.models import Catalog
 from components.models import Component
-from projects.models import Project
+from projects.models import Project, ProjectControl
 from testing_utils import AuthenticatedAPITestCase
 from users.models import User
 
@@ -678,3 +678,86 @@ class ProjectComponentNotAddedListViewTest(AuthenticatedAPITestCase):
         for test in content:
             with self.subTest():
                 self.assertNotEqual(test.get("title"), "private component")
+
+
+class RetrieveUpdateProjectControlViewTestCase(AuthenticatedAPITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        user = User.objects.create()
+        token = Token.objects.create(user=user)
+
+        cls.user, cls.token = user, token
+
+        call_command(
+            "load_catalog",
+            name="NIST Test Catalog",
+            catalog_file="blueprintapi/testdata/NIST_SP-800-53_rev5_test.json",
+            catalog_version="NIST 800-53",
+            impact_level=Catalog.ImpactLevel.LOW,
+        )
+
+        test_catalog = Catalog.objects.get(name="NIST Test Catalog")
+
+        cls.project = Project.objects.create(
+            title="Test project",
+            acronym="TP",
+            catalog_version="NIST 800-53",
+            impact_level="low",
+            location="other",
+            creator=user,
+            catalog=test_catalog,
+        )
+
+    def setUp(self):
+        self.client.force_authenticate(user=self.user, token=self.token)
+
+    def test_get_project_control(self):
+        response = self.client.get(
+            reverse("project-get-control", kwargs={"project_id": self.project.id, "control_id": "ac-1"})
+        )
+        self.assertEqual(response.status_code, 200)
+
+        content = response.json()
+
+        # Check top-level response structure
+        self.assertTrue(
+            all(item in content for item in ("status", "project", "control", "catalog_data", "component_data"))
+        )
+
+        # Check control data
+        control = content["control"]
+        expected = {
+            "control_id": "ac-1",
+            "control_label": "AC-1",
+            "sort_id": "ac-01",
+            "title": "Policy and Procedures"
+        }
+
+        for field, value in expected.items():
+            with self.subTest(field=field):
+                self.assertEqual(control[field], value)
+
+    def test_missing_control_returns_404(self):
+        response = self.client.get(
+            reverse("project-get-control", kwargs={"project_id": self.project.id, "control_id": "not-a-control"})
+        )
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_update_control_status(self):
+        initial_response = self.client.get(
+            reverse("project-get-control", kwargs={"project_id": self.project.id, "control_id": "ac-1"})
+        )
+
+        original_status = initial_response.json()["status"]
+
+        response = self.client.patch(
+            reverse("project-get-control", kwargs={"project_id": self.project.id, "control_id": "ac-1"}),
+            json={"status": ProjectControl.Status.INCOMPLETE}
+        )
+
+        self.assertEqual(response.status_code, 200)
+        content = response.json()
+
+        self.assertNotEqual(original_status, content["status"])
+        self.assertEqual(content["status"], ProjectControl.Status.INCOMPLETE)
