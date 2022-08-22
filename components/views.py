@@ -77,7 +77,7 @@ class ComponentTypeListView(generics.ListAPIView):
         return Response(queryset, status=status.HTTP_200_OK)
 
 
-class ComponentNarrativeView(generics.RetrieveUpdateAPIView):
+class ComponentImplementedRequirementView(generics.UpdateAPIView):
     queryset = Component.objects.all()
     permission_classes = [
         ComponentPermissions,

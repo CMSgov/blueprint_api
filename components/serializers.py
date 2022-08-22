@@ -1,8 +1,7 @@
-import uuid
-
 from django.contrib.auth.models import AnonymousUser
 from rest_framework import serializers
 
+from blueprintapi.oscal.component import ImplementedRequirement, Property
 from catalogs.catalogio import CatalogTools
 from components.componentio import ComponentTools
 from components.models import Component
@@ -170,68 +169,52 @@ class ComponentControlSerializer(serializers.ModelSerializer):
             "pk",
             "controls",
             "description",
+            # "catalog_name",
             "component_json",
         )
 
     def update(self, instance, validated_data):
+        print("inside patch function")
         if controls := validated_data.get("controls"):
-            existing_control = controls not in instance.controls
+            print(controls)
+            if controls[0] in instance.controls:
+                remove_implemented_requirement(self, instance, controls)
             if description := validated_data.get("description"):
-                acronym = acronym_generator(instance.title)
-                implemented_requirement = {
-                    "uuid": str(uuid.uuid4()),
-                    "props": [
-                        {
-                            "name": "security_control_type",
-                            "uuid": str(uuid.uuid4()),
-                            "value": "Allocated",
-                        },
-                        {
-                            "name": "provider",
-                            "uuid": str(uuid.uuid4()),
-                            "value": "Blueprint_" + acronym,
-                        },
-                    ],
-                    "control-id": controls[0],
-                    "description": description,
-                }
-                if existing_control:
-                    for implemented in (
-                        instance.component_json.get("component-definition")
-                        .get("components")[0]
-                        .get("control-implementations")[0]
-                        .get("implemented-requirements")
-                    ):
-                        if implemented.get("control-id") == controls[0]:
-                            instance.component_json.get("component-definition").get(
-                                "components"
-                            )[0].get("control-implementations")[0].get(
-                                "implemented-requirements"
-                            ).remove(
-                                implemented
-                            )
-                instance.component_json.get("component-definition").get("components")[
-                    0
-                ].get("control-implementations")[0].get(
-                    "implemented-requirements"
-                ).append(
-                    implemented_requirement
-                )
-                instance.save()
-                return instance
-            else:
-                raise serializers.ValidationError(
-                    "Description must be provided for the control narrative"
-                )
+                add_implemented_requirement(self, instance, controls, description)
+            instance.save()
+            return instance
         else:
             raise serializers.ValidationError("Controls must be provided")
 
 
-def acronym_generator(name):
-    xs = name
-    name_list = xs.split()
-    acronym = ""
-    for name in name_list:
-        acronym + name[0]
-    acronym = [name[0] for name in name_list]
-    return "".join(acronym)
+def add_implemented_requirement(self, instance, controls, description):
+    print("inside add_implemented_requirement function")
+    props = [
+        Property(name="security_control_type", value="Allocated"),
+        Property(name="provider", value="no"),
+    ]
+    ir = ImplementedRequirement(
+        props=props, control_id=controls[0], description=description
+    )
+    print("ir", ir)
+    instance.component_json.get("component-definition").get("components")[0].get(
+        "control-implementations"
+    )[0].get("implemented-requirements").append(ir)
+
+
+def remove_implemented_requirement(self, instance, controls):
+    print("inside remove_implemented_requirement function")
+    ci_list = (
+        instance.component_json.get("component-definition")
+        .get("components")[0]
+        .get("control-implementations")
+    )
+    for implemented in ci_list[0].get(  # Get correct catalog
+        "implemented-requirements"
+    ):
+        if implemented.get("control-id") == controls[0]:
+            instance.component_json.get("component-definition").get("components")[
+                0
+            ].get("control-implementations")[0].get("implemented-requirements").remove(
+                implemented
+            )

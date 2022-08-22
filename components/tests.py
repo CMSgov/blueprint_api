@@ -588,7 +588,7 @@ class CreateEmptComponentTest(TestCase):
         self.assertEqual(status, 1)
 
 
-class ComponentNarrativeViewTest(AuthenticatedAPITestCase):
+class ComponentImplementedRequirementViewTest(AuthenticatedAPITestCase):
     @classmethod
     def setUpTestData(cls):
         with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
@@ -608,11 +608,24 @@ class ComponentNarrativeViewTest(AuthenticatedAPITestCase):
             component_json=TEST_COMPONENT_JSON_BLOB,
         )
 
+    def test_missing_controls(self):
+        resp = self.client.patch(
+            "/api/components/"
+            + str(self.test_component.id)
+            + "/implemented-requirements/",
+            {
+                "description": "updated description of ac-1 narrative",
+            },
+        )
+        self.assertEqual(resp.status_code, 400)
+
     def test_happy_path_update_control_description(self):
         test_control_id = "ac-1"
         test_description = "updated description of ac-1 narrative"
         resp = self.client.patch(
-            "/api/components/" + str(self.test_component.id) + "/narratives/",
+            "/api/components/"
+            + str(self.test_component.id)
+            + "/implemented-requirements/",
             {
                 "controls": test_control_id,
                 "description": test_description,
@@ -650,7 +663,9 @@ class ComponentNarrativeViewTest(AuthenticatedAPITestCase):
         test_control_id = "ac-3"
         test_description = "description of ac-3 narrative"
         resp = self.client.patch(
-            "/api/components/" + str(self.test_component.id) + "/narratives/",
+            "/api/components/"
+            + str(self.test_component.id)
+            + "/implemented-requirements/",
             {
                 "controls": test_control_id,
                 "description": test_description,
@@ -684,20 +699,40 @@ class ComponentNarrativeViewTest(AuthenticatedAPITestCase):
                 self.assertEqual(implemented.get("description"), test_description)
                 self.assertEqual(implemented.get("control-id"), test_control_id)
 
-    def test_missing_controls(self):
+    def test_happy_path_missing_description_removes_implemented_requirement(self):
+        test_control_id = "ac-1"
         resp = self.client.patch(
-            "/api/components/" + str(self.test_component.id) + "/narratives/",
+            "/api/components/"
+            + str(self.test_component.id)
+            + "/implemented-requirements/",
             {
-                "controls": "ac-1",
+                "controls": test_control_id,
             },
         )
-        self.assertEqual(resp.status_code, 400)
-
-    def test_missing_description(self):
-        resp = self.client.patch(
-            "/api/components/" + str(self.test_component.id) + "/narratives/",
-            {
-                "description": "updated description of ac-1 narrative",
-            },
+        self.assertEqual(resp.status_code, 200)
+        content = resp.json()
+        self.assertNotEqual(content.get("component_json"), TEST_COMPONENT_JSON_BLOB)
+        original_length = len(
+            TEST_COMPONENT_JSON_BLOB.get("component-definition")
+            .get("components")[0]
+            .get("control-implementations")[0]
+            .get("implemented-requirements")
         )
-        self.assertEqual(resp.status_code, 400)
+        new_length = len(
+            content.get("component_json")
+            .get("component-definition")
+            .get("components")[0]
+            .get("control-implementations")[0]
+            .get("implemented-requirements")
+        )
+        self.assertEqual(original_length - 1, new_length)
+        for implemented in (
+            content.get("component_json")
+            .get("component-definition")
+            .get("components")[0]
+            .get("control-implementations")[0]
+            .get("implemented-requirements")
+        ):
+            if implemented.get("control-id") == test_control_id:
+                self.assertNotEqual(implemented.get("control-id"), test_control_id)
+        self.assertEqual(resp.status_code, 200)

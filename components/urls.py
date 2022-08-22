@@ -2,9 +2,9 @@ from django.urls import path
 
 from .views import (
     ComponentDetailView,
+    ComponentImplementedRequirementView,
     ComponentListSearchView,
     ComponentListView,
-    ComponentNarrativeView,
     ComponentTypeListView,
 )
 
@@ -14,8 +14,8 @@ urlpatterns = [
     path("search/", ComponentListSearchView.as_view(), name="component-search"),
     path("types/", ComponentTypeListView.as_view(), name="component-search"),
     path(
-        "<int:pk>/narratives/",
-        ComponentNarrativeView.as_view(),
+        "<int:pk>/implemented-requirements/",
+        ComponentImplementedRequirementView.as_view(),
         name="component-search",
     ),
 ]
