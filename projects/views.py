@@ -12,6 +12,7 @@ from components.models import Component
 from components.serializers import ComponentListBasicSerializer
 from projects.filters import ProjectControlFilter
 from projects.models import Project, ProjectControl
+from projects.permissions import ProjectControlPermissions
 from projects.serializers import (
     ProjectControlSerializer,
     ProjectListSerializer,
@@ -156,6 +157,7 @@ class RetrieveUpdateProjectControlView(generics.RetrieveUpdateAPIView):
     queryset = ProjectControl.objects.all()
     serializer_class = ProjectControlSerializer
     lookup_url_kwarg = "project_id"
+    permission_classes = [ProjectControlPermissions, ]
 
     def get_serializer_context(self) -> dict:
         return {"control_id": self.kwargs.get("control_id"), **super().get_serializer_context()}
