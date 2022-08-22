@@ -7,17 +7,15 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
 from blueprintapi.filters import ObjectPermissionsFilter
-from catalogs.catalogio import MissingControlError
 from components.filters import ComponentFilter
 from components.models import Component
 from components.serializers import ComponentListBasicSerializer
 from projects.filters import ProjectControlFilter
 from projects.models import Project, ProjectControl
 from projects.serializers import (
-    ProjectControlListSerializer,
     ProjectControlSerializer,
     ProjectListSerializer,
-    ProjectSerializer,
+    ProjectSerializer, ProjectControlListSerializer,
 )
 
 
@@ -82,28 +80,6 @@ class ProjectRemoveComponentView(generics.GenericAPIView):
             {"message": f"{component.title} removed from {project.title}."},
             status=status.HTTP_200_OK,
         )
-
-
-class ProjectGetControlData(generics.GenericAPIView):
-    queryset = Project.objects.all()
-    serializer_class = ProjectControlSerializer
-    lookup_url_kwarg = "project_id"
-
-    def get(self, request, *args, **kwargs):
-        project_instance = self.get_object()
-        context = {
-            "control_id": kwargs.get("control_id"),
-            **self.get_serializer_context(),
-        }
-        try:
-            serializer = self.get_serializer(project_instance, context=context)
-        except MissingControlError:
-            return Response(
-                {"response": "Control not found"},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-
-        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class ProjectComponentListSearchView(generics.GenericAPIView):
@@ -174,3 +150,18 @@ class ProjectGetControlList(generics.ListAPIView):
         project = get_object_or_404(queryset, pk=self.kwargs.get("project_id"))
 
         return ProjectControl.objects.filter(project=project)
+
+
+class RetrieveUpdateProjectControlView(generics.RetrieveUpdateAPIView):
+    queryset = ProjectControl.objects.all()
+    serializer_class = ProjectControlSerializer
+    lookup_url_kwarg = "project_id"
+
+    def get_serializer_context(self) -> dict:
+        return {"control_id": self.kwargs.get("control_id"), **super().get_serializer_context()}
+
+    def get_object(self) -> ProjectControl:
+        project = get_object_or_404(Project, pk=self.kwargs.get("project_id"))
+        self.check_object_permissions(self.request, project)
+
+        return get_object_or_404(ProjectControl, control__control_id=self.kwargs.get("control_id"), project=project)
