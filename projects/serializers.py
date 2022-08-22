@@ -23,7 +23,6 @@ class ProjectListSerializer(serializers.ModelSerializer):
             "catalog",
         )
         read_only_fields = ("id", "creator")
-        extra_kwargs = {"creator": {"read_only": True}}
 
     def create(self, validated_data):
         return Project.objects.create(
