@@ -21,7 +21,7 @@ class Command(BaseCommand):
         input_file = Path(options["catalog_file"])
 
         try:
-            with open(input_file) as catalog:
+            with open(input_file, mode="rb") as catalog:
                 file = File(catalog)
                 name = input_name if (input_name := options["name"]) else input_file.name
                 create_kwargs = {"file_name": file, "name": name}
