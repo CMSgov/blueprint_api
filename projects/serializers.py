@@ -1,8 +1,10 @@
+from django.db.models import QuerySet
 from rest_framework import serializers
 
 from catalogs.catalogio import CatalogTools
 from catalogs.serializers import ControlSerializer
 from components.componentio import ComponentTools
+from components.models import Component
 from components.serializers import ComponentListSerializer
 from projects.models import Project, ProjectControl
 
@@ -20,6 +22,7 @@ class ProjectListSerializer(serializers.ModelSerializer):
             "location",
             "catalog",
         )
+        read_only_fields = ("id", "creator")
         extra_kwargs = {"creator": {"read_only": True}}
 
     def create(self, validated_data):
@@ -52,61 +55,55 @@ class ProjectSerializer(serializers.ModelSerializer):
         depth = 1
 
 
-class ProjectControlSerializer(serializers.ModelSerializer):
-    catalog_data = serializers.SerializerMethodField()
-    component_data = serializers.SerializerMethodField()
-
-    def get_catalog_data(self, obj):
-        """
-        Get the Catalog data for a given Control.
-        """
-        project_catalog = obj.catalog
-        control_id = self.context.get("control_id")
-        catalog = CatalogTools(project_catalog.file_name.path)
-        control_data = catalog.get_control_data_simplified(control_id)
-        control_data["version"] = catalog.catalog_title
-        return control_data
-
-    def get_component_data(self, obj):
-        """
-        Get the narratives from any Component that includes the given Control.
-        """
-        control_id = self.context.get("control_id")
-        components: dict = {}
-        if hasattr(obj, "components"):
-            components = self.get_control_data(obj.components, control_id)
-        return components
-
+class BasicViewProjectSerializer(serializers.ModelSerializer):
+    """Project serializer for the case where only basic project info is needed."""
     class Meta:
         model = Project
-        fields = (
-            "id",
-            "title",
-            "acronym",
-            "catalog_data",
-            "component_data",
-        )
+        fields = ("id", "title", "acronym", )
+        read_only_fields = ("id", "title", "acronym", )
 
-    def get_control_data(self, components, control_id):
+
+class ProjectControlSerializer(serializers.ModelSerializer):
+    control = ControlSerializer(read_only=True)
+    project = BasicViewProjectSerializer(read_only=True)
+    catalog_data = serializers.SerializerMethodField(read_only=True)
+    component_data = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = ProjectControl
+        fields = ("status", "project", "control", "catalog_data", "component_data", )
+
+    def get_catalog_data(self, obj: ProjectControl) -> dict:
+        """Get the Catalog data for a given Control."""
+        catalog = CatalogTools(obj.control.catalog.file_name.path)
+        control_data = catalog.get_control_data_simplified(control_id=self.context.get("control_id"))
+        control_data["version"] = catalog.catalog_title
+
+        return control_data
+
+    def get_component_data(self, obj: ProjectControl) -> dict:
+        """Get the narratives from any Component that includes the given Control."""
+        if obj.project.components.exists():
+            return self._get_control_data(obj.project.components.all(), self.context.get("control_id"))
+
+        return {}
+
+    @staticmethod
+    def _get_control_data(components: QuerySet, control_id: str) -> dict:
         component_data = {
             "responsibility": "Allocated",
             "components": {"inherited": {}, "private": {}},
         }
         count = 0
         responsibility: str = ""
-        for c in components.all():
-            status = "inherited" if c.status == 2 else "private"
-            if control_id in c.controls:
+        for component in components:
+            status = "inherited" if component.status == Component.Status.PUBLIC else "private"
+            if control_id in component.controls:
                 count += 1
-                controls = ComponentTools(c.component_json)
+                controls = ComponentTools(component.component_json)
                 control_data = controls.get_control_by_id(control_id)
-                responsibility = (
-                    controls.get_control_props(
-                        control_data[0],
-                        "security_control_type",
-                    ),
-                )
-                component_data["components"][status][c.title] = {
+                responsibility = controls.get_control_props(control_data[0], "security_control_type")
+                component_data["components"][status][component.title] = {
                     "description": control_data[0].get("description"),
                     "responsibility": responsibility,
                     "provider": controls.get_control_props(control_data[0], "provider"),
@@ -122,6 +119,7 @@ class ProjectControlSerializer(serializers.ModelSerializer):
 
 class ProjectControlListSerializer(serializers.ModelSerializer):
     control = ControlSerializer()
+    project = BasicViewProjectSerializer()
 
     class Meta:
         model = ProjectControl
@@ -130,3 +128,4 @@ class ProjectControlListSerializer(serializers.ModelSerializer):
             "control",
             "project",
         )
+        read_only_fields = ("status", "control", "project", )
