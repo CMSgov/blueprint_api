@@ -1,3 +1,5 @@
+import json
+
 from django.contrib.auth.models import AnonymousUser
 from rest_framework import serializers
 
@@ -163,6 +165,8 @@ class ComponentListBasicSerializer(serializers.ModelSerializer):
 
 
 class ComponentControlSerializer(serializers.ModelSerializer):
+    # catalog_name = serializers.SerializerMethodField()
+
     class Meta:
         model = Component
         fields = (
@@ -174,21 +178,27 @@ class ComponentControlSerializer(serializers.ModelSerializer):
         )
 
     def update(self, instance, validated_data):
-        print("inside patch function")
-        if controls := validated_data.get("controls"):
-            print(controls)
-            if controls[0] in instance.controls:
-                remove_implemented_requirement(self, instance, controls)
-            if description := validated_data.get("description"):
-                add_implemented_requirement(self, instance, controls, description)
-            instance.save()
-            return instance
-        else:
-            raise serializers.ValidationError("Controls must be provided")
+        print("validated_data", validated_data)
+        if not (controls := validated_data.get("controls")):
+            # if not ((controls := validated_data.get("controls"))
+            # and (catalog_name := validated_data.get("catalog_name"))) :
+            raise serializers.ValidationError(
+                "Controls must be provided"
+            )  # & catalog_name must be provided
+        print("past the exception", controls)
+        if controls[0] in instance.controls:
+            remove_implemented_requirement(self, instance, controls)
+        if description := validated_data.get("description"):
+            add_implemented_requirement(self, instance, controls, description)
+        instance.save()
+        return instance
+
+    # def get_catalog_name(self, obj, validated_data):
+    #     print("get_catalog_name", validated_data)
+    #     return validated_data.get("catalog_name")
 
 
 def add_implemented_requirement(self, instance, controls, description):
-    print("inside add_implemented_requirement function")
     props = [
         Property(name="security_control_type", value="Allocated"),
         Property(name="provider", value="no"),
@@ -196,19 +206,18 @@ def add_implemented_requirement(self, instance, controls, description):
     ir = ImplementedRequirement(
         props=props, control_id=controls[0], description=description
     )
-    print("ir", ir)
     instance.component_json.get("component-definition").get("components")[0].get(
         "control-implementations"
-    )[0].get("implemented-requirements").append(ir)
+    )[0].get("implemented-requirements").append(json.loads(ir.json()))
 
 
 def remove_implemented_requirement(self, instance, controls):
-    print("inside remove_implemented_requirement function")
     ci_list = (
         instance.component_json.get("component-definition")
         .get("components")[0]
         .get("control-implementations")
     )
+
     for implemented in ci_list[0].get(  # Get correct catalog
         "implemented-requirements"
     ):

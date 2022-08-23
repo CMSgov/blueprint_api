@@ -3,8 +3,8 @@ from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import QuerySet
 from django_filters import rest_framework as filters
 from rest_framework import generics, status
-from rest_framework.response import Response
 from rest_framework.request import Request
+from rest_framework.response import Response
 
 from components.filters import ComponentFilter, ComponentPermissionsFilter
 from components.models import Component
@@ -68,8 +68,12 @@ class ComponentListSearchView(generics.ListAPIView):
 
 class ComponentTypeListView(generics.ListAPIView):
     queryset = Component.objects.values_list("type")
-    permission_classes = [ComponentPermissions, ]
-    filter_backends = [ComponentPermissionsFilter, ]
+    permission_classes = [
+        ComponentPermissions,
+    ]
+    filter_backends = [
+        ComponentPermissionsFilter,
+    ]
 
     def list(self, request: Request, *args, **kwargs) -> Response:
         queryset = self.filter_queryset(self.get_queryset())
@@ -86,6 +90,6 @@ class ComponentImplementedRequirementView(generics.UpdateAPIView):
 
     def patch(self, request, *args, **kwargs):
         try:
-            return self.update(request, *args, **kwargs)
+            return self.partial_update(request, *args, **kwargs)
         except ValidationError:
             return Response(status=status.HTTP_400_BAD_REQUEST)

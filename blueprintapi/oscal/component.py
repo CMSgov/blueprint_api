@@ -98,6 +98,14 @@ class ImplementedRequirement(OSCALElement):
         self.props.append(property)
         return self
 
+    def json(self, **kwargs):
+        if "by_alias" in kwargs:
+            kwargs.pop("by_alias")
+        if "exclude_none" in kwargs:
+            kwargs.pop("exclude_none")
+
+        return super().json(by_alias=True, exclude_none=True, **kwargs)
+
     class Config:
         fields = {
             "control_id": "control-id",
