@@ -10,6 +10,8 @@ from projects.models import Project, ProjectControl
 
 
 class ProjectListSerializer(serializers.ModelSerializer):
+    percent_complete = serializers.DecimalField(max_digits=3, decimal_places=1, coerce_to_string=False, required=False)
+
     class Meta:
         model = Project
         fields = (
@@ -21,8 +23,9 @@ class ProjectListSerializer(serializers.ModelSerializer):
             "creator",
             "location",
             "catalog",
+            "percent_complete",
         )
-        read_only_fields = ("id", "creator", "catalog", )
+        read_only_fields = ("id", "creator", "catalog", "percent_complete", )
 
     def create(self, validated_data):
         return Project.objects.create(
@@ -33,6 +36,7 @@ class ProjectListSerializer(serializers.ModelSerializer):
 class ProjectSerializer(serializers.ModelSerializer):
     components = ComponentListSerializer(many=True)
     components_count = serializers.SerializerMethodField()
+    percent_complete = serializers.DecimalField(max_digits=3, decimal_places=1, coerce_to_string=False, required=False)
 
     def get_components_count(self, obj):
         return obj.components.count()
@@ -50,7 +54,9 @@ class ProjectSerializer(serializers.ModelSerializer):
             "components",
             "components_count",
             "catalog",
+            "percent_complete",
         )
+        read_only_fields = ("id", "creator", "percent_complete", )
         depth = 1
 
 
