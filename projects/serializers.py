@@ -1,5 +1,3 @@
-import decimal
-
 from django.db.models import QuerySet
 from rest_framework import serializers
 
@@ -12,9 +10,8 @@ from projects.models import Project, ProjectControl
 
 
 class ProjectListSerializer(serializers.ModelSerializer):
-    percent_complete = serializers.DecimalField(
-        max_digits=3, decimal_places=0, coerce_to_string=False, required=False, rounding=decimal.ROUND_UP
-    )
+    completed_controls = serializers.IntegerField()
+    total_controls = serializers.IntegerField()
 
     class Meta:
         model = Project
@@ -27,9 +24,10 @@ class ProjectListSerializer(serializers.ModelSerializer):
             "creator",
             "location",
             "catalog",
-            "percent_complete",
+            "completed_controls",
+            "total_controls",
         )
-        read_only_fields = ("id", "creator", "catalog", "percent_complete", )
+        read_only_fields = ("id", "creator", "catalog", "completed_controls", "total_controls", )
 
     def create(self, validated_data):
         return Project.objects.create(
@@ -40,9 +38,8 @@ class ProjectListSerializer(serializers.ModelSerializer):
 class ProjectSerializer(serializers.ModelSerializer):
     components = ComponentListSerializer(many=True)
     components_count = serializers.SerializerMethodField()
-    percent_complete = serializers.DecimalField(
-        max_digits=3, decimal_places=0, coerce_to_string=False, required=False, rounding=decimal.ROUND_UP
-    )
+    completed_controls = serializers.IntegerField()
+    total_controls = serializers.IntegerField()
 
     def get_components_count(self, obj):
         return obj.components.count()
@@ -60,9 +57,10 @@ class ProjectSerializer(serializers.ModelSerializer):
             "components",
             "components_count",
             "catalog",
-            "percent_complete",
+            "completed_controls",
+            "total_controls",
         )
-        read_only_fields = ("id", "creator", "percent_complete", )
+        read_only_fields = ("id", "creator", "completed_controls", "total_controls", )
         depth = 1
 
 

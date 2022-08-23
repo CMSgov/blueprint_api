@@ -1,6 +1,5 @@
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.db.models import Q, Count, FloatField
-from django.db.models.functions import Cast
+from django.db.models import Q, Count
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from guardian.shortcuts import get_objects_for_user
@@ -21,15 +20,12 @@ from projects.serializers import (
     ProjectSerializer, ProjectControlListSerializer,
 )
 
-n_completed = Cast(Count("to_project", filter=Q(to_project__status="complete")), FloatField())
-total_controls = Cast(Count("to_project"), FloatField())
+n_completed = Count("to_project", filter=Q(to_project__status="complete"))
+total_controls = Count("to_project")
 
 project_queryset = (
-        Project
-        .objects
-        .annotate(percent_complete=(n_completed / total_controls) * 100)
-        .order_by("pk")
-    )
+    Project.objects.annotate(completed_controls=n_completed).annotate(total_controls=total_controls).order_by("pk")
+)
 
 
 class ProjectsListViews(generics.ListCreateAPIView):
