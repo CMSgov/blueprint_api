@@ -4,7 +4,7 @@ from .views import (
     ProjectAddComponentView,
     ProjectComponentListSearchView,
     ProjectComponentNotAddedListView,
-    ProjectGetControlData,
+    RetrieveUpdateProjectControlView,
     ProjectGetControlList,
     ProjectRemoveComponentView,
     ProjectsDetailView,
@@ -31,7 +31,7 @@ urlpatterns = [
     ),
     path(
         "<int:project_id>/controls/<str:control_id>/",
-        ProjectGetControlData.as_view(),
+        RetrieveUpdateProjectControlView.as_view(),
         name="project-get-control",
     ),
     path(
