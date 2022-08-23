@@ -212,7 +212,7 @@ class ProjectListCreateViewTestCase(AuthenticatedAPITestCase):
         content = response.json()
         self.assertEqual(len(content), 2)
 
-        for project, expected in zip(content, (1.9, 0.0)):  # queryset is ordered by pk
+        for project, expected in zip(content, (2.0, 0.0)):  # queryset is ordered by pk
             with self.subTest(project=project["title"]):
                 self.assertEqual(project["percent_complete"], expected)
 

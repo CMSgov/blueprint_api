@@ -1,3 +1,5 @@
+import decimal
+
 from django.db.models import QuerySet
 from rest_framework import serializers
 
@@ -10,7 +12,9 @@ from projects.models import Project, ProjectControl
 
 
 class ProjectListSerializer(serializers.ModelSerializer):
-    percent_complete = serializers.DecimalField(max_digits=3, decimal_places=1, coerce_to_string=False, required=False)
+    percent_complete = serializers.DecimalField(
+        max_digits=3, decimal_places=0, coerce_to_string=False, required=False, rounding=decimal.ROUND_UP
+    )
 
     class Meta:
         model = Project
@@ -36,7 +40,9 @@ class ProjectListSerializer(serializers.ModelSerializer):
 class ProjectSerializer(serializers.ModelSerializer):
     components = ComponentListSerializer(many=True)
     components_count = serializers.SerializerMethodField()
-    percent_complete = serializers.DecimalField(max_digits=3, decimal_places=1, coerce_to_string=False, required=False)
+    percent_complete = serializers.DecimalField(
+        max_digits=3, decimal_places=0, coerce_to_string=False, required=False, rounding=decimal.ROUND_UP
+    )
 
     def get_components_count(self, obj):
         return obj.components.count()
