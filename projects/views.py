@@ -1,4 +1,6 @@
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.db.models import Q, Count, FloatField
+from django.db.models.functions import Cast
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from guardian.shortcuts import get_objects_for_user
@@ -19,9 +21,19 @@ from projects.serializers import (
     ProjectSerializer, ProjectControlListSerializer,
 )
 
+n_completed = Cast(Count("to_project", filter=Q(to_project__status="complete")), FloatField())
+total_controls = Cast(Count("to_project"), FloatField())
+
+project_queryset = (
+        Project
+        .objects
+        .annotate(percent_complete=(n_completed / total_controls) * 100)
+        .order_by("pk")
+    )
+
 
 class ProjectsListViews(generics.ListCreateAPIView):
-    queryset = Project.objects.all().order_by("pk")
+    queryset = project_queryset
     serializer_class = ProjectListSerializer
     filter_backends = [
         ObjectPermissionsFilter,
@@ -29,7 +41,7 @@ class ProjectsListViews(generics.ListCreateAPIView):
 
 
 class ProjectsDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Project.objects.all()
+    queryset = project_queryset
     serializer_class = ProjectSerializer
     lookup_url_kwarg = "project_id"
 
