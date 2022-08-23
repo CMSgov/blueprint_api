@@ -113,7 +113,7 @@ class ProjectModelTest(TestCase):
         self.assertEqual(private_component.status, Component.Status.SYSTEM)
 
 
-class ProjectCreateViewTestCase(AuthenticatedAPITestCase):
+class ProjectListCreateViewTestCase(AuthenticatedAPITestCase):
     @classmethod
     def setUpTestData(cls):
         call_command(
@@ -125,6 +125,31 @@ class ProjectCreateViewTestCase(AuthenticatedAPITestCase):
         )
 
         cls.test_catalog = Catalog.objects.get(name="NIST Test Catalog")
+
+        user = User.objects.create()
+        cls.user = user
+
+        project = Project.objects.create(
+            creator=user,
+            title="MyProject",
+            acronym="MP",
+            catalog_version="NIST 800-53",
+            impact_level=Project.ImpactLevel.LOW,
+            location="other"
+        )
+
+        control_status = project.to_project.first()
+        control_status.status = "complete"
+        control_status.save()
+
+        Project.objects.create(
+            creator=user,
+            title="MyProject2",
+            acronym="MP2",
+            catalog_version="NIST 800-53",
+            impact_level=Project.ImpactLevel.LOW,
+            location="other"
+        )
 
     def test_missing_fields_returns_400(self):
         test_cases = (
@@ -153,9 +178,8 @@ class ProjectCreateViewTestCase(AuthenticatedAPITestCase):
 
     def test_add_new_project(self):
         # Authenticate as a new user instead of a "super-user"
-        user = User.objects.create()
-        token = Token.objects.create(user=user)
-        self.client.force_authenticate(user=user, token=token)
+        token = Token.objects.create(user=self.user)
+        self.client.force_authenticate(user=self.user, token=token)
 
         project_data = {
             "title": "Test project",
@@ -173,13 +197,24 @@ class ProjectCreateViewTestCase(AuthenticatedAPITestCase):
         content = response.json()
 
         # Check user and catalog
-        self.assertEqual(content["creator"], user.id)
+        self.assertEqual(content["creator"], self.user.id)
         self.assertEqual(content["catalog"], self.test_catalog.id)
 
         # Check input data was successfully added
         for field in ("title", "acronym", "catalog_version", "impact_level"):
             with self.subTest(field=field):
                 self.assertEqual(content[field], project_data[field])
+
+    def test_project_list_percent_complete(self):
+        response = self.client.get(reverse("project-list"))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        content = response.json()
+        self.assertEqual(len(content), 2)
+
+        for project, expected in zip(content, (1.9, 0.0)):  # queryset is ordered by pk
+            with self.subTest(project=project["title"]):
+                self.assertEqual(project["percent_complete"], expected)
 
 
 class ProjectComponentsTest(AuthenticatedAPITestCase):
