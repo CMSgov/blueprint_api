@@ -10,8 +10,8 @@ from projects.models import Project, ProjectControl
 
 
 class ProjectListSerializer(serializers.ModelSerializer):
-    completed_controls = serializers.IntegerField()
-    total_controls = serializers.IntegerField()
+    completed_controls = serializers.IntegerField(required=False)
+    total_controls = serializers.IntegerField(required=False)
 
     class Meta:
         model = Project
@@ -38,8 +38,8 @@ class ProjectListSerializer(serializers.ModelSerializer):
 class ProjectSerializer(serializers.ModelSerializer):
     components = ComponentListSerializer(many=True)
     components_count = serializers.SerializerMethodField()
-    completed_controls = serializers.IntegerField()
-    total_controls = serializers.IntegerField()
+    completed_controls = serializers.IntegerField(required=False)
+    total_controls = serializers.IntegerField(required=False)
 
     def get_components_count(self, obj):
         return obj.components.count()
