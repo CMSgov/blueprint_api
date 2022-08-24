@@ -387,8 +387,8 @@ class ProjectAddComponentViewTest(AuthenticatedAPITestCase):
         resp = self.client.post(
             "/api/projects/add-component/",
             {
-                "component_id": self.test_component.id,
-                "project_id": self.test_project.id,
+                "component_id": self.test_component_2.id,  # Defined with test_catalog_2
+                "project_id": self.test_project.id,  # Defined with test_catalog
             },
         )
         self.assertEqual(resp.status_code, 400)
@@ -397,7 +397,7 @@ class ProjectAddComponentViewTest(AuthenticatedAPITestCase):
         resp = self.client.post(
             "/api/projects/add-component/",
             {
-                "component_id": self.test_component_2.id,
+                "component_id": self.test_component.id,
                 "project_id": self.test_project.id,
             },
         )
