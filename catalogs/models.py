@@ -1,15 +1,9 @@
 import json
-import os
-from typing import List
-
 import jsonschema
+
 from django.db import models
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from jsonschema.exceptions import SchemaError, ValidationError
-
-from catalogs.catalogio import CatalogTools
 
 
 def validate_catalog(file_name):
@@ -60,56 +54,6 @@ class Catalog(models.Model):
 
     def __str__(self):
         return self.name
-
-
-@receiver(post_save, sender=Catalog)
-def add_controls(sender, instance, created, **kwargs):
-    if created:
-        catalog = CatalogTools(instance.file_name.path)
-        control_ids = catalog.get_controls_all_ids()
-        if control_ids:
-            control_objects: List = []
-            for c in control_ids:
-                control_data = catalog.get_control_data_simplified(c)
-                control_objects.append(
-                    Controls(
-                        catalog=instance,
-                        control_id=c,
-                        control_label=control_data.get("label"),
-                        sort_id=control_data.get("sort_id"),
-                        title=control_data.get("title"),
-                    )
-                )
-            Controls.objects.bulk_create(control_objects)
-
-
-@receiver(models.signals.post_delete, sender=Catalog)
-def auto_delete_file_on_delete(sender, instance, **kwargs):
-    """
-    Delete files from the filesystem when a Catalog object is deleted.
-    """
-    if instance.file_name:
-        if os.path.isfile(instance.file_name.path):
-            os.remove(instance.file_name.path)
-
-
-@receiver(models.signals.pre_save, sender=Catalog)
-def auto_delete_file_on_change(sender, instance, **kwargs):
-    """
-    Delete old file from filesystem when Catalog object is update with a new file.
-    """
-    if not instance.pk:
-        return False
-
-    try:
-        old_file = Catalog.objects.get(pk=instance.pk).file_name
-    except Catalog.DoesNotExist:
-        return False
-
-    new_file = instance.file_name
-    if not old_file == new_file:
-        if os.path.isfile(old_file.path):
-            os.remove(old_file.path)
 
 
 class Controls(models.Model):
