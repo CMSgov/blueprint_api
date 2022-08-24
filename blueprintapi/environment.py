@@ -7,6 +7,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
+# pylint: disable=too-many-instance-attributes
 class Environment:
     def __init__(self):
         defaul_secret_key = (
@@ -16,10 +17,8 @@ class Environment:
         env_hosts = os.environ.get("ALLOWED_HOSTS", "localhost")
         if env_hosts:
             hosts.add(env_hosts)
-            """
-            In case of containerized deployment to ECS/Fargate get the ip address of target
-            group and add it to allowed hosts.
-            """
+            # In case of containerized deployment to ECS/Fargate get the ip address of target group and add it to
+            # allowed hosts.
             metadata_uri = os.environ.get("ECS_CONTAINER_METADATA_URI")
             if metadata_uri:
                 container_metadata = requests.get(metadata_uri).json()
@@ -45,15 +44,15 @@ class Environment:
 
         # Log basic environment variables except db related for security reasons.
         logger.info("============== Environment Variables ================")
-        logger.info(f"Allowed Hosts         : {self.allowed_hosts}")
-        logger.info(f"db host         :       {self.db_host}")
-        logger.info(f"db name         :       {self.db_name}")
-        logger.info(f"Log Level             : {self.log_level}")
-        logger.info(f"OIDC Config           : {self.oidc_config}")
-        logger.info(f"Metrics Env           : {self.metrics_env}")
-        logger.info(f"Cors allow origin     : {self.cors_allow_origins}")
-        logger.info(f"Debug                 : {self.debug}")
-        logger.info(f"CSRF Trusted Origins  : {self.get_csrf_trusted_origins()}")
+        logger.info("Allowed Hosts         : %s", self.allowed_hosts)
+        logger.info("db host         :       %s", self.db_host)
+        logger.info("db name         :       %s", self.db_name)
+        logger.info("Log Level             : %s", self.log_level)
+        logger.info("OIDC Config           : %s", self.oidc_config)
+        logger.info("Metrics Env           : %s", self.metrics_env)
+        logger.info("Cors allow origin     : %s", self.cors_allow_origins)
+        logger.info("Debug                 : %s", self.debug)
+        logger.info("CSRF Trusted Origins  : %s", self.csrf_trusted_origins)
         logger.info("============== End Environment Variables ================")
 
     def get_allowed_hosts(self):

@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 
 # noinspection PyUnusedLocal
-def add_default_user_perms(sender, instance: User, created: bool, **kwargs):
+def add_default_user_perms(sender, instance: User, created: bool, **kwargs):  # pylint: disable=unused-argument
     """After a User is created, assign object permissions to view/edit/delete to that user."""
     if created:
         user_perms = (

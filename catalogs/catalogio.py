@@ -5,15 +5,15 @@ from typing import Any, List, Optional
 logger = logging.getLogger("catalogs.catalogio")
 
 
-class CatalogTools(object):
+class CatalogTools:
     """Represent a catalog"""
 
     def __init__(self, source, text=False):
         try:
             self.oscal = self._load_catalog_json(source, text)
-        except (IOError, FileNotFoundError, json.decoder.JSONDecodeError) as e:
-            logger.error(f"Unable to load catalog {source}: {e}")
-            raise CatalogLoadError(f"Could not load catalog {source}") from e
+        except (IOError, FileNotFoundError, json.decoder.JSONDecodeError) as exc:
+            logger.error("Unable to load catalog %s: %s", source, exc)
+            raise CatalogLoadError(f"Could not load catalog {source}") from exc
 
         json.dumps(self.oscal)
         self.status = "ok"
@@ -28,8 +28,8 @@ class CatalogTools(object):
         if text:
             oscal = json.loads(source)
         else:
-            with open(source, "r") as f:
-                oscal = json.load(f)
+            with open(source, "r") as file:
+                oscal = json.load(file)
         return oscal.get("catalog")
 
     @staticmethod
@@ -64,8 +64,8 @@ class CatalogTools(object):
         ids = [item.get("id") for item in groups]
         return ids
 
-    def get_group_title_by_id(self, id):
-        group = self.find_dict_by_value(self.get_groups(), "id", id)
+    def get_group_title_by_id(self, group_id):
+        group = self.find_dict_by_value(self.get_groups(), "id", group_id)
         if group is None:
             return None
         return group.get("title")
@@ -75,16 +75,16 @@ class CatalogTools(object):
         group_ids = self.get_group_ids()
         gid: str = ""
         if group_ids:
-            for g in group_ids:
-                if g.lower() == control_id[:2].lower():
-                    gid = g
+            for group in group_ids:
+                if group.lower() == control_id[:2].lower():
+                    gid = group
         return gid
 
     # Controls
     def get_controls(self) -> List:
         controls: List[dict] = []
         for group in self.get_groups():
-            controls += [c for c in group.get("controls")]
+            controls += group.get("controls")
         return controls
 
     def get_control_ids(self) -> List:
@@ -94,10 +94,10 @@ class CatalogTools(object):
     def get_controls_all(self) -> List:
         controls: List[dict] = []
         for group in self.get_groups():
-            for c in group.get("controls"):
-                controls.append(c)
-                if "controls" in c:
-                    controls += [ce for ce in c.get("controls")]
+            for control in group.get("controls"):
+                controls.append(control)
+                if "controls" in control:
+                    controls += control.get("controls")
         return controls
 
     def get_controls_all_ids(self) -> List:
@@ -126,10 +126,10 @@ class CatalogTools(object):
         try:
             next_idx = search_collection.index(control_id) + 1
             return search_collection[next_idx]
-        except ValueError as e:
+        except ValueError as exc:
             raise MissingControlError(
                 "Cannot determine next control. Provided id does not exist"
-            ) from e
+            ) from exc
         except IndexError:  # control_id was at the end of the list
             return ""
 
@@ -143,15 +143,15 @@ class CatalogTools(object):
 
     def __get_parts(self, parts) -> List:
         section: List[dict] = []
-        for p in parts:
+        for part_data in parts:
             part: dict = {"prose": None, "parts": None}
-            if "prose" in p:
-                label = self.get_control_property_by_name(p, "label")
-                prose = p.get("prose")
+            if "prose" in part_data:
+                label = self.get_control_property_by_name(part_data, "label")
+                prose = part_data.get("prose")
                 part["prose"] = {label: prose}
             subpart: List[dict] = []
-            if "parts" in p:
-                subpart = self.__get_parts(p.get("parts"))
+            if "parts" in part_data:
+                subpart = self.__get_parts(part_data.get("parts"))
             if part:
                 part["parts"] = subpart
             section.append(part)
@@ -205,18 +205,18 @@ class CatalogTools(object):
     def __get_control_parameter_values(control) -> dict:
         params: dict = {}
         if "params" in control:
-            for p in control.get("params"):
-                pid = p.get("id")
-                if "values" in p:
-                    params[pid] = p.get("values")
-                elif "select" in p:
-                    select = p.get("select")
+            for param in control.get("params"):
+                pid = param.get("id")
+                if "values" in param:
+                    params[pid] = param.get("values")
+                elif "select" in param:
+                    select = param.get("select")
                     howmany = select.get("how-many") if "how-many" in select else 1
                     params[pid] = {
                         howmany: select.get("choice"),
                     }
                 else:
-                    params[pid] = p.get("label")
+                    params[pid] = param.get("label")
         return params
 
     def get_control_data_simplified(self, control_id) -> dict:

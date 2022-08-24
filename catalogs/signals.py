@@ -7,18 +7,18 @@ from catalogs.models import Catalog, Controls
 
 
 # noinspection PyUnusedLocal
-def add_controls(sender, instance: Catalog, created: bool, **kwargs):
+def add_controls(sender, instance: Catalog, created: bool, **kwargs):  # pylint: disable=unused-argument
     if created:
         catalog = CatalogTools(instance.file_name.path)
         control_ids = catalog.get_controls_all_ids()
         if control_ids:
             control_objects: List = []
-            for c in control_ids:
-                control_data = catalog.get_control_data_simplified(c)
+            for control_id in control_ids:
+                control_data = catalog.get_control_data_simplified(control_id)
                 control_objects.append(
                     Controls(
                         catalog=instance,
-                        control_id=c,
+                        control_id=control_id,
                         control_label=control_data.get("label"),
                         sort_id=control_data.get("sort_id"),
                         title=control_data.get("title"),
@@ -28,7 +28,7 @@ def add_controls(sender, instance: Catalog, created: bool, **kwargs):
 
 
 # noinspection PyUnusedLocal
-def auto_delete_file_on_delete(sender, instance: Catalog, **kwargs):
+def auto_delete_file_on_delete(sender, instance: Catalog, **kwargs):  # pylint: disable=unused-argument
     """Delete files from the filesystem when a Catalog object is deleted."""
     if instance.file_name:
         if os.path.isfile(instance.file_name.path):
@@ -36,7 +36,7 @@ def auto_delete_file_on_delete(sender, instance: Catalog, **kwargs):
 
 
 # noinspection PyUnusedLocal
-def auto_delete_file_on_change(sender, instance: Catalog, **kwargs):
+def auto_delete_file_on_change(sender, instance: Catalog, **kwargs):  # pylint: disable=unused-argument
     """Delete old file from filesystem when Catalog object is update with a new file."""
     if not instance.pk:
         return False

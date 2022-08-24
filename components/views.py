@@ -60,7 +60,7 @@ class ComponentListSearchView(generics.ListAPIView):
 
         serializer = self.get_serializer(page_obj, many=True)
         response = serializer.data
-        response.append({"total_item_count": paginator.count})
+        response.append({"total_item_count": paginator.count})  # pylint: disable=no-member
 
         return Response(response, status=status.HTTP_200_OK)
 

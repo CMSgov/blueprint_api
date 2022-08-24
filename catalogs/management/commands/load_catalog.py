@@ -48,6 +48,7 @@ class Command(BaseCommand):
         except (IOError, FileNotFoundError) as exc:
             raise CommandError(f"Error loading catalog file: {exc}") from exc
 
+        # pylint: disable=consider-using-f-string
         self.stdout.write(self.style.SUCCESS('Successfully ingested catalog "%s"' % name))
 
     @staticmethod

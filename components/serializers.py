@@ -1,6 +1,6 @@
 import json
 
-from typing import List, Optional, Tuple
+from typing import Any, List, Optional, Tuple
 
 from django.contrib.auth.models import AnonymousUser
 from django.db.models import TextChoices
@@ -9,6 +9,7 @@ from rest_framework import serializers
 
 from blueprintapi.oscal.component import ImplementedRequirement, Model
 from catalogs.catalogio import CatalogTools
+from catalogs.models import Catalog
 from components.componentio import ComponentTools
 from components.models import Component
 from projects.models import Project
@@ -49,18 +50,14 @@ class ComponentSerializer(serializers.ModelSerializer):
         return data
 
     def get_project_data(self, obj):
-        data: dict = {}
         user: dict = {}
         request = self.context.get("request")
         if hasattr(request, "user"):
             user = request.user
 
-        """
-        @todo - Remove this when we can corrolate a request to a user.
-        """
+        # TODO: Remove this when we can corrolate a request to a user.
         if not user or isinstance(user, AnonymousUser):
             user = User.objects.exclude(username="AnonymousUser").first()
-        """end @todo"""
 
         data = collect_project_data(obj.id, user)
         return data
@@ -82,46 +79,44 @@ class ComponentSerializer(serializers.ModelSerializer):
         )
 
 
-def collect_catalog_data(controls: list, catalog):
+def collect_catalog_data(controls: list, catalog: Catalog) -> dict:
     """Return the Catalog data for the given Controls."""
     cat_data = CatalogTools(catalog.file_name.path)
-    data: dict = {}
-    data["version"] = cat_data.catalog_title
-    data["controls"] = {}
-    for ct in controls:
-        data["controls"][ct] = cat_data.get_control_data_simplified(ct)
+    data = {"version": cat_data.catalog_title, "controls": {}}
+    for control in controls:
+        data["controls"][control] = cat_data.get_control_data_simplified(control)
+
     return data
 
 
-def collect_component_data(component: dict):
+def collect_component_data(component: dict) -> dict:
     tools = ComponentTools(component)
 
-    component_data: dict = {}
     control_list = tools.get_controls()
     controls: dict = {}
-    for c in control_list:
-        controls[c.get("control-id")] = {
-            "narrative": c.get("description"),
-            "responsibility": get_control_responsibility(c, "security_control_type"),
-            "provider": get_control_responsibility(c, "provider"),
+    for control in control_list:
+        controls[control.get("control-id")] = {
+            "narrative": control.get("description"),
+            "responsibility": get_control_responsibility(control, "security_control_type"),
+            "provider": get_control_responsibility(control, "provider"),
         }
 
-    cp = tools.get_components()[0]
-    component_data = {
-        "title": cp.get("title"),
-        "description": cp.get("description"),
-        "standard": cp.get("control-implementations")[0].get("description"),
-        "source": cp.get("control-implementations")[0].get("source"),
+    component_ = tools.get_components()[0]
+
+    return {
+        "title": component_.get("title"),
+        "description": component_.get("description"),
+        "standard": component_.get("control-implementations")[0].get("description"),
+        "source": component_.get("control-implementations")[0].get("source"),
+        "controls": controls
     }
-    component_data["controls"] = controls
-    return component_data
 
 
-def get_control_responsibility(control, prop):
+def get_control_responsibility(control: dict, name: str) -> Optional[Any]:
     if "props" in control and isinstance(control.get("props"), list):
-        for p in control.get("props"):
-            if p.get("name") == prop:
-                return p.get("value")
+        for prop in control.get("props"):
+            if prop.get("name") == name:
+                return prop.get("value")
 
 
 def collect_project_data(component_id, user):
@@ -139,13 +134,13 @@ def collect_project_data(component_id, user):
         .select_related()
         .values_list("project_id", flat=True)
     )
-    for r in remove:
-        project_data = Project.objects.get(pk=r)
-        form_values["remove"].append({"value": r, "label": project_data.title})
+    for project_id in remove:
+        project_data = Project.objects.get(pk=project_id)
+        form_values["remove"].append({"value": project_id, "label": project_data.title})
 
     add = Project.objects.filter(creator_id=user).exclude(pk__in=remove)
-    for a in add:
-        form_values["add"].append({"value": a.id, "label": a.title})
+    for project in add:
+        form_values["add"].append({"value": project.id, "label": project.title})
 
     return form_values
 

@@ -13,10 +13,10 @@ def validate_catalog(file_name):
 
     try:
         jsonschema.validate(instance=cat, schema=oscal_schema)
-    except ValidationError:
-        raise ValidationError("The Catalog is not a valid OSCAL catalog.")
-    except SchemaError:
-        raise ValidationError("The Catalog schema is not a valid OSCAL catalog schema.")
+    except ValidationError as exc:
+        raise ValidationError("The Catalog is not a valid OSCAL catalog.") from exc
+    except SchemaError as exc:
+        raise ValidationError("The Catalog schema is not a valid OSCAL catalog schema.") from exc
 
 
 class Catalog(models.Model):

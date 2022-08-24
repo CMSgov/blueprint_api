@@ -5,7 +5,7 @@ from components.models import Component
 
 
 # noinspection PyUnusedLocal
-def parse_component_json(sender, instance: Component, *args, **kwargs):
+def parse_component_json(sender, instance: Component, *args, **kwargs):  # pylint: disable=unused-argument
     """If the Component is an uploaded file, load the JSON and add it to the component_json field.
     """
     if instance.component_file:
@@ -14,7 +14,7 @@ def parse_component_json(sender, instance: Component, *args, **kwargs):
 
 
 # noinspection PyUnusedLocal
-def add_description(sender, instance: Component, *args, **kwargs):
+def add_description(sender, instance: Component, *args, **kwargs):  # pylint: disable=unused-argument
     """Get the Description from a given Component JSON object."""
     if instance.component_json and not instance.description:
         tool = ComponentTools(instance.component_json)
@@ -22,7 +22,7 @@ def add_description(sender, instance: Component, *args, **kwargs):
 
 
 # noinspection PyUnusedLocal
-def convert_to_lowercase(sender, instance: Component, *args, **kwargs):
+def convert_to_lowercase(sender, instance: Component, *args, **kwargs):  # pylint: disable=unused-argument
     """Ensure the "type" field value is lowercase before saving."""
     if instance.component_json and not instance.type:
         tool = ComponentTools(instance.component_json)
@@ -32,7 +32,7 @@ def convert_to_lowercase(sender, instance: Component, *args, **kwargs):
 
 
 # noinspection PyUnusedLocal
-def add_controls(sender, instance: Component, *args, **kwargs):
+def add_controls(sender, instance: Component, *args, **kwargs):  # pylint: disable=unused-argument
     """Add the controls from the component to the controls field."""
     if instance.component_json:
         tool = ComponentTools(instance.component_json)

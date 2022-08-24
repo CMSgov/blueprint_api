@@ -22,7 +22,7 @@ from rest_framework import permissions
 from . import views
 
 
-schema_view = get_schema_view(
+SchemaView = get_schema_view(
     openapi.Info(
         title="RapidATO API",
         default_version="v1",
@@ -44,12 +44,12 @@ urlpatterns = [
     path("api-auth/", include("rest_framework.urls")),
     re_path(
         r"^doc(?P<format>\.json|\.yaml)$",
-        schema_view.without_ui(cache_timeout=0),
+        SchemaView.without_ui(cache_timeout=0),
         name="schema-json",
     ),
     path(
         "doc/",
-        schema_view.with_ui("swagger", cache_timeout=0),
+        SchemaView.with_ui("swagger", cache_timeout=0),
         name="schema-swagger-ui",
     ),
 ]

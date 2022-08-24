@@ -8,7 +8,7 @@ from rest_framework import status
 from rest_framework.authtoken.models import Token
 
 from catalogs.models import Catalog
-from components.componentio import ComponentTools, EmptyComponent
+from components.componentio import ComponentTools, create_empty_component_json
 from components.models import Component
 from components.serializers import ComponentListSerializer, ComponentSerializer
 from testing_utils import AuthenticatedAPITestCase, prevent_request_warnings
@@ -73,8 +73,8 @@ TEST_COMPONENT_JSON_BLOB = {
 class ComponentModelTest(AuthenticatedAPITestCase):
     @classmethod
     def setUpTestData(cls):
-        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
-            catalog = File(f)
+        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as file:
+            catalog = File(file)
             cls.test_catalog = Catalog.objects.create(
                 name="NIST Test Catalog",
                 file_name=catalog,
@@ -155,8 +155,8 @@ TEST_COMPONENT_CONTROLS = ["ac-1", "ac-2", "at-1", "at-2", "st-3"]
 class GetAllComponentsTest(AuthenticatedAPITestCase):
     @classmethod
     def setUpTestData(cls):
-        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
-            catalog = File(f)
+        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as file:
+            catalog = File(file)
             test_catalog = Catalog.objects.create(
                 name="NIST Test Catalog",
                 file_name=catalog,
@@ -210,8 +210,8 @@ class GetAllComponentsTest(AuthenticatedAPITestCase):
 class GetSingleComponentTest(AuthenticatedAPITestCase):
     @classmethod
     def setUpTestData(cls):
-        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
-            catalog = File(f)
+        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as file:
+            catalog = File(file)
             cls.test_catalog = Catalog.objects.create(
                 name="NIST Test Catalog",
                 file_name=catalog,
@@ -251,8 +251,8 @@ class GetSingleComponentTest(AuthenticatedAPITestCase):
 class CreateNewComponentTest(AuthenticatedAPITestCase):
     @classmethod
     def setUpTestData(cls):
-        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
-            catalog = File(f)
+        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as file:
+            catalog = File(file)
             cls.test_catalog = Catalog.objects.create(
                 name="NIST Test Catalog",
                 file_name=catalog,
@@ -261,7 +261,7 @@ class CreateNewComponentTest(AuthenticatedAPITestCase):
             )
 
     def test_create_valid_component(self):
-        self.valid_payload = {
+        valid_payload = {
             "title": "Cool Component",
             "description": "Probably the coolest component you ever did see. It's magical.",
             "catalog": self.test_catalog.id,
@@ -272,27 +272,27 @@ class CreateNewComponentTest(AuthenticatedAPITestCase):
 
         response = self.client.post(
             reverse("component-list"),
-            data=json.dumps(self.valid_payload),
+            data=json.dumps(valid_payload),
             content_type="application/json",
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     @prevent_request_warnings
     def test_create_invalid_component(self):
-        self.invalid_payload = {
+        invalid_payload = {
             "not_real": "this is not a valid field for a component and will fail create attempt"
         }
 
         response = self.client.post(
             reverse("component-list"),
-            data=json.dumps(self.invalid_payload),
+            data=json.dumps(invalid_payload),
             content_type="application/json",
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     # NON-required field tests
-    def test_search_terms_field_is_NOT_required(self):
-        self.valid_payload_without_search_terms = {
+    def test_search_terms_field_is_not_required(self):
+        valid_payload_without_search_terms = {
             "title": "Cool Component",
             "description": "Probably the coolest component you ever did see. It's magical.",
             "catalog": self.test_catalog.id,
@@ -302,7 +302,7 @@ class CreateNewComponentTest(AuthenticatedAPITestCase):
 
         response = self.client.post(
             reverse("component-list"),
-            data=json.dumps(self.valid_payload_without_search_terms),
+            data=json.dumps(valid_payload_without_search_terms),
             content_type="application/json",
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -310,7 +310,7 @@ class CreateNewComponentTest(AuthenticatedAPITestCase):
     # required field tests
     @prevent_request_warnings
     def test_title_field_is_required(self):
-        self.invalid_payload_without_title = {
+        invalid_payload_without_title = {
             "description": "Probably the coolest component you ever did see. It's magical.",
             "catalog": self.test_catalog.id,
             "search_terms": ["cool", "magic", "software"],
@@ -320,14 +320,14 @@ class CreateNewComponentTest(AuthenticatedAPITestCase):
 
         response = self.client.post(
             reverse("component-list"),
-            data=json.dumps(self.invalid_payload_without_title),
+            data=json.dumps(invalid_payload_without_title),
             content_type="application/json",
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     @prevent_request_warnings
     def test_catalog_field_is_required(self):
-        self.invalid_payload_without_catalog = {
+        invalid_payload_without_catalog = {
             "title": "Cool Component",
             "description": "Probably the coolest component you ever did see. It's magical.",
             "search_terms": ["cool", "magic", "software"],
@@ -337,7 +337,7 @@ class CreateNewComponentTest(AuthenticatedAPITestCase):
 
         response = self.client.post(
             reverse("component-list"),
-            data=json.dumps(self.invalid_payload_without_catalog),
+            data=json.dumps(invalid_payload_without_catalog),
             content_type="application/json",
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -368,8 +368,8 @@ class CreateNewComponentTest(AuthenticatedAPITestCase):
 class ComponentViewTest(AuthenticatedAPITestCase):
     @classmethod
     def setUpTestData(cls):
-        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
-            catalog = File(f)
+        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as file:
+            catalog = File(file)
             cls.test_catalog = Catalog.objects.create(
                 name="NIST Test Catalog",
                 file_name=catalog,
@@ -401,10 +401,10 @@ class ComponentViewTest(AuthenticatedAPITestCase):
 
     def test_search_query_win(self):
         resp = self.client.get("/api/components/search/?search=win", format="json")
-        expectedResonse = [{"total_item_count": 0}]
+        expected_response = [{"total_item_count": 0}]
 
         self.assertEqual(resp.status_code, 200)
-        self.assertEqual(resp.data, expectedResonse)
+        self.assertEqual(resp.json(), expected_response)
 
     def test_search_filter_type_software(self):
         resp = self.client.get("/api/components/search/?type=software", format="json")
@@ -430,8 +430,8 @@ class ComponentViewTest(AuthenticatedAPITestCase):
 
 class ComponentioTest(TestCase):
     def setUp(self):
-        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
-            catalog = File(f)
+        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as file:
+            catalog = File(file)
             self.cat = Catalog.objects.create(
                 name="Test Catalog",
                 file_name=catalog,
@@ -452,30 +452,30 @@ class ComponentioTest(TestCase):
     def test_get_component_value(self):
         title = self.tools.get_component_value("title")
         description = self.tools.get_component_value("description")
-        self.assertEquals(title, "Cool Component")
-        self.assertEquals(description, "This is a really cool component.")
+        self.assertEqual(title, "Cool Component")
+        self.assertEqual(description, "This is a really cool component.")
 
     def test_get_implemenations(self):
         impl = self.tools.get_implemenations()
-        self.assertEquals(impl[0].get("description"), "CMS_ARS_3_1")
+        self.assertEqual(impl[0].get("description"), "CMS_ARS_3_1")
         self.assertIsInstance(impl[0].get("implemented-requirements"), List)
 
     def test_get_controls(self):
         controls = self.tools.get_controls()
-        self.assertEquals(len(controls), 5)
-        self.assertEquals(controls[0].get("control-id"), "ac-1")
+        self.assertEqual(len(controls), 5)
+        self.assertEqual(controls[0].get("control-id"), "ac-1")
 
     def test_get_control_ids(self):
         ids = self.tools.get_control_ids()
-        self.assertEquals(len(ids), 5)
-        self.assertEquals(ids[0], "ac-1")
+        self.assertEqual(len(ids), 5)
+        self.assertEqual(ids[0], "ac-1")
 
 
 class ComponentTypesViewTest(AuthenticatedAPITestCase):
     @classmethod
     def setUpTestData(cls):
-        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
-            catalog = File(f)
+        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as file:
+            catalog = File(file)
             cls.test_catalog = Catalog.objects.create(
                 name="NIST Test Catalog",
                 file_name=catalog,
@@ -555,37 +555,35 @@ class ComponentTypesViewTest(AuthenticatedAPITestCase):
 
 class CreateEmptComponentTest(TestCase):
     @classmethod
-    def setUpTestData(self):
-        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
-            catalog = File(f)
-            self.test_catalog = Catalog.objects.create(
+    def setUpTestData(cls):
+        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as file:
+            catalog = File(file)
+            cls.test_catalog = Catalog.objects.create(
                 name="NIST Test Catalog",
                 file_name=catalog,
                 version="NIST 800-53",
                 impact_level="low",
             )
-        empty_component = EmptyComponent(
-            title="Empty Component",
-            description="An empty Component.",
-            catalog=self.test_catalog,
+        title = "Empty Component"
+        default_json = create_empty_component_json(
+            title=title,
+            catalog=cls.test_catalog,
         )
-        default_json = empty_component.create_component()
-        self.default = Component(
-            title=f"{empty_component.title} private",
-            description=f"{empty_component.title} default system component",
+        cls.default = Component(
+            title=f"{title} private",
+            description=f"{title} default system component",
             component_json=json.loads(default_json),
-            catalog_id=self.test_catalog.id,
+            catalog_id=cls.test_catalog.id,
             status=1,
         )
-        self.tools = ComponentTools(self.default.component_json)
+        cls.tools = ComponentTools(cls.default.component_json)
 
     def test_no_controls(self):
         components = self.tools.get_control_ids()
         self.assertFalse(components)
 
     def test_status_is_private(self):
-        status = self.default.status
-        self.assertEqual(status, 1)
+        self.assertEqual(self.default.status, 1)
 
 
 class ComponentImplementedRequirementViewTest(AuthenticatedAPITestCase):
