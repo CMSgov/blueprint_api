@@ -183,7 +183,6 @@ class ComponentControlSerializer(serializers.ModelSerializer):
             ) from exc
         if not (controls := validated_data.get("controls")):
             raise serializers.ValidationError("Controls must be provided")
-        # print("past the exception", controls, catalog_name)
         if controls[0] in instance.controls:
             remove_implemented_requirement(self, instance, controls, catalog_name)
         if description := validated_data.get("description"):
@@ -199,43 +198,27 @@ def add_implemented_requirement(self, instance, controls, description, catalog_n
         Property(name="security_control_type", value="Allocated"),
         Property(name="provider", value="no"),
     ]
-    ir = ImplementedRequirement(
+    requirement = ImplementedRequirement(
         props=props, control_id=controls[0], description=description
-    )
-    instance.component_json.get("component-definition").get("components")[0].get(
-        "control-implementations"
-    )[0].get("implemented-requirements").append(json.loads(ir.json()))
-
-
-def remove_implemented_requirement(self, instance, controls, catalog_name):
-    print("remove_implemented_requirement", instance, controls, catalog_name)
-    print(
-        "implemtentations",
-        instance.component_json.get("component-definition")
-        .get("components")[0]
-        .get("control-implementations"),
     )
     for implementation in (
         instance.component_json.get("component-definition")
         .get("components")[0]
         .get("control-implementations")
     ):
-        print(implementation)
         if implementation.get("description") == catalog_name:
-            print("correct catalog to update", implementation)
-            for ir in implementation.get("implemented-requirements"):
-                if ir.get("control-id") == controls[0]:
-                    print("found control to remove", ir.get("control-id"))
-                    implementation.get("description").get(
-                        "implemented-requirements"
-                    ).remove(ir)
+            implementation.get("implemented-requirements").append(
+                json.loads(requirement.json())
+            )
 
-    # for implemented in ci_list[0].get(  # Get correct catalog
-    #     "implemented-requirements"
-    # ):
-    #     if implemented.get("control-id") == controls[0]:
-    #         instance.component_json.get("component-definition").get("components")[
-    #             0
-    #         ].get("control-implementations")[0].get("implemented-requirements").remove(
-    #             implemented
-    #         )
+
+def remove_implemented_requirement(self, instance, controls, catalog_name):
+    for implementation in (
+        instance.component_json.get("component-definition")
+        .get("components")[0]
+        .get("control-implementations")
+    ):
+        if implementation.get("description") == catalog_name:
+            for requirement in implementation.get("implemented-requirements"):
+                if requirement.get("control-id") == controls[0]:
+                    implementation.get("implemented-requirements").remove(requirement)
