@@ -178,7 +178,7 @@ class ComponentControlSerializer(serializers.ModelSerializer):
         try:
             catalog_name = self.context["request"].data["catalog_name"]
         except KeyError as exc:
-            raise serializers.SerializerError(
+            raise serializers.ValidationError(
                 "catalog_name missing from request data"
             ) from exc
         if not (controls := validated_data.get("controls")):

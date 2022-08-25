@@ -608,7 +608,7 @@ class ComponentImplementedRequirementViewTest(AuthenticatedAPITestCase):
             component_json=TEST_COMPONENT_JSON_BLOB,
         )
 
-    def test_missing_controls(self):
+    def test_missing_controls_and_catalog(self):
         resp = self.client.patch(
             "/api/components/"
             + str(self.test_component.id)
@@ -627,6 +627,7 @@ class ComponentImplementedRequirementViewTest(AuthenticatedAPITestCase):
             + str(self.test_component.id)
             + "/implemented-requirements/",
             {
+                "catalog_name": "CMS_ARS_3_1",
                 "controls": test_control_id,
                 "description": test_description,
             },
@@ -667,6 +668,7 @@ class ComponentImplementedRequirementViewTest(AuthenticatedAPITestCase):
             + str(self.test_component.id)
             + "/implemented-requirements/",
             {
+                "catalog_name": "CMS_ARS_3_1",
                 "controls": test_control_id,
                 "description": test_description,
             },
@@ -706,6 +708,7 @@ class ComponentImplementedRequirementViewTest(AuthenticatedAPITestCase):
             + str(self.test_component.id)
             + "/implemented-requirements/",
             {
+                "catalog_name": "CMS_ARS_3_1",
                 "controls": test_control_id,
             },
         )
