@@ -28,7 +28,7 @@ class Environment:
             os.environ.get("CORS_ALLOW_ALL_ORIGINS", "True").capitalize() == "True"
         )
         self.allowed_hosts = hosts
-        self.csrf_trusted_origins = ["https://" + env_hosts]
+        self.csrf_trusted_origins = ["https://" + env_hosts + ":8080"]
         self.log_level = os.environ.get("LOG_LEVEL", logging.INFO)
         self.oidc_config = os.environ.get("OIDC_CONFIG")
         self.metrics_env = os.environ.get("METRICS_ENV_NAME")
