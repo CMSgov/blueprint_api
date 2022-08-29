@@ -1,8 +1,6 @@
 import logging
 
 from django.contrib.auth.models import Permission
-from django.contrib.auth.signals import user_login_failed
-from django.dispatch import receiver
 from guardian.shortcuts import assign_perm
 
 from users.models import User
@@ -49,7 +47,7 @@ def add_default_user_perms(sender, instance: User, created: bool, **kwargs):
                 assign_perm(code, instance, instance)  # Object permissions for user
 
 
-@receiver(user_login_failed)
+# noinspection PyUnusedLocal
 def user_login_failed_callback(sender, credentials, **kwargs):
     user = credentials.get("username")
     logger.warning(f"Log in failed for: {user}")
