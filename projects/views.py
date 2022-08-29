@@ -54,7 +54,9 @@ class ProjectAddComponentView(generics.GenericAPIView):
 
         if project.catalog.id == component.catalog.id:
             project.components.add(component.id)
-            response = {"message": f"{component.title} added to {project.title}."}
+            response = {
+                "message": f"{component.title} and {len(component.controls)} control narratives successfully added to {project.title}."
+            }
             return Response(response, status=status.HTTP_200_OK)
 
         return Response(
@@ -86,7 +88,9 @@ class ProjectRemoveComponentView(generics.GenericAPIView):
         project.components.remove(component.id)
 
         return Response(
-            {"message": f"{component.title} removed from {project.title}."},
+            {
+                "message": f"{component.title} and {len(component.controls)} control narratives successfully removed from {project.title}."
+            },
             status=status.HTTP_200_OK,
         )
 
