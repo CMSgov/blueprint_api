@@ -57,6 +57,7 @@ SECRET_KEY = environment.get_secret_key()
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = environment.get_debug()
 ALLOWED_HOSTS = environment.get_allowed_hosts()
+CSRF_TRUSTED_ORIGINS = environment.get_csrf_trusted_origins()
 # Application definition
 
 INSTALLED_APPS = [

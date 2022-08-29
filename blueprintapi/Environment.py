@@ -28,6 +28,7 @@ class Environment:
             os.environ.get("CORS_ALLOW_ALL_ORIGINS", "True").capitalize() == "True"
         )
         self.allowed_hosts = hosts
+        self.csrf_trusted_origins = "https://" + env_hosts
         self.log_level = os.environ.get("LOG_LEVEL", logging.INFO)
         self.oidc_config = os.environ.get("OIDC_CONFIG")
         self.metrics_env = os.environ.get("METRICS_ENV_NAME")
@@ -50,10 +51,14 @@ class Environment:
         logger.info(f"Metrics Env           : {self.metrics_env}")
         logger.info(f"Cors allow origin     : {self.cors_allow_origins}")
         logger.info(f"Debug                 : {self.debug}")
+        logger.info(f"CSRF Trusted Origins  : {self.get_csrf_trusted_origins()}")
         logger.info("============== End Environment Variables ================")
 
     def get_allowed_hosts(self):
         return self.allowed_hosts
+
+    def get_csrf_trusted_origins(self):
+        return self.csrf_trusted_origins
 
     def get_log_level(self):
         return self.log_level
