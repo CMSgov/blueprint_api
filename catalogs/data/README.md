@@ -6,6 +6,3 @@ Projects should be associated with a single catalog dataset given a catalog vers
 
 ## Version 3.1 (current)
 - CMS_ARS_3_1_[HIGH, MODERATE, LOW]_baseline_catalog.json
-
-## Version 5.0
-- cms_ars_50_[high, moderate, low].jon
