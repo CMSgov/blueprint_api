@@ -1,6 +1,7 @@
 import logging
 
 from django.contrib.auth.models import Permission
+from django.http import HttpRequest
 from guardian.shortcuts import assign_perm
 
 from users.models import User
@@ -48,7 +49,9 @@ def add_default_user_perms(sender, instance: User, created: bool, **kwargs):
 
 
 # noinspection PyUnusedLocal
-def user_login_failed_callback(sender, credentials, request, **kwargs):
+def user_login_failed_callback(
+    sender, credentials: dict, request: HttpRequest, **kwargs
+):
     user = credentials.get("username")
     ip = request.META.get("REMOTE_ADDR")
     logger.warning("Log in failed for %s from IP %s", user, ip)
