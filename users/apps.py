@@ -14,7 +14,5 @@ class UsersConfig(AppConfig):
             add_default_user_perms, sender="users.User", dispatch_uid="add_user_perms"
         )
         user_login_failed.connect(
-            user_login_failed_callback,
-            sender="django.contrib.auth",
-            dispatch_uid="user_login_failed",
+            user_login_failed_callback, dispatch_uid="failed_login"
         )
