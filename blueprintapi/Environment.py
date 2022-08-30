@@ -13,7 +13,7 @@ class Environment:
             "django-insecure-_o$0y5g@1*uyrw0!3(0%wdv-ds5wp26yp*bko+q#y4b&y!50%6"
         )
         hosts = ["localhost", "127.0.0.1"]
-        env_hosts = os.environ.get("ALLOWED_HOSTS")
+        env_hosts = os.environ.get("ALLOWED_HOSTS", "localhost")
         if env_hosts:
             hosts.append(env_hosts)
             """
@@ -29,7 +29,7 @@ class Environment:
         )
         self.allowed_hosts = hosts
         port = os.environ.get("APP_DOCKER_PORT", "8080")
-        protocol = os.environ.get("PROTOCOL")
+        protocol = os.environ.get("PROTOCOL", "https")
         self.csrf_trusted_origins = [protocol + "://" + env_hosts + ":" + port]
         self.log_level = os.environ.get("LOG_LEVEL", logging.INFO)
         self.oidc_config = os.environ.get("OIDC_CONFIG")
