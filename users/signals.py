@@ -51,4 +51,4 @@ def add_default_user_perms(sender, instance: User, created: bool, **kwargs):
 def user_login_failed_callback(sender, credentials, request, **kwargs):
     user = credentials.get("username")
     ip = request.META.get("REMOTE_ADDR")
-    logger.warning(f"Log in failed for {user} from IP {ip}")
+    logger.warning("Log in failed for %s from IP %s", user, ip)

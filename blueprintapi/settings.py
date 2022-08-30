@@ -34,7 +34,7 @@ LOGGING = {
         },
     },
     "loggers": {
-        "root": {
+        "": {
             "level": "INFO",
             "handlers": ["console"],
         }
