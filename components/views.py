@@ -1,4 +1,3 @@
-from django.core.exceptions import ValidationError
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import QuerySet
 from django_filters import rest_framework as filters
@@ -87,9 +86,3 @@ class ComponentImplementedRequirementView(generics.UpdateAPIView):
         ComponentPermissions,
     ]
     serializer_class = ComponentControlSerializer
-
-    def patch(self, request, *args, **kwargs):
-        try:
-            return self.partial_update(request, *args, **kwargs)
-        except ValidationError:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
