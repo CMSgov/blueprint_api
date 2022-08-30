@@ -2,13 +2,17 @@ from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import QuerySet
 from django_filters import rest_framework as filters
 from rest_framework import generics, status
-from rest_framework.response import Response
 from rest_framework.request import Request
+from rest_framework.response import Response
 
 from components.filters import ComponentFilter, ComponentPermissionsFilter
 from components.models import Component
 from components.permissions import ComponentPermissions
-from components.serializers import ComponentListSerializer, ComponentSerializer
+from components.serializers import (
+    ComponentControlSerializer,
+    ComponentListSerializer,
+    ComponentSerializer,
+)
 
 
 class ComponentListView(generics.ListCreateAPIView):
@@ -63,10 +67,22 @@ class ComponentListSearchView(generics.ListAPIView):
 
 class ComponentTypeListView(generics.ListAPIView):
     queryset = Component.objects.values_list("type")
-    permission_classes = [ComponentPermissions, ]
-    filter_backends = [ComponentPermissionsFilter, ]
+    permission_classes = [
+        ComponentPermissions,
+    ]
+    filter_backends = [
+        ComponentPermissionsFilter,
+    ]
 
     def list(self, request: Request, *args, **kwargs) -> Response:
         queryset = self.filter_queryset(self.get_queryset())
 
         return Response(queryset, status=status.HTTP_200_OK)
+
+
+class ComponentImplementedRequirementView(generics.UpdateAPIView):
+    queryset = Component.objects.all()
+    permission_classes = [
+        ComponentPermissions,
+    ]
+    serializer_class = ComponentControlSerializer
