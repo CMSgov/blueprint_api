@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 import logging
 import os
+import sys
 from pathlib import Path
 
 from .Environment import Environment
@@ -22,11 +23,21 @@ LOGGING = {
     "handlers": {
         "console": {
             "class": "logging.StreamHandler",
+            "stream": sys.stdout,
+            "formatter": "simple",
         },
     },
-    "root": {
-        "handlers": ["console"],
-        "level": "WARNING",
+    "formatters": {
+        "simple": {
+            "format": "[{asctime}] [{levelname}] {message}",
+            "style": "{",
+        },
+    },
+    "loggers": {
+        "": {
+            "level": "INFO",
+            "handlers": ["console"],
+        }
     },
 }
 
