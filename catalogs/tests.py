@@ -85,3 +85,9 @@ class LoadCatalogCommandTestCase(TestCase):
         for expected, actual in zip(test_cases, catalog_qs):
             with self.subTest(catalog=expected["name"]):
                 self.assertDictEqual(expected, actual)
+
+    def test_existing_catalogs_are_skipped(self):
+        call_command("load_catalog", load_standard_catalogs=True)
+        call_command("load_catalog", load_standard_catalogs=True)
+
+        self.assertEqual(Catalog.objects.count(), 3)
