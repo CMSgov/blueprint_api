@@ -1,11 +1,13 @@
 from django.core.files import File
+from django.core.management import call_command
+from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
 
 from testing_utils import AuthenticatedAPITestCase, prevent_request_warnings
 
-from .catalogio import CatalogTools as Tools
-from .models import Catalog
+from catalogs.catalogio import CatalogTools as Tools
+from catalogs.models import Catalog, Controls
 
 
 class CatalogModelTest(AuthenticatedAPITestCase):
@@ -53,3 +55,39 @@ class CatalogEndpointTest(AuthenticatedAPITestCase):
                 {"name": "Test Catalog", "file_name": catalog},
             )
             self.assertEqual(resp.status_code, 201)
+
+
+class LoadCatalogCommandTestCase(TestCase):
+    def test_load_standard_catalogs(self):
+        test_cases = [
+            {
+                "name": "CMS_ARS_3_1_HIGH",
+                "version": "CMS_ARS_3_1",
+                "impact_level": "high"
+            },
+            {
+                "name": "CMS_ARS_3_1_LOW",
+                "version": "CMS_ARS_3_1",
+                "impact_level": "low"
+            },
+            {
+                "name": "CMS_ARS_3_1_MODERATE",
+                "version": "CMS_ARS_3_1",
+                "impact_level": "moderate"
+            },
+        ]
+        call_command("load_catalog", load_standard_catalogs=True)
+
+        catalog_qs = Catalog.objects.order_by("name").values("name", "impact_level", "version")
+        self.assertEqual(catalog_qs.count(), 3)
+        self.assertEqual(Controls.objects.count(), 909)
+
+        for expected, actual in zip(test_cases, catalog_qs):
+            with self.subTest(catalog=expected["name"]):
+                self.assertDictEqual(expected, actual)
+
+    def test_existing_catalogs_are_skipped(self):
+        call_command("load_catalog", load_standard_catalogs=True)
+        call_command("load_catalog", load_standard_catalogs=True)
+
+        self.assertEqual(Catalog.objects.count(), 3)
