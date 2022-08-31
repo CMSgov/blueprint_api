@@ -221,14 +221,6 @@ class Model(OSCALElement):
         fields = {"component_definition": "component-definition"}
         allow_population_by_field_name = True
 
-    def json(self, **kwargs):
-        if "by_alias" in kwargs:
-            kwargs.pop("by_alias")
-        if "exclude_none" in kwargs:
-            kwargs.pop("exclude_none")
-
-        return super().json(by_alias=True, exclude_none=True, **kwargs)
-
 
 class OSCALComponentJson(Model):
     def load(self, f):

@@ -1,6 +1,13 @@
+import json
+
+from typing import List, Optional, Tuple
+
 from django.contrib.auth.models import AnonymousUser
+from django.db.models import TextChoices
+from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
+from blueprintapi.oscal.component import ImplementedRequirement, Model
 from catalogs.catalogio import CatalogTools
 from components.componentio import ComponentTools
 from components.models import Component
@@ -159,3 +166,106 @@ class ComponentListBasicSerializer(serializers.ModelSerializer):
             "catalog",
             "controls_count",
         )
+
+
+class ComponentControlSerializer(serializers.ModelSerializer):
+    class Action(TextChoices):
+        ADD = "add", _("Add control")
+        REMOVE = "remove", _("Remove control")
+        UPDATE = "update", _("Update control description")
+
+    catalog_version = serializers.CharField(write_only=True)
+    action = serializers.ChoiceField(choices=Action.choices, write_only=True)
+
+    class Meta:
+        model = Component
+        fields = (
+            "pk",
+            "controls",
+            "description",
+            "component_json",
+            "action",
+            "catalog_version",
+        )
+        read_only_fields = ("component_json", "pk", )
+
+    def validate(self, data: dict) -> dict:
+        def _check_required_field(field_: str):
+            if not data.get(field_):
+                raise serializers.ValidationError(f"Required field, {field_} was not provided or is empty.")
+
+        # Controls, action, catalog_version always required.
+        for field in ("action", "controls", "catalog_version"):
+            _check_required_field(field)
+
+        return data
+
+    # noinspection PyMethodMayBeStatic
+    def validate_controls(self, value: list) -> list:
+        if len(value) > 1:
+            raise serializers.ValidationError("Updating multiple controls is not supported.")
+
+        return value
+
+    def update(self, instance: Component, validated_data: dict) -> Component:
+        control = validated_data["controls"][0]
+        action = validated_data["action"]
+        catalog_version = validated_data["catalog_version"]
+
+        if action == self.Action.REMOVE:
+            self._remove_implemented_requirement(instance, control, catalog_version)
+        elif action == self.Action.ADD:
+            self._add_implemented_requirement(instance, control, validated_data["description"], catalog_version)
+        else:
+            self._update_implemented_requirement(instance, control, catalog_version, validated_data["description"])
+
+        instance.save()
+
+        return instance
+
+    @staticmethod
+    def _find_update_location(
+            instance: Component, catalog_version: str
+    ) -> Optional[Tuple[List[ImplementedRequirement], Model]]:
+        """Find the sections of a Component's json that needs to be updated."""
+        component_data = Model(**instance.component_json)
+
+        for component in component_data.component_definition.components:
+            for implementation in component.control_implementations:
+                if catalog_version in implementation.description:
+                    return implementation.implemented_requirements, component_data
+
+    def _add_implemented_requirement(self, instance: Component, control: str, description: str, catalog_version: str):
+        if control in instance.controls:
+            raise serializers.ValidationError(f"{control} has already been added to {instance}.")
+
+        location, component_model = self._find_update_location(instance, catalog_version)
+
+        if location:
+            location.append(ImplementedRequirement(control_id=control, description=description))
+            instance.component_json = json.loads(component_model.json(by_alias=True, exclude_none=True))
+
+    def _remove_implemented_requirement(self, instance: Component, control: str, catalog_version: str):
+        if control not in instance.controls:
+            raise serializers.ValidationError(f"Missing control, {control} cannot be removed from {instance}.")
+
+        location, component_model = self._find_update_location(instance, catalog_version)
+
+        if location:
+            location.remove(next(filter(lambda requirement: requirement.control_id == control, location)))
+            instance.component_json = json.loads(component_model.json(by_alias=True, exclude_none=True))
+
+    def _update_implemented_requirement(
+            self, instance: Component, control: str, catalog_version: str, description: str
+    ):
+        if control not in instance.controls:
+            raise serializers.ValidationError(f"Missing control, {control} cannot be updated in {instance}")
+
+        location, component_model = self._find_update_location(instance, catalog_version)
+
+        if location:
+            for requirement in location:
+                if requirement.control_id == control:
+                    requirement.description = description
+
+            instance.component_json = json.loads(component_model.json(by_alias=True, exclude_none=True))
