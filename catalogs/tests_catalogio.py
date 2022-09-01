@@ -9,14 +9,14 @@ from .models import Catalog
 
 class CatalogModelTest(TestCase):
     @classmethod
-    def setUp(self):
-        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
-            catalog = File(f)
+    def setUpTestData(cls):
+        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as file:
+            catalog = File(file)
             cat = Catalog.objects.create(
                 name="NIST Test Catalog",
                 file_name=catalog,
             )
-        self.catalog = Tools(cat.file_name.path)
+        cls.catalog = Tools(cat.file_name.path)
 
     def test_load_catalog(self):
         """Test loading a Catalog"""
@@ -24,7 +24,7 @@ class CatalogModelTest(TestCase):
 
     def test_catalog_title(self):
         """Get the Catalog title"""
-        self.assertEquals(
+        self.assertEqual(
             self.catalog.catalog_title, "NIST SP 800-53 Rev 5 Controls Test Catalog"
         )
 
@@ -33,7 +33,7 @@ class CatalogModelTest(TestCase):
         """Get Catalog Groups as List"""
         groups = self.catalog.get_groups()
         self.assertIsInstance(groups, List)
-        self.assertEquals(len(groups), 20)
+        self.assertEqual(len(groups), 20)
 
     def test_get_group_ids(self):
         """Test getting the Groups for a Catalog"""
@@ -43,24 +43,24 @@ class CatalogModelTest(TestCase):
     def test_get_group_title_by_id(self):
         """Test getting the Group title by ID"""
         title = self.catalog.get_group_title_by_id("ac")
-        self.assertEquals(title, "Access Control")
+        self.assertEqual(title, "Access Control")
 
     def test_get_group_id_by_control_id(self):
         """Test getting a Group ID from a Control ID"""
         group_id = self.catalog.get_group_id_by_control_id("ac-1")
-        self.assertEquals(group_id, "ac")
+        self.assertEqual(group_id, "ac")
 
     # Controls
     def test_get_controls(self):
         """Test getting all controls"""
         controls = self.catalog.get_controls()
-        self.assertEquals(len(controls), 53)
-        self.assertEquals(controls[0].get("title"), "Policy and Procedures")
+        self.assertEqual(len(controls), 53)
+        self.assertEqual(controls[0].get("title"), "Policy and Procedures")
 
     def test_get_control_by_id(self):
         """Get a control by the Control ID"""
         control = self.catalog.get_control_by_id("ac-2")
-        self.assertEquals(control.get("title"), "Account Management")
+        self.assertEqual(control.get("title"), "Account Management")
         self.assertIsInstance(control.get("params"), List)
 
     def test_get_control_statement(self):
@@ -77,12 +77,12 @@ class CatalogModelTest(TestCase):
     def test_get_controls_all_ids(self):
         controls = self.catalog.get_controls_all_ids()
         self.assertIsInstance(controls, List)
-        self.assertEquals(len(controls), 53)
+        self.assertEqual(len(controls), 53)
 
     def test_get_control_property_by_name(self):
         control = self.catalog.get_control_by_id("ac-2")
         prop = self.catalog.get_control_property_by_name(control, "label")
-        self.assertEquals(prop, "AC-2")
+        self.assertEqual(prop, "AC-2")
 
     def test_get_control_part_by_name(self):
         control = self.catalog.get_control_by_id("ac-2")
@@ -93,7 +93,7 @@ class CatalogModelTest(TestCase):
     def test_get_control_parameter_label_by_id(self):
         control = self.catalog.get_control_by_id("ac-2")
         label = self.catalog.get_control_parameter_label_by_id(control, "ac-02_odp.01")
-        self.assertEquals(label, "prerequisites and criteria")
+        self.assertEqual(label, "prerequisites and criteria")
 
     def test_get_control_parameters(self):
         control = self.catalog.get_control_by_id("ac-2")
@@ -106,9 +106,9 @@ class CatalogModelTest(TestCase):
             "91f992fb-f668-4c91-a50f-0f05b95ccee3"
         )
         self.assertIn("uuid", resource)
-        self.assertEquals(resource.get("title"), "32 CFR 2002")
+        self.assertEqual(resource.get("title"), "32 CFR 2002")
 
     def test_get_next_control_by_id(self):
         """Get a control by the Control ID"""
         control = self.catalog.get_next_control_by_id("ac-1")
-        self.assertEquals(control, "ac-2")
+        self.assertEqual(control, "ac-2")

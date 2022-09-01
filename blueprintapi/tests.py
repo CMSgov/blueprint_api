@@ -1,6 +1,7 @@
+import time
+
 from rest_framework.authtoken.models import Token
 from rest_framework.test import APITestCase
-from time import sleep
 
 from users.models import User
 
@@ -20,7 +21,7 @@ class UnauthenticatedAPITestCase(APITestCase):
         token, _ = Token.objects.get_or_create(user=user)
         self.client.credentials(HTTP_AUTHORIZATION=f"TOKEN {token.key}")
 
-        sleep(1)
+        time.sleep(1)
 
         with self.settings(AUTH_TOKEN_TTL=1 / 60**2):  # 1s
             response = self.client.get('/api/catalogs/')

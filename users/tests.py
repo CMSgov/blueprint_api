@@ -65,7 +65,7 @@ class GetSingleUserTest(AuthenticatedAPITestCase):
 
 class CreateNewUserTest(APITestCase):
     def test_create_valid_user(self):
-        self.valid_payload = {
+        valid_payload = {
             "username": "tester",
             "password": "awesomepassword",
             "first_name": "Testy",
@@ -75,7 +75,7 @@ class CreateNewUserTest(APITestCase):
 
         response = self.client.post(
             reverse("user-list"),
-            data=json.dumps(self.valid_payload),
+            data=json.dumps(valid_payload),
             content_type="application/json",
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -83,7 +83,7 @@ class CreateNewUserTest(APITestCase):
     @prevent_request_warnings
     def test_create_invalid_user(self):
         # note that username and password is required for valid post
-        self.invalid_payload = {
+        invalid_payload = {
             "username": "",
             "first_name": "Testy",
             "last_name": "Testerson",
@@ -92,7 +92,7 @@ class CreateNewUserTest(APITestCase):
 
         response = self.client.post(
             reverse("user-list"),
-            data=json.dumps(self.invalid_payload),
+            data=json.dumps(invalid_payload),
             content_type="application/json",
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -110,7 +110,7 @@ class UpdateSingleUserTest(AuthenticatedAPITestCase):
         )
 
     def test_valid_update_user(self):
-        self.valid_payload = {
+        valid_payload = {
             "username": "tester",
             "first_name": "Sleepy",
             "last_name": "Sleeper",
@@ -118,14 +118,14 @@ class UpdateSingleUserTest(AuthenticatedAPITestCase):
         }
         response = self.client.patch(
             reverse("user-detail", kwargs={"pk": self.tester.pk}),
-            data=json.dumps(self.valid_payload),
+            data=json.dumps(valid_payload),
             content_type="application/json",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     @prevent_request_warnings
     def test_invalid_update_user(self):
-        self.invalid_payload = {
+        invalid_payload = {
             "username": "",
             "first_name": "Sleepy",
             "last_name": "Sleeper",
@@ -133,7 +133,7 @@ class UpdateSingleUserTest(AuthenticatedAPITestCase):
         }
         response = self.client.patch(
             reverse("user-detail", kwargs={"pk": self.tester.pk}),
-            data=json.dumps(self.invalid_payload),
+            data=json.dumps(invalid_payload),
             content_type="application/json",
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

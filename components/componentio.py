@@ -1,45 +1,49 @@
 import json
-from typing import List
+from typing import Any, List, Optional, Union
 
 from blueprintapi.oscal import component as oscal_component
 from blueprintapi.oscal.oscal import Metadata
+from catalogs.models import Catalog
 
 
-class ComponentTools(object):
-    def __init__(self, component):
+class ComponentTools:
+    def __init__(self, component: Union[dict, str]):
         if isinstance(component, dict):
             self.component = component.get("component-definition")
         elif isinstance(component, str):
             comp = json.loads(component)
             self.component = comp.get("component-definition")
         else:
-            return None
+            raise TypeError(f"component can be dict or str. Received: {type(component)}.")
 
-    def get_components(self):
-        components: List[dict] = []
-        if self.component and "components" in self.component:
-            components = self.component["components"]
-        return components
+    def get_components(self) -> List[dict]:
+        result = []
+        if self.component is None:
+            return result
 
-    def get_component_value(self, key):
+        return self.component.get("components", result)
+
+    def get_component_value(self, key: str) -> Optional[Any]:
         component = self.get_components()
         if component:
             return component[0].get(key)
 
-    def get_implemenations(self):
-        impls: List[dict] = []
-        component = self.get_components()
-        for c in component:
-            if "control-implementations" in c:
-                impls = c.get("control-implementations")
+    def get_implemenations(self) -> List[dict]:
+        impls = []
+        components = self.get_components()
+        for component in components:
+            if "control-implementations" in component:
+                impls = component.get("control-implementations")
+
         return impls
 
-    def get_controls(self):
-        controls: List[dict] = []
+    def get_controls(self) -> List[dict]:
+        controls = []
         implementations = self.get_implemenations()
         if implementations:
-            for ci in implementations:
-                controls = ci.get("implemented-requirements")
+            for control_implementation in implementations:
+                controls = control_implementation.get("implemented-requirements")
+
         return controls
 
     def get_control_ids(self) -> List:
@@ -47,52 +51,41 @@ class ComponentTools(object):
         ids = [item.get("control-id") for item in controls]
         return ids
 
-    def get_control_by_id(self, control_id):
+    def get_control_by_id(self, control_id) -> List[dict]:
         controls = self.get_controls()
-        control = [(c) for c in controls if c.get("control-id") == control_id]
+        control = [control for control in controls if control.get("control-id") == control_id]
+
         return control
 
-    def get_control_props(self, control, prop):
+    @staticmethod
+    def get_control_props(control: dict, name: str) -> Optional[Any]:
         if "props" in control and isinstance(control.get("props"), list):
-            for p in control.get("props"):
-                if p.get("name") == prop:
-                    return p.get("value")
+            for prop in control.get("props"):
+                if prop.get("name") == name:
+                    return prop.get("value")
 
 
-class EmptyComponent(object):
-    """Create an empty OSCAL Component object."""
+def create_empty_component_json(title: str, catalog: Catalog) -> str:
+    control_implementation = oscal_component.ControlImplementation(
+        description=catalog.name,
+        source=catalog.source,
+    )
+    control_implementation.implemented_requirements = []
 
-    def __init__(self, title: str, description: str, catalog: object):
-        self.title = title
-        self.description = description
-        self.catalog = catalog
+    component = oscal_component.Component(
+        title=title,
+        description=title,
+        type="software",
+    )
+    component.control_implementations.append(control_implementation)
 
-    def add_metadata(self):
-        self.md = Metadata(title=self.title, version="unknown")
+    component_definition = oscal_component.ComponentDefinition(
+        metadata=Metadata(title=title, version="unknown")
+    )
+    component_definition.add_component(component)
 
-    def add_components(self):
-        self.add_control_implementations()
-        self.c = oscal_component.Component(
-            title=self.title,
-            description=self.title,
-            type="software",
-        )
-        self.c.control_implementations.append(self.ci)
-
-    def add_control_implementations(self):
-        self.ci = oscal_component.ControlImplementation(
-            description=self.catalog.name,
-            source=self.catalog.source,
-        )
-        self.ci.implemented_requirements = []
-
-    def add_component_definition(self):
-        self.add_metadata()
-        self.add_components()
-        self.cd = oscal_component.ComponentDefinition(metadata=self.md)
-        self.cd.add_component(self.c)
-
-    def create_component(self):
-        self.add_component_definition()
-        self.component = oscal_component.Model(component_definition=self.cd)
-        return self.component.json(by_alias=True, exclude_none=True, indent=4)
+    return (
+        oscal_component
+        .Model(component_definition=component_definition)
+        .json(by_alias=True, exclude_none=True, indent=4)
+    )

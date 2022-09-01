@@ -13,8 +13,8 @@ from catalogs.models import Catalog, Controls
 class CatalogModelTest(AuthenticatedAPITestCase):
     def setUp(self):
         super().setUp()
-        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
-            catalog = File(f)
+        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as file:
+            catalog = File(file)
             self.cat = Catalog.objects.create(
                 name="NIST Test Catalog",
                 file_name=catalog,
@@ -48,8 +48,8 @@ class CatalogModelTest(AuthenticatedAPITestCase):
 
 class CatalogEndpointTest(AuthenticatedAPITestCase):
     def test_valid_catalog(self):
-        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
-            catalog = File(f)
+        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as file:
+            catalog = File(file)
             resp = self.client.post(
                 "/api/catalogs/",
                 {"name": "Test Catalog", "file_name": catalog},

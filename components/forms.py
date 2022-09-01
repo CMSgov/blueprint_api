@@ -18,11 +18,11 @@ class ComponentAdminForm(ModelForm):
 
     def clean_component_file(self):
         component_upload = self.cleaned_data.get("component_file")
-        self.component = json.load(component_upload.file)
+        component = json.load(component_upload.file)
         with open("components/schema/oscal_component_schema.json", "r") as file:
             oscal_schema = json.load(file)
         try:
-            jsonschema.validate(instance=self.component, schema=oscal_schema)
-        except ValidationError:
-            raise ValidationError("OSCAL validation error")
+            jsonschema.validate(instance=component, schema=oscal_schema)
+        except ValidationError as exc:
+            raise ValidationError("OSCAL validation error") from exc
         return component_upload

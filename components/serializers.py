@@ -1,18 +1,17 @@
 import json
 
-from typing import List, Optional, Tuple
+from typing import Any, List, Optional, Tuple
 
-from django.contrib.auth.models import AnonymousUser
 from django.db.models import TextChoices
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from blueprintapi.oscal.component import ImplementedRequirement, Model
 from catalogs.catalogio import CatalogTools
+from catalogs.models import Catalog
 from components.componentio import ComponentTools
 from components.models import Component
 from projects.models import Project
-from users.models import User
 
 
 class ComponentListSerializer(serializers.ModelSerializer):
@@ -49,21 +48,31 @@ class ComponentSerializer(serializers.ModelSerializer):
         return data
 
     def get_project_data(self, obj):
-        data: dict = {}
-        user: dict = {}
-        request = self.context.get("request")
-        if hasattr(request, "user"):
-            user = request.user
+        user = self.context["request"].user
 
-        """
-        @todo - Remove this when we can corrolate a request to a user.
-        """
-        if not user or isinstance(user, AnonymousUser):
-            user = User.objects.exclude(username="AnonymousUser").first()
-        """end @todo"""
+        form_values = {
+            "add": [],
+            "remove": [],
+        }
 
-        data = collect_project_data(obj.id, user)
-        return data
+        all_projects = Project.objects.filter(creator_id=user)
+
+        remove = (
+            Project.components.through.objects.filter(
+                component_id=obj.id, project_id__in=all_projects
+            )
+            .select_related()
+            .values_list("project_id", flat=True)
+        )
+        for project_id in remove:
+            project_data = Project.objects.get(pk=project_id)
+            form_values["remove"].append({"value": project_id, "label": project_data.title})
+
+        add = Project.objects.filter(creator_id=user).exclude(pk__in=remove)
+        for project in add:
+            form_values["add"].append({"value": project.id, "label": project.title})
+
+        return form_values
 
     class Meta:
         model = Component
@@ -82,72 +91,44 @@ class ComponentSerializer(serializers.ModelSerializer):
         )
 
 
-def collect_catalog_data(controls: list, catalog):
+def collect_catalog_data(controls: list, catalog: Catalog) -> dict:
     """Return the Catalog data for the given Controls."""
     cat_data = CatalogTools(catalog.file_name.path)
-    data: dict = {}
-    data["version"] = cat_data.catalog_title
-    data["controls"] = {}
-    for ct in controls:
-        data["controls"][ct] = cat_data.get_control_data_simplified(ct)
+    data = {"version": cat_data.catalog_title, "controls": {}}
+    for control in controls:
+        data["controls"][control] = cat_data.get_control_data_simplified(control)
+
     return data
 
 
-def collect_component_data(component: dict):
+def collect_component_data(component: dict) -> dict:
     tools = ComponentTools(component)
 
-    component_data: dict = {}
     control_list = tools.get_controls()
     controls: dict = {}
-    for c in control_list:
-        controls[c.get("control-id")] = {
-            "narrative": c.get("description"),
-            "responsibility": get_control_responsibility(c, "security_control_type"),
-            "provider": get_control_responsibility(c, "provider"),
+    for control in control_list:
+        controls[control.get("control-id")] = {
+            "narrative": control.get("description"),
+            "responsibility": get_control_responsibility(control, "security_control_type"),
+            "provider": get_control_responsibility(control, "provider"),
         }
 
-    cp = tools.get_components()[0]
-    component_data = {
-        "title": cp.get("title"),
-        "description": cp.get("description"),
-        "standard": cp.get("control-implementations")[0].get("description"),
-        "source": cp.get("control-implementations")[0].get("source"),
+    component_ = tools.get_components()[0]
+
+    return {
+        "title": component_.get("title"),
+        "description": component_.get("description"),
+        "standard": component_.get("control-implementations")[0].get("description"),
+        "source": component_.get("control-implementations")[0].get("source"),
+        "controls": controls
     }
-    component_data["controls"] = controls
-    return component_data
 
 
-def get_control_responsibility(control, prop):
+def get_control_responsibility(control: dict, name: str) -> Optional[Any]:
     if "props" in control and isinstance(control.get("props"), list):
-        for p in control.get("props"):
-            if p.get("name") == prop:
-                return p.get("value")
-
-
-def collect_project_data(component_id, user):
-    form_values = {
-        "add": [],
-        "remove": [],
-    }
-
-    all_projects = Project.objects.filter(creator_id=user)
-
-    remove = (
-        Project.components.through.objects.filter(
-            component_id=component_id, project_id__in=all_projects
-        )
-        .select_related()
-        .values_list("project_id", flat=True)
-    )
-    for r in remove:
-        project_data = Project.objects.get(pk=r)
-        form_values["remove"].append({"value": r, "label": project_data.title})
-
-    add = Project.objects.filter(creator_id=user).exclude(pk__in=remove)
-    for a in add:
-        form_values["add"].append({"value": a.id, "label": a.title})
-
-    return form_values
+        for prop in control.get("props"):
+            if prop.get("name") == name:
+                return prop.get("value")
 
 
 class ComponentListBasicSerializer(serializers.ModelSerializer):
@@ -189,16 +170,16 @@ class ComponentControlSerializer(serializers.ModelSerializer):
         )
         read_only_fields = ("component_json", "pk", )
 
-    def validate(self, data: dict) -> dict:
+    def validate(self, attrs: dict) -> dict:
         def _check_required_field(field_: str):
-            if not data.get(field_):
+            if not attrs.get(field_):
                 raise serializers.ValidationError(f"Required field, {field_} was not provided or is empty.")
 
         # Controls, action, catalog_version always required.
         for field in ("action", "controls", "catalog_version"):
             _check_required_field(field)
 
-        return data
+        return attrs
 
     # noinspection PyMethodMayBeStatic
     def validate_controls(self, value: list) -> list:

@@ -8,7 +8,7 @@ from guardian.shortcuts import assign_perm
 from access_management.permission_constants import PROJECT_ADMIN_GROUP
 from access_management.utils import generate_groups_and_permission
 from catalogs.models import Catalog, Controls
-from components.componentio import EmptyComponent
+from components.componentio import create_empty_component_json
 from components.models import Component
 from projects.models import Project, ProjectControl
 
@@ -25,12 +25,10 @@ def _add_project_controls(instance: Project):
 
 
 def _add_default_component(instance: Project, group: Group):
-    default_component = EmptyComponent(
+    default_json = create_empty_component_json(
         title=f"{instance.title} private",
-        description=f"{instance.title} default system component",
         catalog=instance.catalog,
     )
-    default_json = default_component.create_component()
     default = Component(
         title=f"{instance.title} private",
         description=f"{instance.title} default system component",
@@ -51,10 +49,7 @@ def _add_default_component(instance: Project, group: Group):
         group.permissions.add(permission)
         assign_perm(codename, group, default)
 
-    try:
-        instance.components.add(default)
-    except Exception as e:
-        logger.error(f"Could not create default component: {e}")
+    instance.components.add(default)
 
 
 def _add_components_for_project(instance: Project):
@@ -66,11 +61,11 @@ def _add_components_for_project(instance: Project):
             aws_component = Component.objects.get(title__iexact="aws")
             instance.components.add(aws_component)
     except Component.DoesNotExist as exc:
-        logger.warning(f"Inherited components not found: {exc}")
+        logger.warning("Inherited components not found: %s", exc)
 
 
 # noinspection PyUnusedLocal
-def post_create_setup(sender, instance: Project, created: bool, **kwargs):
+def post_create_setup(sender, instance: Project, created: bool, **kwargs):  # pylint: disable=unused-argument
     """Additional project set up after successful creation"""
     if created:
         # Create groups for project with associated permissions
@@ -95,7 +90,7 @@ def post_create_setup(sender, instance: Project, created: bool, **kwargs):
 
 
 # noinspection PyUnusedLocal
-def add_catalog(sender, instance: Project, **kwargs):
+def add_catalog(sender, instance: Project, **kwargs):  # pylint: disable=unused-argument
     if not hasattr(instance, "catalog"):
         if not (instance.impact_level and instance.catalog_version):
             raise ValidationError("Creating a new project requires impact_level and catalog_version.")

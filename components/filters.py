@@ -16,7 +16,7 @@ class ComponentFilter(filters.FilterSet):
         model = Component
         fields = ["search", "type", "catalog"]
 
-    def keyword_search(self, queryset, name, value):
+    def keyword_search(self, queryset, name, value):  # pylint: disable=unused-argument
         return queryset.filter(
             Q(title__icontains=value) | Q(description__icontains=value)
         )

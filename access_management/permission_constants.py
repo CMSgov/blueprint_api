@@ -28,3 +28,5 @@ project_permission_group = {
     PROJECT_CONTRIBUTOR_GROUP: project_contributor_permissions,
     PROJECT_VIEW_ONLY_GROUP: project_view_only_permissions,
 }
+
+all_perms = vars()

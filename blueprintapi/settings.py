@@ -15,7 +15,7 @@ import os
 import sys
 from pathlib import Path
 
-from .Environment import Environment
+from .environment import Environment
 
 LOGGING = {
     "version": 1,

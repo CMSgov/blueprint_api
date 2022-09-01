@@ -27,7 +27,7 @@ jobs:
           - 5432:5432
     steps:
       - uses: actions/checkout@v3.0.2
-      - name: Set up python 3.9
+      - name: Set up Python 3.9
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
@@ -37,7 +37,7 @@ jobs:
         run: pip install poetry
       - run: poetry config virtualenvs.create false
       - name: Install dependencies
-        run: poetry install --no-dev --no-ansi --no-interaction
+        run: poetry install --no-dev --no-ansi --no-interaction --no-root
       - name: Run tests
         env:
           POSTGRES_DB_NAME: postgres
