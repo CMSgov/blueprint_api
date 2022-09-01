@@ -50,8 +50,8 @@ def add_default_user_perms(sender, instance: User, created: bool, **kwargs):  # 
 
 # noinspection PyUnusedLocal
 def user_login_failed_callback(
-    sender, credentials: dict, request: HttpRequest, **kwargs
-):
+        sender, credentials: dict, request: HttpRequest, **kwargs
+):  # pylint: disable=unused-argument
     user = credentials.get("username")
-    ip = request.META.get("REMOTE_ADDR")
-    logger.warning("Log in failed for %s from IP %s", user, ip)
+    ip_address = request.META.get("REMOTE_ADDR")
+    logger.warning("Log in failed for %s from IP %s", user, ip_address)

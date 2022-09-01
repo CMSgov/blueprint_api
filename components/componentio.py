@@ -17,7 +17,11 @@ class ComponentTools:
             raise TypeError(f"component can be dict or str. Received: {type(component)}.")
 
     def get_components(self) -> List[dict]:
-        return self.component.get("components") or []
+        result = []
+        if self.component is None:
+            return result
+
+        return self.component.get("components", result)
 
     def get_component_value(self, key: str) -> Optional[Any]:
         component = self.get_components()
@@ -80,4 +84,8 @@ def create_empty_component_json(title: str, catalog: Catalog) -> str:
     )
     component_definition.add_component(component)
 
-    return oscal_component.Model(component_definition=component_definition).json(indent=4)
+    return (
+        oscal_component
+        .Model(component_definition=component_definition)
+        .json(by_alias=True, exclude_none=True, indent=4)
+    )

@@ -232,8 +232,9 @@ class GetSingleComponentTest(AuthenticatedAPITestCase):
         response = self.client.get(
             reverse("component-detail", kwargs={"pk": self.test_component.pk})
         )
+
         component = Component.objects.get(pk=self.test_component.pk)
-        serializer = ComponentSerializer(component)
+        serializer = ComponentSerializer(component, context=response.data.serializer.context)
 
         self.assertEqual(response.data, serializer.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -589,8 +590,8 @@ class CreateEmptComponentTest(TestCase):
 class ComponentImplementedRequirementViewTest(AuthenticatedAPITestCase):
     @classmethod
     def setUpTestData(cls):
-        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as f:
-            catalog = File(f)
+        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as file:
+            catalog = File(file)
             test_catalog = Catalog.objects.create(
                 name="NIST Test Catalog",
                 file_name=catalog,

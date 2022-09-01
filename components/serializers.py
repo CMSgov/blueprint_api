@@ -2,7 +2,6 @@ import json
 
 from typing import Any, List, Optional, Tuple
 
-from django.contrib.auth.models import AnonymousUser
 from django.db.models import TextChoices
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
@@ -13,7 +12,6 @@ from catalogs.models import Catalog
 from components.componentio import ComponentTools
 from components.models import Component
 from projects.models import Project
-from users.models import User
 
 
 class ComponentListSerializer(serializers.ModelSerializer):
@@ -50,17 +48,31 @@ class ComponentSerializer(serializers.ModelSerializer):
         return data
 
     def get_project_data(self, obj):
-        user: dict = {}
-        request = self.context.get("request")
-        if hasattr(request, "user"):
-            user = request.user
+        user = self.context["request"].user
 
-        # TODO: Remove this when we can corrolate a request to a user.
-        if not user or isinstance(user, AnonymousUser):
-            user = User.objects.exclude(username="AnonymousUser").first()
+        form_values = {
+            "add": [],
+            "remove": [],
+        }
 
-        data = collect_project_data(obj.id, user)
-        return data
+        all_projects = Project.objects.filter(creator_id=user)
+
+        remove = (
+            Project.components.through.objects.filter(
+                component_id=obj.id, project_id__in=all_projects
+            )
+            .select_related()
+            .values_list("project_id", flat=True)
+        )
+        for project_id in remove:
+            project_data = Project.objects.get(pk=project_id)
+            form_values["remove"].append({"value": project_id, "label": project_data.title})
+
+        add = Project.objects.filter(creator_id=user).exclude(pk__in=remove)
+        for project in add:
+            form_values["add"].append({"value": project.id, "label": project.title})
+
+        return form_values
 
     class Meta:
         model = Component
@@ -119,32 +131,6 @@ def get_control_responsibility(control: dict, name: str) -> Optional[Any]:
                 return prop.get("value")
 
 
-def collect_project_data(component_id, user):
-    form_values = {
-        "add": [],
-        "remove": [],
-    }
-
-    all_projects = Project.objects.filter(creator_id=user)
-
-    remove = (
-        Project.components.through.objects.filter(
-            component_id=component_id, project_id__in=all_projects
-        )
-        .select_related()
-        .values_list("project_id", flat=True)
-    )
-    for project_id in remove:
-        project_data = Project.objects.get(pk=project_id)
-        form_values["remove"].append({"value": project_id, "label": project_data.title})
-
-    add = Project.objects.filter(creator_id=user).exclude(pk__in=remove)
-    for project in add:
-        form_values["add"].append({"value": project.id, "label": project.title})
-
-    return form_values
-
-
 class ComponentListBasicSerializer(serializers.ModelSerializer):
     controls_count = serializers.SerializerMethodField()
 
@@ -184,16 +170,16 @@ class ComponentControlSerializer(serializers.ModelSerializer):
         )
         read_only_fields = ("component_json", "pk", )
 
-    def validate(self, data: dict) -> dict:
+    def validate(self, attrs: dict) -> dict:
         def _check_required_field(field_: str):
-            if not data.get(field_):
+            if not attrs.get(field_):
                 raise serializers.ValidationError(f"Required field, {field_} was not provided or is empty.")
 
         # Controls, action, catalog_version always required.
         for field in ("action", "controls", "catalog_version"):
             _check_required_field(field)
 
-        return data
+        return attrs
 
     # noinspection PyMethodMayBeStatic
     def validate_controls(self, value: list) -> list:

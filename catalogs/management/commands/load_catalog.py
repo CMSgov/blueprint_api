@@ -36,7 +36,7 @@ class Command(BaseCommand):
 
     def _load_catalog(self, input_file: Path, name: str, **catalog_args):
         if Catalog.objects.filter(name=name).exists():
-            self.stdout.write(self.style.WARNING("Catalog, %s has already been loaded. Skipping." % name))
+            self.stdout.write(self.style.WARNING(f"Catalog, {name} has already been loaded. Skipping."))
             return
 
         try:
@@ -48,8 +48,7 @@ class Command(BaseCommand):
         except (IOError, FileNotFoundError) as exc:
             raise CommandError(f"Error loading catalog file: {exc}") from exc
 
-        # pylint: disable=consider-using-f-string
-        self.stdout.write(self.style.SUCCESS('Successfully ingested catalog "%s"' % name))
+        self.stdout.write(self.style.SUCCESS(f"Successfully ingested catalog '{name}'"))
 
     @staticmethod
     def _parse_standard_catalog_path(path: Path) -> Tuple[str, str, str]:
@@ -70,4 +69,10 @@ class Command(BaseCommand):
         catalog_defs = [self._parse_standard_catalog_path(path) for path in catalog_files]
 
         for (version, impact_level, name), file in zip(catalog_defs, catalog_files):
-            self._load_catalog(input_file=file.relative_to(file.parents[3]), name=name, version=version, impact_level=impact_level, source=source)
+            self._load_catalog(
+                input_file=file.relative_to(file.parents[3]),
+                name=name,
+                version=version,
+                impact_level=impact_level,
+                source=source
+            )
