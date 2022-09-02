@@ -1,7 +1,10 @@
 # Define OSCAL Component using Component Definition Model v1.0.0
 # https://pages.nist.gov/OSCAL/reference/1.0.0/component-definition/json-outline/
+import json
+
+from pathlib import Path
 from enum import Enum
-from typing import List, Optional
+from typing import List, Optional, Union
 from uuid import UUID, uuid4
 
 from pydantic import Field
@@ -148,6 +151,16 @@ class Component(OSCALElement):
         allow_population_by_field_name = True
         exclude_if_false = ["control-implementations"]
 
+    @property
+    def control_ids(self) -> List[str]:
+        return list(
+            {
+                item.control_id
+                for implementation in self.control_implementations
+                for item in implementation.implemented_requirements
+            }
+        )
+
 
 class IncorporatesComponent(OSCALElement):
     component_uuid: UUID
@@ -221,10 +234,7 @@ class Model(OSCALElement):
         fields = {"component_definition": "component-definition"}
         allow_population_by_field_name = True
 
-
-class OSCALComponentJson(Model):
-    def load(self, f):
-        return Model()
-
-    def save_as(self, f):
-        pass
+    @classmethod
+    def from_json(cls, json_file: Union[str, Path]):
+        with open(json_file) as data:
+            return cls(**json.load(data))
