@@ -55,13 +55,19 @@ COMPONENT_DATA = {
         "control-implementations": [
           {
             "uuid": "8a89220e-c679-4970-904a-e319f92cb8ca",
-            "source": "https://raw.githubusercontent.com/CMSgov/ars-machine-readable/main/3.1/oscal/json/CMS_ARS_3_1_catalog.json",
+            "source": (
+                "https://raw.githubusercontent.com/CMSgov/ars-machine-readable/main/3.1/oscal/json/"
+                "CMS_ARS_3_1_catalog.json"
+            ),
             "description": "CMS_ARS_3_1",
             "implemented-requirements": [
               {
                 "uuid": "809e54d5-1670-45d5-a852-8a34e03d5e95",
                 "control-id": "ac-3",
-                "description": "The Django web framework implements role-based access control to enforce logical access to its information and services.",
+                "description": (
+                    "The Django web framework implements role-based access control to enforce logical access to its "
+                    "information and services."
+                ),
                 "props": [
                   {
                     "name": "security_control_type",
@@ -73,7 +79,12 @@ COMPONENT_DATA = {
               {
                 "uuid": "c6f3a55d-e6aa-4ea1-9892-43336a665b6a",
                 "control-id": "ac-7",
-                "description": "Django can be configured to lock an account after a specified number of invalid login attempts within a specified time period. These values have been configured in accordance with CMS ARS guidance to lock the account automatically after three (3) invalid login attempts during a 120-minute time window.",
+                "description": (
+                    "Django can be configured to lock an account after a specified number of invalid login attempts "
+                    "within a specified time period. "
+                    "These values have been configured in accordance with CMS ARS guidance to lock the account "
+                    "automatically after three (3) invalid login attempts during a 120-minute time window."
+                ),
                 "props": [
                   {
                     "name": "security_control_type",
@@ -85,7 +96,11 @@ COMPONENT_DATA = {
               {
                 "uuid": "3ccd9823-cc86-4604-a0cf-083628066524",
                 "control-id": "ac-11",
-                "description": "The Django web framework has built-in session management that includes locking and terminating a session after a specific duration of inactivity. The duration of a session is set by configuring the `SESSION_COOKIE_AGE` in `settings.py`.",
+                "description": (
+                    "The Django web framework has built-in session management that includes locking and terminating a "
+                    "session after a specific duration of inactivity. "
+                    "The duration of a session is set by configuring the `SESSION_COOKIE_AGE` in `settings.py`."
+                ),
                 "props": [
                   {
                     "name": "security_control_type",
