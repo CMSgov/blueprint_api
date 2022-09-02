@@ -1,0 +1,119 @@
+{
+  "component-definition": {
+    "uuid": "a1585ca3-0db7-4892-9977-ba3dca34bec7",
+    "metadata": {
+      "title": "Trend Micro Deep Security",
+      "published": "2021-09-04T02:25:29.941619+00:00",
+      "last-modified": "2021-09-04T02:25:29.941625+00:00",
+      "version": "unknown",
+      "oscal-version": "1.0.0"
+    },
+    "components": [
+      {
+        "uuid": "76c17387-9b6a-4b65-8809-47b0524ad525",
+        "type": "software",
+        "title": "Trend Micro Deep Security",
+        "description": "Trend Micro Deep Security",
+        "control-implementations": [
+          {
+            "uuid": "691fa773-2336-4ce6-8ad8-39a82e157250",
+            "source": "https://raw.githubusercontent.com/CMSgov/ars-machine-readable/main/3.1/oscal/json/CMS_ARS_3_1_catalog.json",
+            "description": "CMS_ARS_3_1",
+            "implemented-requirements": [
+              {
+                "uuid": "2ff82c7f-7622-436e-969c-4fc956ccb7ec",
+                "control-id": "cm-7.2",
+                "description": "The application cannot execute any software programs except those integrated into the application by design.\n\nSecurity is in place to prevent uploading and execution of unauthorized programs at the GSS Level."
+              },
+              {
+                "uuid": "1c980af1-ebe4-486d-8084-7dc2ce127501",
+                "control-id": "cm-7.4",
+                "description": "Unauthorized software/blacklisting results are searchable by the CMS Cybersecurity Integration Center (CCIC) via the GSS.\n\nThe GSS prevents unauthorized software from being executed via TrendMicro."
+              },
+              {
+                "uuid": "70e98fa0-60b5-478c-8e42-7ecfb43f0387",
+                "control-id": "cm-7.5",
+                "description": "Authorized software list is maintained by the CMS organization, and software installation is approved by the relevant personnel."
+              },
+              {
+                "uuid": "f08abf1a-250f-4c68-8226-54776bff297f",
+                "control-id": "sc-7",
+                "description": "Application teams configure Trend Micro to provide operating system level boundary protection.\n\na. Trend Micro provides continuous monitoring and the ability to block external sources of attack in real time.\n\nb. Trend Micro and Security Group settings at the AWS networking level provide boundary protection with logical separation between internal networks and the information system.\n\nc. Trend Micro provides information system connectivity to external networks through appropriately mediated managed interfaces."
+              },
+              {
+                "uuid": "e82148a8-5558-487e-be98-7c99c89801f3",
+                "control-id": "si-3",
+                "description": "All system components implement Trend Micro Deep Security for malicious code protection at information system entry and exit points to detect and eradicate malicious code.\n\nCCS configures Trend Micro to perform critical system file scans at least once every 12 hours, and full server scans are run every 72 hours."
+              },
+              {
+                "uuid": "5df693db-aa40-4e62-8d3a-f5e765fd782d",
+                "control-id": "si-3.1",
+                "description": "All malicious code protection mechanisms are centrally managed. This control is inherited from the CMS Cloud which utilizes Trend Micro for this functionality."
+              },
+              {
+                "uuid": "73d5e735-d1c8-4ad8-b94e-465678799a76",
+                "control-id": "si-3.2",
+                "description": "The Trend Micro suite obtains updates automatically, generally twwice daily."
+              },
+              {
+                "uuid": "9986a719-fb68-4917-a618-f36952defa3c",
+                "control-id": "si-4",
+                "description": "The HIDS system (Trend Micro) requires a client on each OS instance. Each client is designed to monitor all system activity and then forward the information from this activity to the central Trend Micro server. To accomplish this, the clients are configured with a public SSL certificate that is installed at the same time that the client is installed. Each client then connects to the built-in Apache server that the Trend Micro management server utilizes. Trend Micro clients deliberately do not use port 443 for SSL traffic so that they have a non-standard and easily identifiable (to infrastructure and security team members) port for communications."
+              },
+              {
+                "uuid": "2af46617-e4bb-4a2e-93ea-749f2d3e921d",
+                "control-id": "si-4.1",
+                "description": "This control is inherited from CMS Cloud, which utilizes Trend Micro and Splunk for this functionality."
+              },
+              {
+                "uuid": "1a7bafa8-7682-484a-931e-44d81cb7ba5b",
+                "control-id": "si-4.2",
+                "description": "This control is inherited from CMS Cloud, which utilizes Trend Micro and Splunk for this functionality.\n\nCCS configures the connection and collection of security systems into a system-view view."
+              },
+              {
+                "uuid": "41a524a8-4b34-4926-a4dd-fe7bbfa8dc81",
+                "control-id": "si-4.3",
+                "description": "The system relies on AWS infrastructure for employing automated tools to integrate Trend Micro intrusion detection and access control to rapidly respond to attacks and isolate components."
+              },
+              {
+                "uuid": "1ca1e798-da01-4b94-9bd5-34abfd4e4ac8",
+                "control-id": "si-4.4",
+                "description": "This control is inherited from CMS Cloud, which utilizes Trend Micro and Splunk for this functionality."
+              },
+              {
+                "uuid": "cb4e6b13-948c-482a-9dfb-9f638427a2f7",
+                "control-id": "si-4.5",
+                "description": "This control is inherited from CMS Cloud, which utilizes Trend Micro and Splunk for this functionality.\n\nAggregated alert information is searchable by the CMS Cybersecurity Integration Center (CCIC) via the GSS."
+              },
+              {
+                "uuid": "8a1daf2f-73a0-4aa5-8f64-1cc72d7f8f2d",
+                "control-id": "si-4.23",
+                "description": "CMS installed Intrusion Detection System (IDS) devices at network perimeter points and host-based IDS sensors on critical servers. Please refer to the CMS Technical Reference Architecture https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information"
+              },
+              {
+                "uuid": "d291a652-0367-4c2c-a13c-9c53f77a09f2",
+                "control-id": "si-7",
+                "description": "This control is inherited from CMS Cloud, which utilizes Trend Micro and Splunk for this functionality."
+              },
+              {
+                "uuid": "88a2da73-e6c9-4e52-a544-fb7efb9a252b",
+                "control-id": "si-7.1",
+                "description": "Daily integrity scans of the application are not performed.\n\nAll events are logged and analyzed. Control regarding scanning is inherited from AWS IaaS and PaaS cloud service provider.\n\nThis control is inherited from CMS Cloud, which utilizes Trend Micro and Splunk for this functionality."
+              },
+              {
+                "uuid": "34df2d6d-b093-4c6a-8a3b-e436f3e4f885",
+                "control-id": "si-7.2",
+                "description": "This control is inherited from CMS Cloud, which utilizes Trend Micro and Splunk for this functionality."
+              },
+              {
+                "uuid": "4234ce5b-590f-4b5d-863c-81f3fec0a804",
+                "control-id": "si-7.5",
+                "description": "This control is inherited from CMS Cloud, which utilizes Trend Micro and Splunk for this functionality."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

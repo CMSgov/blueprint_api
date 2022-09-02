@@ -1,0 +1,129 @@
+{
+  "component-definition": {
+    "uuid": "b2147ff8-f87e-4b87-81f3-eeedbb232a5a",
+    "metadata": {
+      "title": "Splunk",
+      "published": "2021-09-04T02:25:33.987740+00:00",
+      "last-modified": "2021-09-04T02:25:33.987744+00:00",
+      "version": "unknown",
+      "oscal-version": "1.0.0"
+    },
+    "components": [
+      {
+        "uuid": "cc965c52-d20c-42b6-a7f0-af07bc4061ce",
+        "type": "software",
+        "title": "Splunk",
+        "description": "Splunk",
+        "control-implementations": [
+          {
+            "uuid": "bbb0bd41-08fd-4fa8-9f51-75ff7c366aeb",
+            "source": "https://raw.githubusercontent.com/CMSgov/ars-machine-readable/main/3.1/oscal/json/CMS_ARS_3_1_catalog.json",
+            "description": "CMS_ARS_3_1",
+            "implemented-requirements": [
+              {
+                "uuid": "8b439e8c-56db-4a5a-b06e-b6769fdf9f30",
+                "control-id": "ac-2.4",
+                "description": "The system supports auditing of account creation, modification, enabling, disabling, and removal utilizing Splunk. Logs for RDS instances are ingested by Splunk for ease of review and auditing.  A Splunk alert condition notifies appropriate team members when account creation, modification, enabling, disabling and remove actions occur."
+              },
+              {
+                "uuid": "74bd8c69-8eed-412d-b818-f7fcd633a824",
+                "control-id": "ac-6.9",
+                "description": "All system privileged application activities are audited as part of the centralized audit log collection process. Splunk is utilized to consolidate audit logs."
+              },
+              {
+                "uuid": "617607c9-c4f3-438c-9674-2519efc223ac",
+                "control-id": "ac-17.1",
+                "description": "All remote access devices and authentications systems are configured to send device logs to the company's Splunk log collection, correlation and reporting system. These logs are automatically fed into Splunk where they are monitored by security staff."
+              },
+              {
+                "uuid": "b6c69d3d-ad85-40ad-a00d-75ce6048d85f",
+                "control-id": "au-3",
+                "description": "The system leverages Splunk for aggregating audit logs generated from automated sources within multiple services for final collection and display. The audit record content ingested includes: date and time of the event, the component of the information system (e.g., software component, hardware component) where the event occurred, type of event, user/subject identity, outcome (success or failure) of the event, etc."
+              },
+              {
+                "uuid": "ac8db634-8b12-4fd6-9f40-2e856f563a2e",
+                "control-id": "au-3.1",
+                "description": "The audit events collected by the CMS Enterprise Splunk is pre-configured to comply with the Additional Audit Information control. All application specific logs include:\n- Filename accessed - Program or command used to initiate the event - Source and destination addresses"
+              },
+              {
+                "uuid": "d6585c6e-7255-47c7-965c-acbfabbc6e18",
+                "control-id": "au-4",
+                "description": "The system is configured to write audit logs to AWS CloudWatch, which leverages AWS S3 buckets for storage.  AWS S3 buckets have no practical storage limit; users are charged for the amount of space that is used. System logs are also collected and aggregated by Splunk w/ Enterprise Security (ES). Audit storage capacity in Splunk ES is sufficient to retain logs that are searchable for one year at the current indexing rate, in accordance with the AU-11 control."
+              },
+              {
+                "uuid": "8bb438fe-55e6-4242-89b6-2ebe4599212c",
+                "control-id": "au-6",
+                "description": "The application utilizes Splunk to generate security business application logic audit logs. Splunk contains a repository that monitors where application logic audit events are written, application modifications, application alerts and error messages, configuration changes, account creation, modification, deletion reading and printing of sensitive information from the system.\nSplunk gives real-time visibility into the AWS environment to review network traffic, bandwidth utilization rates, alert notifications, and border defense devices to determine anomalies no less often than once within a twenty-four (24) hour period and on demand, and generates alerts for technical personnel review and assessment. Utilizes Splunk to investigate suspicious activity or suspected violations on the application, report findings to administrators and designated personnel and take appropriate action. Use automated utilities to review audit records no less often than once every seventy-two (72) hours for unusual, unexpected, or suspicious behavior. Inspect administrator groups on demand but no less often than once every fourteen (14) days to ensure unauthorized administrator, system, and privileged application accounts have not been created. Perform manual reviews of system audit records randomly on demand but no less often than once every thirty (30) days. All the ifnromation is accessible for Portal and AWS Data Center administrators."
+              },
+              {
+                "uuid": "0e8606b1-e98e-4fc5-8f99-243a235dbc86",
+                "control-id": "au-6.1",
+                "description": "CMS utilizes Splunk to monitor the application's servers and devices. Splunk allows the CCIC to review logs, suspicious activity, and conduct investigations."
+              },
+              {
+                "uuid": "b2b03988-eecd-4b51-8559-57b312766a53",
+                "control-id": "au-6.3",
+                "description": "The application has implemented Splunk as an automated mechanism for review of user activities. Splunk aggregates server audit logs and network device logs to facilitate and comply with audit requirements. Logging is enabled for administrator and user account activities, failed and successful log-on, security policy modifications, use of administrator privileges, system shutdowns, reboots, errors and access authorizations. Splunk provides for automatic monitoring and unusual activity is investigated."
+              },
+              {
+                "uuid": "7048d47f-0c2a-48b3-ad1b-fe4a941bb708",
+                "control-id": "au-7",
+                "description": "Splunk allows ad-hoc searches on logs using Splunk interface. Data for the previous 365 days can be searched from within Splunk. Splunk is specifically designed to preserve audit record integrity."
+              },
+              {
+                "uuid": "4e9b9722-9993-4c1f-94d1-1d006b93c83f",
+                "control-id": "au-7.1",
+                "description": "The system uses Splunk to centrally maintain the audit logs. Splunk has the capability to drill down to event of interest to support after-the-fact investigations. Once configured all such log file are regularly aggregated in Splunk and available via a dashboard for further analysis and alert configuration."
+              },
+              {
+                "uuid": "4c6e3a46-b234-441b-9c1e-3a7ec01b35b1",
+                "control-id": "au-9",
+                "description": "Access to Splunk and its audit information data is restricted to designated Security Team staff through the use of Splunk account management tools and the EUA system."
+              },
+              {
+                "uuid": "ab649d75-f9f9-4deb-84e1-68733493babe",
+                "control-id": "au-11",
+                "description": "All log information is retained within Splunk for no less than 1 year. All audit records are maintained for at least 3 years. AWS IAM CloudWatch and CloudTrail maintains audit records in S3 storage indefinitely. EC2 compute instance logs are saved as indexed syslog information on the OC Splunk Indexer systems 1TB Data drives indefinitely."
+              },
+              {
+                "uuid": "c423f5bd-4f17-4c32-ae50-4b18d2c2d7d2",
+                "control-id": "ir-4.1",
+                "description": "Email alerts are generated by Splunk when an event occurs which are reviewed for the cause of the alert, its importance, and if the alert is a potential incident. An incident report is completed and stores this information on a restricted drive when potential incident has occurred."
+              },
+              {
+                "uuid": "a2d0cced-97fa-4bbd-acba-328e2d58f2a0",
+                "control-id": "ir-6.1",
+                "description": "Splunk is the automated tool used to correlate events that can be used to determine criteria involved to detect and report insider threats."
+              },
+              {
+                "uuid": "ce350681-622a-4e32-9a7a-4e8d96396151",
+                "control-id": "si-4.2",
+                "description": "Splunk is used as the centralized audit log and monitoring tool and is configured to alert security personnel of any suspicious or abnormal activity."
+              },
+              {
+                "uuid": "bf13bc48-74e0-4fbc-8ea5-834e12236417",
+                "control-id": "si-4.4",
+                "description": "Splunk is used as the centralized audit log and monitoring tool and is configured to alert security personnel of any suspicious or abnormal activity."
+              },
+              {
+                "uuid": "e448bad7-cf5a-4511-9db1-b7006c41f716",
+                "control-id": "si-4.5",
+                "description": "Splunk is configured to generate alerts when the following indications of compromise or potential comprise occurs:\n-Presence of malicious code -Unauthorized export of information -Signaling to an external information system -Potential intrusions."
+              },
+              {
+                "uuid": "c84a3fcd-be8d-43a2-b413-89d7b6ebd516",
+                "control-id": "si-4.16",
+                "description": "All information is sent to Splunk, which is a centralized SEIM system. Through crafted queries and searches across multiple indexes, security personnel can correlate information throughout every information system."
+              },
+              {
+                "uuid": "85e8040b-b582-4110-b26b-f07332f2071c",
+                "control-id": "si-7.7",
+                "description": "The system leverages Splunk in the operational environments to detect unauthorized security changes. Both Splunk and internal tools are used for logging security monitoring, audits and troubleshooting. Splunk includes specification of log types and source systems that are candidates for Splunk log capture and management."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

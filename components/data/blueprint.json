@@ -1,0 +1,366 @@
+{
+  "component-definition": {
+    "uuid": "fd2fb3db-38bf-40be-8697-03482276483c",
+    "metadata": {
+      "title": "Blueprint",
+      "published": "2021-12-08T21:50:22.481817+00:00",
+      "last-modified": "2021-12-08T21:50:22.481824+00:00",
+      "version": "unknown",
+      "oscal-version": "1.0.0"
+    },
+    "components": [
+      {
+        "uuid": "1b07da48-ec5c-4e66-8f64-b570adcfa1a2",
+        "type": "software",
+        "title": "Blueprint",
+        "description": "Blueprint",
+        "control-implementations": [
+          {
+            "uuid": "79ec20b6-1f70-451f-94bc-9e7bc6bbb472",
+            "source": "https://raw.githubusercontent.com/CMSgov/ars-machine-readable/main/3.1/oscal/json/CMS_ARS_3_1_catalog.json",
+            "description": "CMS_ARS_3_1",
+            "implemented-requirements": [
+              {
+                "uuid": "67236e2c-cdc0-498a-8276-00f5791cf665",
+                "control-id": "ac-2",
+                "description": "Requirements are implemented as described in the included statements.",
+                "statements": [
+                  {
+                    "statement-id": "ac-2_smt.a",
+                    "uuid": "d22c4442-a9e0-4512-bef2-d91d1c179f25",
+                    "description": "ICAM identifies and selects the information system accounts to support organizational missions/business functions: Individual (Human).  There are no Shared or System accounts."
+                  },
+                  {
+                    "statement-id": "ac-2_smt.b",
+                    "uuid": "822ec811-a6c0-4e00-a170-042d3dd21151",
+                    "description": "ICAM assigns roles and responsibilities for Blueprint"
+                  },
+                  {
+                    "statement-id": "ac-2_smt.c",
+                    "uuid": "4cf8c6f6-ded0-4522-b40a-14b963b418d4",
+                    "description": "ICAM establishes conditions and assigns role membership"
+                  },
+                  {
+                    "statement-id": "ac-2_smt.d",
+                    "uuid": "61dbc115-98e8-43bd-b589-5e546c2d79fa",
+                    "description": "ICAM specifies authorized users of the information system, group and role membership, and access authorizations (i.e., privileges) and other attributes (as required) for each account;"
+                  },
+                  {
+                    "statement-id": "ac-2_smt.e",
+                    "uuid": "9a164844-0942-4085-9ec1-ee5a19b87ec8",
+                    "description": "Requires approvals by the User's direct Supervisor/Manager and then the Blueprint User Access Approver"
+                  },
+                  {
+                    "statement-id": "ac-2_smt.f",
+                    "uuid": "b20ac589-a286-404c-a99b-2dd5d9a8c23c",
+                    "description": "ICAM creates, enables, modifies, disables, and removes information system accounts in accordance with creating, modifying, disabling;"
+                  },
+                  {
+                    "statement-id": "ac-2_smt.g",
+                    "uuid": "81180b48-562d-4ae6-9cc8-25916ff12714",
+                    "description": "Blueprint application System Administrator monitors system performance and troubleshoots issues to ensure security and efficiency of IT infrastructure."
+                  },
+                  {
+                    "statement-id": "ac-2_smt.h",
+                    "uuid": "9a626751-f6ec-4ef4-8c98-70bd0975ba56",
+                    "description": "System Owner notifies account managers:\n  1. When accounts are no longer required;\n  2. When users are terminated or transferred; and\n  3. When individual information system usage or need-to-know changes;"
+                  },
+                  {
+                    "statement-id": "ac-2_smt.i",
+                    "uuid": "631f7f57-eb3f-49f6-abb4-49eb22152c73",
+                    "description": "The User Access Approver approves access to the application on Identity Access and Recertification Portal from the supervisor (project lead, or project/program manager) of the requester; the request must include detailed justification on why the account is needed"
+                  },
+                  {
+                    "statement-id": "ac-2_smt.j",
+                    "uuid": "b70c3efe-2dfe-40b4-91f5-8bf60cb61f8d",
+                    "description": "Reviews accounts for compliance with account management requirements annually; This will be part of the account management monitoring process to be determined."
+                  },
+                  {
+                    "statement-id": "ac-2_smt.k",
+                    "uuid": "211c9354-f7ef-44ff-9943-a8af762b2d26",
+                    "description": "There are no shared/group accounts in the Blueprint application."
+                  }
+                ]
+              },
+              {
+                "uuid": "48e53cbb-daea-4980-b93e-330f6ece1316",
+                "control-id": "ac-2.1",
+                "description": "There are no automated process mechanisms to support the management of information system accounts for Blueprint application."
+              },
+              {
+                "uuid": "366aed0d-9bfa-4cad-bc37-ee8df0db7479",
+                "control-id": "ac-2.2",
+                "description": "There are no automated removal processes for any account in Blueprint application."
+              },
+              {
+                "uuid": "e15325aa-6e32-4738-a33d-10b754ebcfb9",
+                "control-id": "ac-2.4",
+                "description": "There are currently no automatic audits conducted for Blueprint.  Any audit of account creation, modification, enabling, disabling, and removal actions are done manually per the request of the system owner to ICAM."
+              },
+              {
+                "uuid": "134e72ec-001a-4d63-bb35-9be6228eb669",
+                "control-id": "ac-3",
+                "description": "All users of the Blueprint application will be end users plus a small number of Application Super Admin users.  These roles are managed by access control lists in the backend.  Authorization of other logical access is not granted to these users.\n\nThe Application Super Admin user looks after all application management. The application super admin user has the ability to manage the access and level of responsibility of all application users."
+              },
+              {
+                "uuid": "94fdba39-c303-43b0-9fb9-3001547ea697",
+                "control-id": "ac-6",
+                "description": "All users of the Blueprint application will be end users plus a small number of Application Super Admin users.  These roles are managed by access control lists in the backend.\n\nThe Application Super Admin user looks after all application management. The application super admin user has the ability to manage the access and level of responsibility of all application users."
+              },
+              {
+                "uuid": "15eabbe1-0c18-4a67-af3b-741043d616b1",
+                "control-id": "ac-6.1",
+                "description": "Blueprint Database Administrators (DBA) use specialized software to monitor and manage the application\u2019s data stored in a relational database. This work includes capacity planning, installation, configuration, migration, performance monitoring, security, troubleshooting, as well as backup and data recovery.\n\nBlueprint System Administrators install and configure software, hardware, networks, repositories, the CI/CD pipeline, and deployments. They also monitor system performance and troubleshoot issues to ensure security and efficiency of IT infrastructure."
+              },
+              {
+                "uuid": "c24b781a-a2ec-45c6-95d9-221a05031681",
+                "control-id": "ac-6.2",
+                "description": "All users of the Blueprint application will be end users plus a small number of Application Super Admin users.  These roles are managed by access control lists in the backend.  Authorization of other logical access is not granted to these users.\n\nThe Application Super Admin user looks after all application management. The application super admin user has the ability to manage the access and level of responsibility of all application users.\n\nBlueprint Database Administrators (DBA) use specialized software to monitor and manage the application\u2019s data stored in a relational database. This work includes capacity planning, installation, configuration, migration, performance monitoring, security, troubleshooting, as well as backup and data recovery.\n\nBlueprint System Administrators install and configure software, hardware, networks, repositories, the CI/CD pipeline, and deployments. They also monitor system performance and troubleshoot issues to ensure security and efficiency of IT infrastructure."
+              },
+              {
+                "uuid": "1b579a7c-33e6-4fdf-979e-1d1d2eb68dfc",
+                "control-id": "ac-6.5",
+                "description": "All users of the Blueprint application will be end users plus a small number of Application Super Admin users.  These roles are managed by access control lists in the backend.  Authorization of other logical access is not granted to these users.\n\nThe privileged accounts (Application Super Admin) user looks after all application management. The application super admin user has the ability to manage the access and level of responsibility of all application users."
+              },
+              {
+                "uuid": "df35ab67-06e7-468d-9262-e1d83c24ca19",
+                "control-id": "ac-6.9",
+                "description": "The Blueprint Django/site administration monitors execution of privileged functions within the Blueprint application."
+              },
+              {
+                "uuid": "7006313f-e8ea-44ce-9399-f117d95a6d35",
+                "control-id": "au-2",
+                "description": "Requirements are implemented as described in the included statements.",
+                "statements": [
+                  {
+                    "statement-id": "au-2_smt.a",
+                    "uuid": "025df2fb-7855-49af-bdd0-b7c2b9db2089",
+                    "description": "The Blueprint System Administrator has access to the audit logs in the Organization's logging tool which monitors successful and unsuccessful account logon events, account management events, object access, policy change, privilege functions, process tracking, and system events."
+                  },
+                  {
+                    "statement-id": "au-2_smt.b",
+                    "uuid": "e894c179-ffd4-48be-92d1-dd0781ab88fd",
+                    "description": "The Blueprint System Owner in coordination with the Blueprint ISSO coordinates the security audit function with other organizational entities requiring audit-related information to enhance mutual support and to help guide the selection of audit-able events;"
+                  },
+                  {
+                    "statement-id": "au-2_smt.c",
+                    "uuid": "4d3194f8-5c49-475b-a1b7-b3649b4b4240",
+                    "description": "The Blueprint ISSO will work with Organization security organization to create a Standard Operating Procedure which provides a rationale for why the audit-able events are deemed to be adequate to support after-the-fact investigations of security incidents;"
+                  },
+                  {
+                    "statement-id": "au-2_smt.d",
+                    "uuid": "f7ec626f-3e3b-4bae-bcdb-7aff0b23b537",
+                    "description": "The Blueprint System Administrator has access to the audit logs in Kibana which monitors successful and unsuccessful account logon events, account management events, object access, policy change, privilege functions, process tracking, and system events."
+                  }
+                ]
+              },
+              {
+                "uuid": "9352fb30-5791-4970-8bda-126ed029b8bd",
+                "control-id": "au-3",
+                "description": "Blueprint generates a variety of audit records containing information that establishes what type of event occurred, when the event occurred, where the event occurred, the source of the event, the outcome of the event, and where appropriate the identity of any individuals or subjects associated with the event. The logs can vary depending on the deployed configuration but generally include Blueprint application logs that track noteworthy successful and failed user-related events such as login, logout, creation and deletion of content; Gunicorn Web Server Gateway Interface HTTP server logs noting session handling errors and application exceptions, NGINX HTTP server logs noting URL requests and request handling logs; and PostgreSQL Database logs noting database specific events.\n\nBlueprint application log entries include these fields:\n  - timestamp\n  - python script\n  - level\n  - log type\n  - object info dict\n  - user info dict\n  - event name"
+              },
+              {
+                "uuid": "7e547d29-6008-4c4f-bbe1-31679054f854",
+                "control-id": "au-6",
+                "description": "Requirements are implemented as described in the included statements.",
+                "statements": [
+                  {
+                    "statement-id": "au-6_smt.a",
+                    "uuid": "ef0634b2-eea3-4ad6-8472-3f5b45fe427a",
+                    "description": "The Blueprint ISSO will review the Blueprint application related audit logs and provide report findings to the System Owner, Organization CISO and SOC. The Blueprint Application in Single Sign On mode transfers primary account auditing to Organization Single Sign On service.  The Blueprint application in Single Sign On mode provides secondary account auditing to Organization Single Sign On primary auditing."
+                  },
+                  {
+                    "statement-id": "au-6_smt.b",
+                    "uuid": "c32eba20-0e06-4237-a3b3-a9faf809e36c",
+                    "description": "Reports findings to System Owner, Organization CISO and SOC.\n\nThe Blueprint ISSO reviews this control at least annually or whenever there is a significant change."
+                  }
+                ]
+              },
+              {
+                "uuid": "8518cb1d-9590-4b33-9cf3-27454912284d",
+                "control-id": "au-6.3",
+                "description": "Requirements are implemented as described in the included statements.",
+                "statements": [
+                  {
+                    "statement-id": "au-6.3_smt.d",
+                    "uuid": "100aaeda-39da-4317-a075-84f27fc5624e",
+                    "description": "Determines that the following events are to be audited within the information system: organization-defined subset of the auditable events defined in AU-2 a to be audited continually for each identified event.  This is also a document being defined and will be reviewed by the ISSO and CME Team."
+                  }
+                ]
+              },
+              {
+                "uuid": "b670374a-cbbc-41cf-8842-1eb2aee190a0",
+                "control-id": "ca-3",
+                "description": "Blueprint provides each user with API credentials that enable information exchanges with the same privileges as the user between Blueprint and other information systems with documented Interconnection Security Agreements. Users have API credentials that control information exchanges to read-only, write-only, or read/write.\n\nBlueprint ISSO will review this control at least annually or whenever there is a change."
+              },
+              {
+                "uuid": "151759ad-9dcd-4d73-a8df-92cf0b7a0d86",
+                "control-id": "ca-5",
+                "description": "The ISSO reviews this control at least annually or whenever there is a significant change."
+              },
+              {
+                "uuid": "36b49a2e-56e4-4d28-bdb0-d7ce875abbe1",
+                "control-id": "ca-7",
+                "description": "tbd"
+              },
+              {
+                "uuid": "3133284a-3d04-40df-b186-451a886a2581",
+                "control-id": "ca-7.1",
+                "description": "tbd"
+              },
+              {
+                "uuid": "05dbc5de-0399-4541-ae82-de4b1da5935e",
+                "control-id": "cm-2",
+                "description": "The Blueprint System Admin in coordination with the release manager maintains configuration controls/baselines for the application.  They ensure that changes are documented and formally reviewed before changes are deployed to each environment (dev, sat, edu and prod).\n\nGit is the source code version control software that is used to maintain configuration control of information systems.\n\nBlueprint application developers employ Git as an automated mechanisms to maintain an up-to-date, complete, accurate, and readily available baseline configuration of the Blueprint application source code.  Git also provides version control for all changes made to baseline configurations.\n\nThe ISSO reviews this control at least annually or whenever there is a significant change.\n\nThe Blueprint System Administrator in coordination with the Organization Release Manager maintains configuration baselines for the Blueprint Application.  They ensure that changes are documented and formally reviewed before changes are deployed to each environment."
+              },
+              {
+                "uuid": "bf9080b6-6973-475e-9528-659b54ddeef3",
+                "control-id": "cm-2.1",
+                "description": "The Blueprint System Administrator reviews and updates the configuration of the Blueprint Application:\na. Upon changes in the information system or in the system's environment of operation such as new software or detected vulnerabilities;\nb. When required in accordance with the Blueprint Application Concept of Operations document;\nc. As an integral part of information system component installations and upgrades."
+              },
+              {
+                "uuid": "ba8314af-e78f-435c-834d-44357ac939a8",
+                "control-id": "cm-2.3",
+                "description": "The Blueprint System Admin in coordination with the release manager maintains configuration controls/baselines for the application.  They ensure that changes are documented and formally reviewed before changes are deployed to each environment.\n\nThe Blueprint application uses the Django framework for maintaining the configuration of the database schema. The Django framework tracks all modifications to the database schema and supports the rollback of the database structure."
+              },
+              {
+                "uuid": "a0eed4cd-d446-4624-a28d-bae766ba12b1",
+                "control-id": "cm-6",
+                "description": "The Blueprint System Admin in coordination with the Organization Release Manager maintains configuration controls/baselines for the application.  They ensure that changes are documented and formally reviewed before changes are deployed to each environment."
+              },
+              {
+                "uuid": "e664055a-ecd0-4df7-b17b-4ead52859ee6",
+                "control-id": "cm-8",
+                "description": "Requirements are implemented as described in the included statements.",
+                "statements": [
+                  {
+                    "statement-id": "cm-8_smt.a",
+                    "uuid": "bc67b122-4a5e-431b-a50a-ff6c27046aa1",
+                    "description": "The Blueprint ISSO develops and documents an inventory of information system components that:"
+                  },
+                  {
+                    "statement-id": "cm-8_smt.a.1",
+                    "uuid": "1f9941bd-466a-4824-9493-a3ae5c5f2c1e",
+                    "description": "Accurately reflects the current Blueprint System Components and information system;"
+                  },
+                  {
+                    "statement-id": "cm-8_smt.a.2",
+                    "uuid": "1ecae508-5f65-4d99-a6aa-6f98467e52e0",
+                    "description": "Includes all components within the authorization boundary of the information system;"
+                  },
+                  {
+                    "statement-id": "cm-8_smt.a.3",
+                    "uuid": "7346d343-c63d-4e43-bb68-44479d3b6a9c",
+                    "description": "Is at the level of granularity deemed necessary for tracking and reporting; and"
+                  },
+                  {
+                    "statement-id": "cm-8_smt.a.4",
+                    "uuid": "b449af6b-967e-4c24-9718-3a339873dcf0",
+                    "description": "Includes information contained in the DHS Inventory methodology; and"
+                  },
+                  {
+                    "statement-id": "cm-8_smt.b",
+                    "uuid": "623ca519-f79a-4fe6-bf35-04634474aaca",
+                    "description": "The Blueprint ISSO reviews and updates the information system component inventory annually.\n\nThe Blueprint ISSO reviews this control at least annually or whenever there is a significant change."
+                  }
+                ]
+              },
+              {
+                "uuid": "df4e1715-42a3-4e9d-a8e4-06e00c5d081e",
+                "control-id": "cm-8.1",
+                "description": "The Blueprint System Admin in coordination with the Organization Release Manager updates the inventory of information system components as an integral part of component installations, removals, and information system updates. The Blueprint ISSO works with the Blueprint Application Team to update the system inventory in the System Security Plan when ever a new version of software is installed or removed as part of the configuration management plan."
+              },
+              {
+                "uuid": "ff9abf59-deac-4708-a4af-4abff5923b75",
+                "control-id": "cm-8.3",
+                "description": "The Blueprint application has not employed any automated mechanism to detect the presence of unauthorized software and firmware components within the information system at the level of the Application Layer."
+              },
+              {
+                "uuid": "e9f302f3-6a79-46bb-af37-1b6ecd29ac14",
+                "control-id": "ia-2",
+                "description": "The Blueprint Application uniquely identifies users via a unique numeric user database record and unique username. All manipulations of information system data via the application or database requires users to be authenticated or via API processes that require a secret key associated with a unique user. Authentication of users varies depending upon deployment configuration. Authentication can be done via username and password or can be delegated to a Single Sign-On service."
+              },
+              {
+                "uuid": "a680309b-ca64-450e-b417-4d01e75e2856",
+                "control-id": "ia-2.8",
+                "description": "Authentication in Blueprint application is managed by the built-in Django Authentication library or is delegated the organization Single Sign On mechanism.\n\nAdditionally, the Blueprint application is configured with the replay-resistant Transport Layer Security (TLS) protocol."
+              },
+              {
+                "uuid": "2dc27425-36c9-4cbb-a1f1-bc8b79b94090",
+                "control-id": "ia-2.12",
+                "description": "Authentication in Blueprint is managed by the SSO mechanism implemented by ICAM. Users are PIV-challenged when accessing the Blueprint application.\n\nThe Blueprint ISSO reviews this control at least annually or whenever there is a significant change."
+              },
+              {
+                "uuid": "511533b4-1d0a-46ef-8f86-28fd56f9412b",
+                "control-id": "ir-5",
+                "description": "The Blueprint Application Team tracks and documents source code and development security incidents at the application level inside GitHub issues and Google docs. GitHub issues is issue tracking software that supports documenting an issue such as a software bug or security issue, the status of the issue, notes about the issue, and attachments about the issue such as forensics."
+              },
+              {
+                "uuid": "f271e4b8-337f-4da1-9db5-4083bac80c25",
+                "control-id": "pl-2.3",
+                "description": "Security-related activities affecting the information system are required to go through the change control process before conducting such activities in order to reduce the impact on other organizational entities. Security authorization documentation activities such as annual assessment and contingency plan updates are done by the Blueprint ISSO and reviewed by the Organization SCA.\n\nThe Blueprint ISSO reviews this control at least annually or whenever there is a significant change."
+              },
+              {
+                "uuid": "2c5d4ca8-e9e3-45c4-97d9-89ee073f5706",
+                "control-id": "pl-8",
+                "description": "The ISSO reviews this control at least annually or whenever there is a significant change."
+              },
+              {
+                "uuid": "1577e46d-6e5a-48bf-a80d-923a01325fe5",
+                "control-id": "ra-5",
+                "description": "Requirements are implemented as described in the included statements.",
+                "statements": [
+                  {
+                    "statement-id": "ra-5_smt.a",
+                    "uuid": "95bfc970-2743-4bbf-bb31-59d806ec8503",
+                    "description": "TBD is deployed to scan for container image security vulnerabilities.  Blueprint performs Aquasec code scans with each new build of the application code.  Scan results are sent to the Blueprint ISSO on a weekly basis."
+                  },
+                  {
+                    "statement-id": "ra-5_smt.b",
+                    "uuid": "5e271d98-f819-499c-aa2c-b2765cc240a1",
+                    "description": "The Organization SOC uses TBD to manage vulnerability scan results for various scanning tools."
+                  },
+                  {
+                    "statement-id": "ra-5_smt.c",
+                    "uuid": "0bcba368-3d6b-4622-8b14-bd8675218f29",
+                    "description": "The Blueprint ISSO is responsible for reviewing and analyzing scan results for resources defined in their boundary."
+                  },
+                  {
+                    "statement-id": "ra-5_smt.d",
+                    "uuid": "b8978aac-d690-4c11-9778-2631ae63d863",
+                    "description": "The Blueprint ISSO works with systems administrators or development teams to patch vulnerabilities and address configuration changes as necessary to address legitimate vulnerabilities discovered in scans."
+                  },
+                  {
+                    "statement-id": "ra-5_smt.e",
+                    "uuid": "a572049b-5254-4c70-ae9e-10f0c8bfafc1",
+                    "description": "The Blueprint ISSO shares information between teams to address common vulnerabilities.\n\nThe Blueprint ISSO reviews this control at least annually or whenever there is a significant change."
+                  }
+                ]
+              },
+              {
+                "uuid": "f021b69b-72af-450b-9e98-1421b6d9c694",
+                "control-id": "sa-9",
+                "description": "There are no external information system services that utilized by Blueprint.\n\nThe Blueprint ISSO reviews this control at least annually or whenever there is a significant change"
+              },
+              {
+                "uuid": "33ec0e1f-3bef-4e7f-849b-5390e2c1b811",
+                "control-id": "sc-13",
+                "description": "Blueprint employs the cryptography as part of the Transport Layer Security (TLS) protocol to encrypt communication between the Blueprint application and end-user's client browser software. Deployments can optionally configure secure transport to the database. Cryptography is also used to encrypt user passwords when authentication is not being delegated to Single Sign-on Service."
+              },
+              {
+                "uuid": "f5e6e6b8-8f64-4603-9687-9d5eb29a7939",
+                "control-id": "si-2",
+                "description": "The Blueprint Application Team:\n  \na. Identifies, reports, and corrects any information system flaws including code vulnerability as well as code quality scans and report any flaws using tools such Snyk, Bandit and Fortify. Any flaws discovered during automated and manual quality assurance testing by the Blueprint Application Team, any vulnerabilities detected by Pyup.io's Python vulnerability database Safety DB;\nb. Tests and remediates all code flaws as required by documenting the flaws in Jira and tracking the resolution;\nc. Any update is performed per request of the System Owner;\nd. Document and log all remediation in Jira. The various source code scans are part of the CircleCI pipeline process.\n\nThe Blueprint ISSO reviews this control at least annually or whenever there is a significant change."
+              },
+              {
+                "uuid": "00c8e3cb-8bdf-4f40-b3e0-a9f7a160b27b",
+                "control-id": "si-2.2",
+                "description": "Blueprint utilizes monthly scans from the SOC VAT team to identity flaws and ensure patches are applied in accordance with the monthly patch process and ISVM process for formal FISMA reporting."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
