@@ -2,6 +2,7 @@ import json
 from typing import List
 
 from django.core.files import File
+from django.core.management import call_command
 from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
@@ -757,3 +758,29 @@ class ComponentImplementedRequirementViewTest(AuthenticatedAPITestCase):
             if implemented.get("control-id") == test_control_id:
                 self.assertEqual(implemented.get("description"), test_description)
                 self.assertEqual(implemented.get("control-id"), test_control_id)
+
+
+class LoadComponentsTestCase(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        call_command("load_catalog", load_standard_catalogs=True)
+
+    def test_load_test_components(self):
+        call_command("load_components")
+
+        expected_components = [
+            "Amazon Web Services",
+            "Blueprint", "Django",
+            "Identity Management",
+            "OCISO Inheritable Controls",
+            "Splunk",
+            "Tenable Nessus",
+            "Trend Micro Deep Security"
+        ]
+
+        queryset = Component.objects.order_by("title")
+
+        self.assertEqual(queryset.count(), 8)
+        self.assertEqual(expected_components, [item.title for item in queryset])
+        self.assertTrue(all(item.type == "software" for item in queryset))
+        self.assertTrue(all(item.controls for item in queryset))
