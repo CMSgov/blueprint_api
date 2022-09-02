@@ -1,0 +1,624 @@
+{
+  "component-definition": {
+    "uuid": "1c8d6f5e-9ccb-4343-9006-902e9b8cd1b5",
+    "metadata": {
+      "title": "idm",
+      "published": "2022-04-13T01:23:14.903474+00:00",
+      "last-modified": "2022-04-13T01:23:14.903482+00:00",
+      "version": "unknown",
+      "oscal-version": "1.0.0"
+    },
+    "components": [
+      {
+        "uuid": "09759c0d-8720-4243-8389-be74a1a25912",
+        "type": "software",
+        "title": "Identity Management",
+        "description": "Identity Management",
+        "control-implementations": [
+          {
+            "uuid": "0b18e15f-f3db-4daf-a306-dccf912afe9d",
+            "source": "https://raw.githubusercontent.com/CMSgov/ars-machine-readable/main/3.1/oscal/json/CMS_ARS_3_1_catalog.json",
+            "description": "CMS_ARS_3_1",
+            "implemented-requirements": [
+              {
+                "uuid": "4cb5534e-0a7b-4786-86f4-48b83f2c89b6",
+                "control-id": "ac-2",
+                "description": "The IDM solution is responsible for account management related activities. CMS IDM solution use API to coordinate activities which utilizes Okta  and IDM HUB API services for authentication and authorization in order to manage user access privileges by controlling users, roles, accounts, and entitlements. IDM solution provides the functionalities for provisioning, identity and role administration, request and approval management, policy-based entitlement management, password expiration/warning, and audit and compliance.\n IDM ensures that inactive accounts are disabled per the guidelines provided in the Acceptable Risk Safeguards (ARS). IDM do not make provision for emergency or temporary accounts.\n The IDM solution identifies and selects individual and system/application accounts to support organizational missions/business functions. Conditions for role membership is defined by CMS and enforced by IDM.  IDM specifies authorized users and role membership, access authorizations, and other attributes for each account. Request to create system accounts requires approval by the IDM business owner. IDM complies with ARS when creating, enabling, modifying, disabling, and removing system accounts. IDM accounts are monitored, and account managers are notified when accounts are no longer required, users are terminated or transferred, and/or for individual need-to-know changes. IDM authorizes access based on a valid access authorization, intended system usage, and other reasons as required by CMS missions and business functions.\n CMS ARS AC-2(f) requires inactive accounts be removed in accordance with Acceptable Risk Safeguards (ARS) requirements and Risk Management Handbook (RMH) standards and procedures.  CMS IDM system meets the requirements by providing an inheritable control to downstream applications that will de-provision accounts according to the following criteria:\n -Accounts with no roles and more than one year of inactivity.  -Accounts with roles and more than two years of inactivity.  -Accounts for out-of-scope applications that includes  FFM, Agent and brokers, Assisters, have their own account review procedures and have more than three years of inactivity. Account removal is performed in coordination with the application team.\n Vertical applications teams should validate the continued use of the user's role in their application. \n Hybrid control - where application finds that user should no longer have a role, the application team is responsible for removing said role. IDM will only provides the tools needed by the application to identify the compliance status of the user and record their annual account review decision. IDM give applications a place to record their decision. IDM no longer takes responsibility for the application failure to exercise their due diligence.\n The IDM solution reviews accounts for compliance with account management requirements at least every 90 days and establishes a process for reissuing shared/group account credentials when individuals are removed from the group.\n PRIV.1 \u2013 The IDM Solution does not allow the use of guest, anonymous, and shared accounts for providing access to PII.\n PRIV.2 \u2013 The IDM solution ensures account managers are notified immediately when temporary accounts are no longer required, or when information system users are terminated, transferred, or information system usage for need-to-know/need-to-share changes.\n PRIV.3 \u2013 User roles with the need-to-know are allowed access for PII to perform user\u2019s duties only after explicitly approved by the Business Owner (BO), or an authorized approver. The approval commensurate with users justifications.\n PRIV.4 \u2013 Access controls within the IDM solution is implemented based on users\u2019 or user group\u2019s need for access to PII in the performance of specified duties.\n PRIV.5 \u2013 The IDM solution provides access only to the minimum amount of PII necessary for users to perform their duties.\n PRIV.6 \u2013 IDM solution creates, enables, modifies, disables, and removes accounts in accordance with the requirement for each user to complete privacy training every 365 days, otherwise the account will be disabled.",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "19687f90-8eae-460f-83eb-68f7cb9709c9"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "9741297e-f061-438f-87c6-61c31b2ffccd"
+                  }
+                ]
+              },
+              {
+                "uuid": "6a9ce2ea-270d-4548-acc5-cb0ab012410a",
+                "control-id": "ac-2.1",
+                "description": "IDM employs automated mechanism to notify account managers on relevant event(s) in relation to system accounts. The IDM ADO is tasked with implementing system level alerts when user accounts are terminated, transferred or roles are being changed using New Relic infrastructure monitoring components, and account manager/system admins will be notified accordingly.",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "beeb6e9e-a4f5-43cf-a76b-b433e2b925e4"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "4fb24d16-69f9-4f11-8387-095fffa0a7bc"
+                  }
+                ]
+              },
+              {
+                "uuid": "c234885b-4b30-4cc9-b5f0-31039127d058",
+                "control-id": "ac-2.2",
+                "description": "Emergency or OnDemand accounts are to be created and used to resolve high severity issues only. The use of the accounts will be closely monitored by the IDM business owner or his/her representative. These accounts will be terminated as soon as they are no longer needed. When no longer required, emergency accounts will be disabled and deleted within 24 hours.",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "00ac4cce-c7a4-475b-86f1-aa9ee7ab0e9c"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "2c52e244-2dfc-45f3-8be0-99d36cffe8cf"
+                  }
+                ]
+              },
+              {
+                "uuid": "3e2a6b0e-23a6-4347-bc69-58dd0f059e32",
+                "control-id": "ac-2.3",
+                "description": "IDM system sets the user passwords to expire after 60 days. After the password is expired, the user's account is marked as inactive/suspended.",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "faabe98d-b9c2-4d00-a820-bd3cda08b34e"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "194cf463-df83-42ac-ba08-8be88e20ae54"
+                  }
+                ]
+              },
+              {
+                "uuid": "89a90d4a-e8b3-4e39-9abd-a238928d6533",
+                "control-id": "ac-2.4",
+                "description": "The IDM ADO team will implement the audit alert via New Relic and notify responsible personnel of the actions against user accounts to the IDM system. IDM ensures the raw audit information collected is available in an unaltered format to the CCIC.",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "c3c037d8-833b-4319-95f0-700a09d123fe"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "c4857242-da38-496b-877d-6674483cb81d"
+                  }
+                ]
+              },
+              {
+                "uuid": "0a2336b7-63a8-4936-9a83-f0b28354c49a",
+                "control-id": "ac-3",
+                "description": "Access to files and tables within IDM are restricted to users according to their approved roles. IDM employs FIPS 140-2 encryption mechanisms to protect sensitive data when stored. The IDM system is in the AWS environment and can only be accessed via a secured VPN communication tunnel. The VPN is configured per CMS approved standards and policies as defined in the CMS Technical Reference Architecture (TRA).",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "30a1539d-8a1b-4752-9c56-72e8468fe3fc"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "3c13c997-efcc-4d9f-b199-0bb7c39d5cda"
+                  }
+                ]
+              },
+              {
+                "uuid": "a7d2be3c-28bc-4e70-b5a6-3ad5ac880c19",
+                "control-id": "ac-5",
+                "description": "IDM ensures that audit functions are not performed by IT personnel responsible for administering access control. IDM maintains a limited group of administrators whose access is based on the users\u2019 roles and responsibilities. IDM\u2019s testing and production functions are divided among separate individuals or groups. The critical mission functions and IDM\u2019s support functions are divided among separate individuals. An independent entity conducts information security testing. An independent entity is one without vested interest or in relationship with IDM that could prevent the rendering of objective or unbiased reporting.",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "cf6c4fd8-f94b-4882-933b-6530cb88f6bf"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "e519b097-91ca-4be7-ad35-41ffbfe9753a"
+                  }
+                ]
+              },
+              {
+                "uuid": "bf4ee2ba-1a2d-4777-88a6-64fb460d5583",
+                "control-id": "ac-6",
+                "description": "Role based access control is used to restrict access to system functions only to designated individuals. System activities, including setting/changing system parameters, and modifying audit settings and behavior are logged and associated with the user making the change. Only authorized users are permitted access to files, directories, drives, workstations, servers, network shares, ports, protocols, and services that are expressly required for the performance of their job duties.\n IDM ensures system maintenance accounts are created solely on a role-based as needed basis. If a system maintainer needs to perform a task requiring elevated privileges, they will login to the IS with their individual login. They will then obtain the necessary sudo/root elevated privileges to obtain their tasks. The elevated privileges will be dismissed when no longer needed. All activities performed via elevated privileges is logged. Standard users have read-only rights to system level configurations.",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "69b314ce-002b-4eee-ba2d-3d0a9c354cfa"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "d3ff6b7d-8edd-4a5f-849c-1f3aebd22587"
+                  }
+                ]
+              },
+              {
+                "uuid": "150b520a-dc73-4c61-a49e-f7c6c25dde60",
+                "control-id": "ac-6.1",
+                "description": "The IDM Security team, security administrators, system and network administrators, system security officers, system maintenance personnel, system programmers, and other privileged users will be given access to audit logs, boundary protection (firewall security rules), configuration logs and authentication to all related IDM systems as required to look at each system/instance individually. New Relic will have a security dashboard that will centrally display information specifically in this control to allow for a single-pane-of-glass view.\n\n IDM explicitly authorizes access, by the above personnel, to the following\ninformation for the development and maintenance of the IDM system:\n Setting/modifying audit logs and auditing behavior\n Setting/modifying boundary protection system rules\n Configuring/modifying access authorizations\n Setting/modifying authentication parameters\n Setting/modifying system configurations and parameters\n Setting/modifying system configurations and parameters on an as-needed basis.",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "7926fc0e-f1d8-4584-bc16-d4f3d59b1106"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "0efaa766-0559-4fa9-b6a3-1a05d89f187b"
+                  }
+                ]
+              },
+              {
+                "uuid": "332d573a-8ffc-44ca-a5b9-3e8cbaf567a0",
+                "control-id": "ac-6.5",
+                "description": "The IDM IS employs role-based least privileged access control. Privileged accounts are controlled and restricted to personnel with the need to perform controlled functions against the system. All accesses and actions of privileged accounts are logged for review and audit purposes.",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "56fc5af4-3c51-4f2b-b372-c239f1e135eb"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "52ff232a-a14c-45d5-883d-e8b399edaa4d"
+                  }
+                ]
+              },
+              {
+                "uuid": "c083c3fb-ecc3-4733-a719-4d177c84aaf9",
+                "control-id": "ac-6.9",
+                "description": "GDIT/CCS team is responsible for Amazon Web Services (AWS) Identity Access Management (IAM) Accounts and AWS VPN Accounts access is granted upon CMS approval with formal and detailed access request. Privilege function execution permission are granted on an as-needed basis and activities are tracked and audited at AWS level. Application teams are responsible for all application related accounts. The IDM IS employs role-based least privileged access control. Privileged accounts are controlled and restricted to personnel with the need to perform controlled functions against the system. All accesses and actions of privileged accounts are logged for review and audit purposes. Privileged functions execution is allowed only with administrators who are implicitly granted permission.",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "80015e00-d547-41d5-849f-99202691b75e"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "3b66049b-2572-4b98-adeb-ee2e798e24ce"
+                  }
+                ]
+              },
+              {
+                "uuid": "64454ce4-a40f-4752-a01b-f2fd44c6a75e",
+                "control-id": "ac-6.10",
+                "description": "Non-privileged users on AWS console will be forced to follow defined access policy that is setup and managed by GDIT/CCS team which prevents privileged functions from being executed by those unprivileged accounts. EC2 System users who are non-privileged will have very limited access to the system itself, and are unable to execute privileged functions that otherwise requires root/wheel level access.",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "1a85f26c-37ae-4a59-8c18-6af263ebbe5b"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "a5e128aa-f51c-4a2e-b3e0-61508e55639a"
+                  }
+                ]
+              },
+              {
+                "uuid": "7cca08f8-deaa-46f8-ba71-96e4fb12d5fd",
+                "control-id": "ac-7",
+                "description": "Unsuccessful login attempts are recorded and the number of failed attempts is displayed.  IDM enforces a limit of three (3) consecutive invalid login attempts by a user during a fifteen (15) minutes window. If this threshold is met, the user\u2019s account is locked for 60 minutes unless the user exercise the self service option. Once an IDM AWS user account is locked, the user is required to contact the Identity Access Management (IAM) administrator to request an unlock.",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "d70d1bf4-743a-49eb-b6aa-3ce2547ff9c0"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "02ae92b9-3339-4cc4-97ca-ec21cff188fa"
+                  }
+                ]
+              },
+              {
+                "uuid": "896ae330-a292-49c7-85f1-f585af6ccd31",
+                "control-id": "ac-8",
+                "description": "CCS is responsible for VPC Operating System. Application teams are responsible for all application related systems.  IDM displays the HHS approved Rues of Behavior (ROB) banner to everyone accessing the IDM system, via the graphic user interface (GUI) or command line interface (CLI), prior to the users\u2019 authentication. The IDM system requires the users to acknowledge the consent to monitoring be selecting the \"I Accept\" button before proceeding with the login process. This warning banner provides privacy and security notices consistent with applicable federal laws, directives, and other federal guidance for accessing this Government system, which includes the IDM information system and its components. The HHS and CMS approved ROB is provided below:  This system is provided for Government authorized use only. Unauthorized or improper use of this system is prohibited and may result in disciplinary action and/or civil and criminal penalties. Personal use of social media and networking sites on this system is limited as to not interfere with official work duties and is subject to monitoring. By using this system, you understand and consent to the following: - The Government may monitor, record, and audit your system usage, including usage of personal devices and email systems for official duties or to conduct HHS business. Therefore, you have no reasonable expectation of privacy regarding any communication or data transiting or stored on this system. At any time, and for any lawful Government purpose, the government may monitor, intercept, and search and seize any communication or data transiting or stored on this system. Any communication or data in transit or stored on this system may be disclosed or used for any lawful Government purpose.\"",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "560aafa0-0605-4ae4-b3d4-576199d7a894"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "ab1b9d19-6382-43c9-9a24-3a8413b2fc4f"
+                  }
+                ]
+              },
+              {
+                "uuid": "c374633b-4d56-4d94-a699-f0d374060b21",
+                "control-id": "ac-11",
+                "description": "Each user\u2019s session is locked or timed out after 15 minutes of inactivity.  NOTE:  This will be configured for five (5) minutes per CTO guidance. Users can regain system access by going through the authentication process again.\n When a UserID is created by Portal (CMS IDM), they will be assigned to the\nIDM group which enforces the CMS Policy of a 5-minute session lifetime. If that user then logs into Harp and requests a role with HCQIS Access Roles and Profile System (HARP), the user is then added to the HARP Users group. By adding the user to the HARP user\u2019s group, the HARP policies are enforced, which is above the CMS Policy, giving the user the session lifetime of 15 minutes. If this user then logs in to Salesforce, an IM supported application, they will have an Okta Session Lifetime of 15 minutes. Note that Harp does not conform to the 5-minute policy.",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "c39f4ca2-0d36-4246-a7c6-ab78c6be492f"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "1daef0e5-d5b3-443b-a2d1-a406c0fbe821"
+                  }
+                ]
+              },
+              {
+                "uuid": "d3a76885-67c0-49ed-a585-d0a43b5af6de",
+                "control-id": "ac-11.1",
+                "description": "Inactive Sessions (idle time of 15 minutes or longer) will trigger a session lock at the console access layer to IDM\u2019s systems hosted on the AWS environment. During session lock, IDM conceals the information previously visible on the display with a publicly viewable image. Inactive web sessions used by the AWS Console will be logged out after 30 minutes of idle time. To continue, the user will be required to re-authenticate their login.",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "dc5a3c89-e151-439e-9da0-7266d73d5d65"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "7a476b1a-6f34-4711-b39a-97ed600918ce"
+                  }
+                ]
+              },
+              {
+                "uuid": "301ea015-1dc4-4aed-8aec-c21793073c6c",
+                "control-id": "ac-12",
+                "description": "IDM will ensure that sessions are timed out and closed after five  minutes of inactivity.\n AWS IAM User Sessions will timeout and terminate in 1 hour (60 minutes) of\ninactivity or will terminate immediately upon user logout. EC2 system console or command line interface (CLI) will timeout in 10 minutes due to user inactivity or will terminate upon user requested logout or close of the CLI terminal window/UI. Application specific sessions are timed out and closed after five to fifteen minutes of inactivity; this varies from application to application. When a UserID is created by Portal (CMS IDM), they will be assigned to the IDM group which enforces the CMS Policy of a 5-minute session lifetime. If that user then logs into Harp and requests a role with HCQIS Access Roles and Profile System (HARP), the user is then added to the HARP Users group. By adding the user to the HARP user\u2019s group, the HARP policies are enforced, which is above the CMS Policy, giving the user the session lifetime of 15 minutes. If this user then logs in to Salesforce, an IM supported application, they will have an Okta Session Lifetime of 15 minutes. Note that Harp does not conform to the 5-minute policy.",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "597d859c-0da8-4770-84cd-86d0563d4b41"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "7324a96c-862d-40aa-8a11-806a794fa2f2"
+                  }
+                ]
+              },
+              {
+                "uuid": "19811e6e-c699-4f53-9361-8bdea4ce33d1",
+                "control-id": "ac-14",
+                "description": "The IDM IS requires successful user authentication prior to performing any action. There are no user actions to the IDM system that could occur without authentication and authorization.",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "9864c95f-9df0-42cf-8883-1f9502d80cb9"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "a8a8dbc0-7884-45ce-af74-7c54668f4e9f"
+                  }
+                ]
+              },
+              {
+                "uuid": "fcaa4a3a-fdfe-49e6-8341-37387c3df2c3",
+                "control-id": "ac-19",
+                "description": "",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "d472683f-3762-472d-ab15-a06b2b4e88fb"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "509539aa-c1b6-491c-bc71-40649680519d"
+                  }
+                ]
+              },
+              {
+                "uuid": "4304769a-a9e7-4fbf-bccf-b2fe21c9d6ea",
+                "control-id": "ac-20.2",
+                "description": "",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "2f36cc03-382e-48f3-9846-1c1e50967698"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "825b71c6-4931-48fb-ac8b-fefe324c0a34"
+                  }
+                ]
+              },
+              {
+                "uuid": "629429ac-2444-457a-8bea-84b50ef316a8",
+                "control-id": "ac-21",
+                "description": "IDM System shares authorization information with Okta and Experian (provides Remote Identity Proofing (RIDP) Service to ensure the true identity of the user matches whom he/she claims to be. These IDM services allow users to be identity proofed remotely in order to process and grant LOA Level 2 and LOA Level 3 role requests. It integrates with Experian APIs to deliver this functionality.",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "1ce9aa26-d46b-452b-920c-e96a933f298f"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "a4b1d6b0-7fba-41aa-9f8f-58599011281d"
+                  }
+                ]
+              },
+              {
+                "uuid": "fc0d79b6-c725-4d58-810d-c69758805008",
+                "control-id": "ia-2",
+                "description": "CCS is responsible for authentication of VPC to OS components. Application Teams are responsible for authentication of application components.\n Cloud Navigator/ITOPs is responsible for authentication of VPC to OS components. Application Teams are responsible for authentication of application components using API keys. \n IDM uniquely identifies and authenticates organizational users via the Remote Identity Proofing (RIDP) functionality provided by Experian. The RIDP is detailed in the IDM system requirements and the IDM System Detailed Design (SDD).  \n Employees of IDM team and Contractors of IDM team are uniquely identified visually on their facility access badges, systematically identified in username format. Both employee and contractor users require authentication to use helpdesk support functions. All IDM system access requires username/password authentication at minimum and some systems require multi-factor authentication for added security from one of the authorized providers.",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "ec4fa8fb-5da0-4e40-8d51-b5e23c27a5c4"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "161ecf8d-89d0-4f31-8f5f-705f4740a49a"
+                  }
+                ]
+              },
+              {
+                "uuid": "b82aab22-c9df-4243-b50b-d23382ce011a",
+                "control-id": "ia-2.11",
+                "description": "CCS is responsible for authentication of VPC to OS components. Application Teams are responsible for authentication of application components.\n All remote access to IDM components or systems requires the use of secure access VPN which requires username plus complex password and MFA timebased token code generated by either physical MFA authenticator fab or software-based authenticator, such as google authenticator or okta verify. MFA token used in remote access has the minimum length of 6 numerical characters.",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "719d7285-ece5-437d-a118-f3aa98886c0f"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "75794c19-727e-47ba-a0d3-92708dabac25"
+                  }
+                ]
+              },
+              {
+                "uuid": "5f239b07-dcd6-47af-8788-d87df507040c",
+                "control-id": "ia-4",
+                "description": "CCS is responsible for authentication of VPC to OS components. Application Teams are responsible for authentication of application components.\n IDM console users are deactivated after 60 days of inactivity or disabled as\nsoon as password is expired, which is also 60 days. IDM system access users are deactivated after 60 days of inactivity or disabled as soon as password is expired, which is also 60 days. Users who wish to retain access to systems and network must change their password before they expire, which occurs every 60 days since the last password set or changed. Field equipment used by employee or contractor users requires password change every 60 days as well and, in addition to suspension of user account and associated roles/permissions should the user be inactive in 60 days or more.",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "da127289-5659-4865-909e-be3419449d19"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "a450414d-cbd0-4059-b586-f61ef2f4addd"
+                  }
+                ]
+              },
+              {
+                "uuid": "47ea738f-b9b1-44a9-a9d6-eac40d0838da",
+                "control-id": "ia-5",
+                "description": "CCS is responsible for authentication of VPC to OS components. Application Teams are responsible for authentication of application components.\n  \n Inherited control from CMS. Authenticator such as physical MFA tokens or PIV Smart Access Card are managed by CMS office of security and personnel management.",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "1510c5d3-b90f-44b4-8725-a9fc21b8272f"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "ef25e848-5dc0-4867-8cba-68ad7951eb54"
+                  }
+                ]
+              },
+              {
+                "uuid": "252f163f-2a8c-4b11-b1f8-6fb2babbee46",
+                "control-id": "ia-5.1",
+                "description": "CCS is responsible for authentication of VPC to OS components. Application Teams are responsible for authentication of application components.\nThe IDM applications use Okta for account and password management of IDM users. The following password policy is enforced by Okta: \n\n Minimum password complexity of case sensitive,\n Minimum of twelve (12) characters, and\n At least one (1) each of upper-case letters, lower -case letters, numbers, and special characters.\n At least one (1) changed character when new passwords are created.\n Passwords are encrypted while in storage and in transmission.\n Password minimum and maximum lifetime restrictions of one (1) day minimum, sixty (60) days maximum; and prohibits password reuse for twenty-four (24) generations. IDM AWS IAM account requires the password to have minimum length of 12 characters with combination of Upper, Lower case letters, numerical and special characters. Password for each set or reset is valid for up to 60 days and users cannot set the same password that was used in their last 6 password changes.",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "8c69b96e-26c0-494d-b4db-511040cd29f8"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "d03f4627-c43a-4f38-94b9-a276f793dfeb"
+                  }
+                ]
+              },
+              {
+                "uuid": "89ebe594-3c1f-4e07-9964-6ba2d1f8f2e6",
+                "control-id": "ia-8",
+                "description": "",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "770c14c3-a7b4-4141-bf84-4b9e26920a48"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "3ae1375b-93e0-4374-bb21-c2dc8ddf37f3"
+                  }
+                ]
+              },
+              {
+                "uuid": "7c6f19be-0921-429a-8223-99e6deb755eb",
+                "control-id": "ia-8.1",
+                "description": "",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "ab9ba32f-8faa-49d2-95bc-a6a7ae73b907"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "2b69b3da-a8d0-4fa9-97e0-77446d93fe51"
+                  }
+                ]
+              },
+              {
+                "uuid": "5e0e95d3-3be3-40bb-a508-29d9bfbed5cf",
+                "control-id": "ia-8.2",
+                "description": "",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "b0970e90-2900-4598-8cf7-595e7fc5f218"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "c0ef22c7-da26-4e37-b73e-feb3355b69e9"
+                  }
+                ]
+              },
+              {
+                "uuid": "f6b8b179-afe5-416d-b236-fd71f6ba7147",
+                "control-id": "ia-8.3",
+                "description": "",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "579a1b65-e6c9-4b60-b896-45efabf1dfc1"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "7feb907c-e9c7-4bed-80f8-aeea7cc1fae6"
+                  }
+                ]
+              },
+              {
+                "uuid": "e7e476f6-c486-488a-bb8c-bbd22bc0b007",
+                "control-id": "ia-8.4",
+                "description": "",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "c1878b38-d97b-4a77-930a-8691ee8ea453"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "3c0533a6-a781-46a3-a8d7-4a0e701ffdc8"
+                  }
+                ]
+              },
+              {
+                "uuid": "f12d7ea2-b704-4119-ae56-2bb939e6fee3",
+                "control-id": "pl-4",
+                "description": "",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "3f268361-cbad-4ab8-a869-be748f6148de"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "9363dc70-7d4d-4f57-9c33-3713dd8af135"
+                  }
+                ]
+              },
+              {
+                "uuid": "aa32ddf3-7f29-404e-8702-f0175115d19f",
+                "control-id": "sc-8.1",
+                "description": "",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "5a1d2bae-89cc-4258-9b2a-55452ceaa8c0"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "d0dc0da7-08f8-4076-9e0b-898903c29fd0"
+                  }
+                ]
+              },
+              {
+                "uuid": "2692a59f-2c64-40c9-ac8c-7752af3135d6",
+                "control-id": "sc-18",
+                "description": "When Multi-Factor Authentication is requested using Okta Verify with Push, the Okta IDaaS application identifies a mobile device that has been pre-registered as owned by the user requesting authentication.  Okta then sends a notification packet using the real-time notification system provided by the mobile device OS platform (Apple iOS or Google Android).  Due to notification packet size limitations, this packet contains a customer URL back to the Okta API with a session token.  When the notification arrives on the mobile device, the user is automatically redirected to the custom Okta URL, which displays the approval or rejection UI.  The response is sent back over the phone\u2019s data connection.",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "f803bd95-7332-45ca-8df9-5326d0ae0224"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "b69df11b-6d0d-453a-8b86-bc34d05ab811"
+                  }
+                ]
+              },
+              {
+                "uuid": "b4bdcf23-304e-4223-bd32-3ef9d3112f5f",
+                "control-id": "si-12",
+                "description": "",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "5ea85722-113b-4785-8ded-7958ca940826"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "3987f1aa-5c53-4580-9ced-52ae1334d31c"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

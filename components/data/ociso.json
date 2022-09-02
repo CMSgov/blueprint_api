@@ -1,0 +1,879 @@
+{
+  "component-definition": {
+    "uuid": "a709d5d9-c465-4666-a8ba-af51dd78b56b",
+    "metadata": {
+      "title": "ociso",
+      "published": "2022-04-13T01:07:05.727575+00:00",
+      "last-modified": "2022-04-13T01:07:05.727583+00:00",
+      "version": "unknown",
+      "oscal-version": "1.0.0"
+    },
+    "components": [
+      {
+        "uuid": "1c851b1e-d6cf-4c6f-802d-81322d183e66",
+        "type": "software",
+        "title": "OCISO Inheritable Controls",
+        "description": "OCISO Inheritable Controls",
+        "control-implementations": [
+          {
+            "uuid": "594249f3-7153-433c-a778-0a2dc9e8b40e",
+            "source": "https://raw.githubusercontent.com/CMSgov/ars-machine-readable/main/3.1/oscal/json/CMS_ARS_3_1_catalog.json",
+            "description": "CMS_ARS_3_1",
+            "implemented-requirements": [
+              {
+                "uuid": "3b484923-8114-4238-846c-ef271dd03328",
+                "control-id": "ac-1",
+                "description": "This is a hybrid control. The inheritor must append the Inheritance Statement with all system-specific Access Control Procedures available for this application.\n  \n  \n Inheritance Statement:\n In accordance with HHS policy, CMS reviews and updates Enterprise security and privacy policies and procedures at least every 3 years, or as necessary. CMS Access Control policy and procedures are listed below along with the corresponding URL:\n  \n 1.  CMS Information Systems Security and Privacy Policy (CMS IS2P2), Section 4.2.1: \n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/CMS-IS2P2.pdf   (Publicly available)\n  \n 2.  CMS Information Security and Privacy Acceptable Risk Safeguards (ARS) v3.1 (Page 36)\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/ARS-31-Publication.zip  (Publicly available)\n  3.   CMS Technical Reference Architecture (TRA) Release I Volume II Network Services p125. Access Control and Identify Management  Chapter \n  \n https://share.cms.gov/office/ois/CTO/SitePages/TRA.aspx  (Access restricted)",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "d721cb1f-2c5c-4b53-a9e8-810173a35e53"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "fe69f4c6-1025-43b8-9c88-b1d92fca3d12"
+                  }
+                ]
+              },
+              {
+                "uuid": "f9656be9-c627-48d5-9afa-e7c1f3579ff9",
+                "control-id": "ac-11",
+                "description": "This is a Hybrid Control. The inheritor must append the inheritance Statement with all system-specific requirements and information identified within the CISO Memorandum dated March 29, 2021\n Inheritance Statement: \n This is a Program Implementation supporting the systems unable to implement the session lock control requirement of 15 mins. In accordance to the Memorandum the system will not set the parameters beyond 30 mins. \n System Specific\n 1. Systems will implement the Session Lock control to support a maximum of 30 mins of inactivity before the user is required to reauthentication to the session\n 2. Systems will utilize the CISO Risk Acceptance Memo as evidence to support closure or any existing POAMs associated with the AC-11 Session Lock Control\n The inheritor may use the following memorandum as the approving source. \n https://share.cms.gov/Office/OIT/ISPG/Security%20%20Privacy%20NonInternet%20Notifications%20Librar/CISO%20Memorandums/OCISO%20Risk%20Acceptancev2.pdf",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "846d1ea0-4c43-4017-8887-1cc2debc7b7f"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "0cc29dcf-7ca0-41e4-a724-4cc4d9e7ccb8"
+                  }
+                ]
+              },
+              {
+                "uuid": "3f76c676-81bb-41b2-be00-9646896ed9f0",
+                "control-id": "ac-20",
+                "description": "This is a fully inheritable Enterprise control. The inheritor must append the Inheritance Statement to their implementation details.\n Inheritance Statement: Per the HHS IS2P and the CMS IS2P2 the use of external information systems is prohibited without explicit written approval from the CIO. CMS does not allow the use of external information systems that are not approved, and do not meet CMS security requirements. \n The approved systems subject to the guidance below: \n 1. CMS Technical Reference Architecture (TRA) Release I Volume II Network Services   https://share.cms.gov/office/ois/CTO/SitePages/TRA.aspx  (Access restricted)\n 2. HHS IS2P \u2013 Contact FISMA@HHS.gov \n 3. Rules of Behavior for Use of HHS Information Resources (Internal Document) \n 4. Master Labor Agreement (Internal Document)\n 5. CMS Information Systems Security and Privacy Policy (IS2P2)\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/CMS-IS2P2.pdf",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "e17d8f70-eeba-44c0-bc59-67ce86cbf093"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "5be2fcd2-a790-4bef-ae8b-37300043d3a1"
+                  }
+                ]
+              },
+              {
+                "uuid": "6ef6b4f6-0a2b-4f48-a88f-ef1644933187",
+                "control-id": "ac-20.1",
+                "description": "This is a hybrid control. The inheritor must append the Inheritance Statement with all system-specific Access Control procedures available for this application.\n  \n Inheritance Statement: CMS does not allow the use of external information systems that are not approved and do not meet CMS security requirements for accessing CMS systems. External information systems can only access CMS systems using approved VPN access and firewall/security verification software which must be installed on each machine. This applies to federal employees and contractor personnel utilizing CMS GFE (laptop or desktop) only. CMS Access Control policy and procedures are listed below along with the corresponding URLs:\n  \n 1.             CMS Information Systems Security and Privacy Policy (CMS IS2P2), Section 4.1.6\n  \n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-\n Technology/InformationSecurity/Downloads/CMS-IS2P2.pdf   (Publicly available) \n  \n 2.             CMS Interconnection Security Agreement (ISA) Template\n  \n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Info-Security-Library-Items/CMS1223298.html?DLPage=1&DLEntries=10&DLFilter=isa&DLSort=0&DLSortDir=ascending",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "254aa3cb-6277-40e2-905b-483ec7fd62c4"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "fd209a81-7c9e-49da-abd6-39297bacb8e5"
+                  }
+                ]
+              },
+              {
+                "uuid": "3d3cdae3-e45a-42dc-b55a-735ac57ceb78",
+                "control-id": "ac-20.2",
+                "description": "This is a hybrid control. The inheritor must append the Inheritance Statement with all system-specific Access Control procedures available for this application. \n Inheritance Statement: CMS has configured CMS portable and mobile devices to meet federal requirements. CMS has provided several control implementations that support and manage how its information is used within portable storage devices. This includes a policy to incorporate a methodology for protecting the information, and the rules used to managing the information while in transit. CMS has identified several documents, which manages the use and transmission of information to include portable media. These documents include:\n 1. Rules of Behavior for Use of HHS Information Resources\n https://www.hhs.gov/ocio/policy/hhs-rob.html\n 2. CMS Information Systems Security and Privacy Policy (CMS IS2P2), Section 4.2.1\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/CMS-IS2P2.pdf   (Publicly available)\n 3. HHS Standard for Encryption of Computing Devices and Information\n https://intranet.hhs.gov/it/cybersecurity/policies/index.html",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "ccb72764-9e13-4034-b7b5-caa3eb8aef56"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "cafbb01d-f00c-4f1a-a223-6574bcf955fa"
+                  }
+                ]
+              },
+              {
+                "uuid": "942d7b08-470d-4eec-a880-f19ad30af432",
+                "control-id": "ap-cms-01",
+                "description": "This is an inheritable control. The inheritor must append the Inheritance Statement with all system-specific Authority and Purpose Control Family procedures available for this application. Inheritance Statement: \n A., B. Common - In accordance with HHS policy, CMS reviews and updates agency privacy policies and procedures at least every 2 years, or as necessary. CMS Authority and Purpose policy and procedures are available at: \n 1.  CMS Information Systems Security and Privacy Policy (CMS IS2P2), Section 4.3.1: \n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/CMS-IS2P2.pdf   (Publicly available)\n  \n 2.  CMS Information Security and Privacy Acceptable Risk Safeguards (ARS) v3.1 or as amended: (Page 389)\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/ARS-31-Publication.zip  (Publicly available)\n  \n 3. Risk Management Handbook (RMH) Chapter 19 Privacy Procedures: \n https://www.cms.gov/files/document/rmh-chapter-19-privacyv10.pdf  (Publicly available)",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "c13d2246-6f33-4fb1-a0d1-73c380320366"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "91636418-4abf-4f26-869b-f57c14068df3"
+                  }
+                ]
+              },
+              {
+                "uuid": "9c7daf92-a4f7-4bf8-bc08-42de6bb2e16b",
+                "control-id": "ar-1",
+                "description": "This is an inheritable control. The inheritor must append the Inheritance Statement with all system-specific Accountability Audit and Risk Control Family procedures available for this application.\n Inheritance Statement:\n A., B., C., D., E., F. Common - In accordance with HHS policy, CMS reviews and updates agency security and privacy policies and procedures at least every 2 years, or as necessary. CMS Governance and Privacy Program policy and procedures are available at: \n 1. CMS Information Systems Security and Privacy Policy (CMS IS2P2), Section 4.3.2: \n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/CMS-IS2P2.pdf  (Publicly available)\n 2. CMS Information Security and Privacy Acceptable Risk Safeguards (ARS) v3.1 or as amended: (Page 391)\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/ARS-31-Publication.zip  (Publicly available)\n 3. Risk Management Handbook (RMH) Chapter 19 Privacy Procedures: \n https://www.cms.gov/files/document/rmh-chapter-19-privacyv10.pdf  (Publicly available)",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "9827130f-e8c5-43ec-8c1a-df95d73431be"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "adf68a0e-5daa-46f7-82b2-76d79e670b2f"
+                  }
+                ]
+              },
+              {
+                "uuid": "fa8f735d-f497-45e0-8f56-3455436d5f7c",
+                "control-id": "ar-2",
+                "description": "This is a hybrid control. The inheritor must append the Inheritance Statement with all system-specific Accountability, Audit and Risk Management procedures available for this application.\n  Inheritance Statement: \n Common - The department (HHS) has issued a guideline called \u201cThe Privacy Threshold Analysis (PTA) and Privacy Impact Assessment (PIA) Writers\u2019 Handbook\u201d 2015. In addition, CFACTS has a PIA module available for ISSO's use in creating their PIA form. The module provides help text generated from the writers' handbook.  \n System Specific - CMS system Business Owners must complete their PIA per OMB M-03-22 and HHS. The privacy risk assessment is covered within question #9 of the HHS PTA/PIA form. \n Common - In accordance with HHS policy, CMS reviews and updates agency security and privacy policies and procedures at least every 3 years, or as necessary. CMS Privacy Impact and Risk Assessment policy and procedures are available at: \n 1.  CMS Information Systems Security and Privacy Policy (CMS IS2P2), Section 4.3.2: \n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/CMS-IS2P2.pdf   (Publicly available)\n  \n 2.  CMS Information Security and Privacy Acceptable Risk Safeguards (ARS) v3.1 or as amended: (Page 392)\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/ARS-31-Publication.zip  (Publicly available)\n  \n 3. Risk Management Handbook (RMH) Chapter 19 Privacy Procedures: \n https://www.cms.gov/files/document/rmh-chapter-19-privacyv10.pdf  (Publicly available)",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "ada722bb-f323-47e7-8293-bd4dceed4ec6"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "18fc02a8-137c-483b-97f4-cc417bc979df"
+                  }
+                ]
+              },
+              {
+                "uuid": "5dff5c37-487b-47be-a3a1-b0acd5b36aed",
+                "control-id": "ar-3",
+                "description": "This is a hybrid control. The following list provides a breakdown of responsibility for the program and the system: \n A. Hybrid \u2013 Access requirements for contractors and services providers are based on CMS policy, but are implemented at the discretion of the business owner, system operational environment. Privacy roles and responsibilities are outlined within the CMS Information Systems Security and Privacy Policy (CMS IS2P2), Section 3 which is located on the CMS Information Security Library at:: https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Information-Security-Library.html\n B. System Specific - CMS provides privacy contract clauses in the CMS Information Security Contract Clause Provision document which is located on the CMS Information Security and Privacy Library at: \n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Info-Security-Library-Items/CMS-Information-Security-Contract-Clause-Provision.html?DLPage=1&DLEntries=10&DLFilter=Provis&DLSort=0&DLSortDir=ascending\n Working with OAGM, each Business Owner is responsible for ensuring that the appropriate contract language is included in the each contract and statement of work.\n C. System Specific - In accordance with HIPAA and CMS policy, the business owner must ensure its contracts or other arrangements with subcontractors meet the requirements of 45 \u00a7C.F.R. \u00a7164.504(e). CMS Governance and Privacy Program policy and procedures are available at: \n 1. CMS Information Systems Security and Privacy Policy (CMS IS2P2), Section 4.3.2: \n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/CMS-IS2P2.pdf   (Publicly available)\n 2. CMS Information Security and Privacy Acceptable Risk Safeguards (ARS) v3.1 or as amended: (Page 393)\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/ARS-31-Publication.zip   (Publicly available)\n 3. Risk Management Handbook (RMH) Chapter 19 Privacy Procedures: \n https://www.cms.gov/files/document/rmh-chapter-19-privacyv10.pdf   (Publicly available)",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "8be11169-57cb-4748-8982-2a3f68d84d15"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "82e587c6-9ab9-4e1b-85da-17a0f0f9ff93"
+                  }
+                ]
+              },
+              {
+                "uuid": "1d0bd574-2f77-4fc3-b10b-5a749881cf4f",
+                "control-id": "ar-4",
+                "description": "This is a Hybrid control with the following breakdown of responsibility:\n A. System Specific - Privacy controls are monitored per FISMA system annually\nvia the Security Controls Assessment (SCA).\n B. Common - The ISPG Information Security and Privacy Policy Working Group\nmonitors for changes to privacy law, regulations, and HHS policy and ensure the privacy controls are implemented appropriately by updating the CMS policy, standards, and procedures as needed. The activites of the working group are documented in meeting minutes and are available on the ISPG sharepoint site at: https://share.cms.gov/office/oei/ISPG/DSPPG/ISPG%20DSPPG%20Policy%20Library/Forms/Meeting%20Minutes.aspx\n C. System Specific - Mitigating actions to address deficiencies in the privacy\ncontrols are addressed and documented in the Plan of Actions and Milestones (POA&M) for each FISMA system.\n 1.  CMS Information Security and Privacy Acceptable Risk Safeguards (ARS) v3.1\nor as amended: (Page 394)\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/ARS-31-Publication.zip \n(Publicly available)",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "be0f5f2b-36b6-4ab8-8971-7a5bdf9ac58c"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "7e75c513-bd19-4f82-8d86-83796c6ca51e"
+                  }
+                ]
+              },
+              {
+                "uuid": "bd99a7a9-4350-4e98-be5d-81d770a44610",
+                "control-id": "ar-5",
+                "description": "This is a hybrid control. The inheritor must append the Inheritance Statement with all system-specific Accountability Audit and Risk Control Family procedures available for this application.\n Inheritance Statement:\n A. Common - CMS provides privacy training as part of the Annual Security and Privacy Awareness training program. See also the AT (Awareness and Training) control family for additional details. In accordance with HHS policy, CMS reviews and updates agency security and privacy policies and procedures at least every 3 years, or as necessary. CMS policy and procedures are available at: \n 1. CMS Information Systems Security and Privacy Policy (CMS IS2P2), Section 4.3.2: \n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/CMS-IS2P2.pdf   (Publicly available)\n 2. CMS Information Security and Privacy Acceptable Risk Safeguards (ARS) v3.1 or as amended: (Page 396)\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/ARS-31-Publication.zip   (Publicly available)\n 3. Risk Management Handbook (RMH) Chapter 19 Privacy Procedures: \n https://www.cms.gov/files/document/rmh-chapter-19-privacyv10.pdf   (Publicly available)\n 4. CMS Training Catalog:\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Info-Security-Library-Items/ISPG-Training-Catalog.html?DLPage=1&DLEntries=10&DLFilter=trainin&DLSort=0&DLSortDir=ascending\n B. System Specific - The business owner/system administers basic privacy training no less often than once every three hundred sixty-five (365) days, and targeted, role-based privacy training for personnel having responsibility for PII or for activities that involve PII no less often than once every three hundred sixty-five (365) days.\n C. System Specific - The business owner/system ensures that personnel certify (manually or electronically) acceptance of responsibilities for privacy requirements no less often than once every three hundred sixty-five (365) days.",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "ef110051-f154-4b24-b3df-ee43bee0b9cd"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "5757c933-dcea-4cba-aa9b-ff0693499e56"
+                  }
+                ]
+              },
+              {
+                "uuid": "ea3d2a46-8be2-42f3-9b66-6fef4d32c171",
+                "control-id": "ar-6",
+                "description": "Common Control:\n This is a Common Control. The inheritor must append the Inheritance Statement for the Accountability Audit and Risk Control Family.\n Inheritance Statement:\n CMS submits required Privacy reporting information for all CMS Systems in support of HHS, Congress, OMB and other reporting requirements in accordance with:\n HHS Policy and Planning for Preparing for and Responding to a Breach of Personally Identifiable Information (PII) Section 2.9  (Internal Document)\n CMS Information Systems Security and Privacy Policy (IS2P2) Section AR 1.5.3\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/CMS-IS2P2.pdf  (Publicly Available)\n RMH Chapter 19 Privacy Procedures Section 6.2.6 \n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Info-Security-Library-Items/RMH-Chapter-19-Privacy  (Publicly Available)",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "0a97e761-d5f6-4b26-bd1f-f2b1bfdeee7f"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "41fdf999-ce57-49ba-9fd4-1dacdc4ce97d"
+                  }
+                ]
+              },
+              {
+                "uuid": "f6af1da5-ab7a-4533-bc75-53ae4eae9c6b",
+                "control-id": "ar-cms-01",
+                "description": "This is an inheritable control. The inheritor must append the Inheritance Statement with all system-specific Accountability Audit and Risk Control Family procedures available for this application. Inheritance Statement: \n A., B. Common \u2013 In accordance with HHS policy, CMS reviews and updates agency security and privacy policies and procedures at least every 2 years, or as necessary. CMS Governance and Privacy Program policy and procedures are available at: \n 1.  CMS Information Systems Security and Privacy Policy (CMS IS2P2), Section 4.3.2: \n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/CMS-IS2P2.pdf   (Publicly available)\n  \n 2.  CMS Information Security and Privacy Acceptable Risk Safeguards (ARS) v3.1 or as amended: (Page 389)\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/ARS-31-Publication.zip  (Publicly available)\n \n  \n 3. Risk Management Handbook (RMH) Chapter 19 Privacy Procedures: \n https://www.cms.gov/files/document/rmh-chapter-19-privacyv10.pdf  (Publicly available)",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "7a4d72a7-f1be-4e13-8066-bc0a46e1af85"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "660787dc-b262-42c8-9669-50351aaddbb1"
+                  }
+                ]
+              },
+              {
+                "uuid": "c4b38dd7-5f6c-4ba8-8d67-fe0d9efa9939",
+                "control-id": "at-1",
+                "description": "This is an enterprise level control and is fully inheritable. The inheritor must append the Inheritance Statement and follow all guidance as written below.\n Inheritance Statement: In accordance with HHS policy, CMS reviews and updates agency security and privacy policies and procedures at least every 3 years, or as necessary. \n CMS Policy and Procedures are available at: \n 1. CMS Information Systems Security and Privacy Policy (CMS IS2P2), Section 4.2.2\n  https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/CMS-IS2P2.pdf   (Publicly available)\n 2. CMS Information Security CBT Instructions \n https://www.cms.gov/cbt  (Public URL, but EUA account is required to access) \n 3. CMS Information Security and Privacy Acceptable Risk Safeguards (ARS) v3.1  (Page 92)\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/ARS-31-Publication.zip   (Publicly available)\n 4. RMH Chapter 2 Awareness and Training\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/RMH-Chapter-2-Awareness-and-Training.pdf   (Publicly Available)",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "59956a59-084a-4ad3-8ae5-6ce502d19a94"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "85060611-87fb-4753-87a4-b58318135e29"
+                  }
+                ]
+              },
+              {
+                "uuid": "a7902932-9e7c-488f-a538-12d26939f714",
+                "control-id": "at-2",
+                "description": "Inheritance Statement: ISPG provides a presentation on security awareness at the New Employee Orientation (NEO). The initial training and any subsequent annual training can be found at the Information Security and Awareness Training Portal (Computer Based Training [CBT]) found at https://www.cms.gov/cbt/login/ (EUA account required). Annual training occurs every 365 days through the CBT. The inheritor system is responsible for training the users of the system. \n In order to inherit this control, individual systems must:\n - Be organizationally bound to follow the controlling CMS content listed above. For contractor organizations, the controlling CMS content listed above must: 1) be formally adopted (in writing) into the practices of the organizational segment performing work on behalf of CMS, by an official with authority to do so, or 2) the content and intent of the controlling CMS content listed above must be formally (in writing) incorporated into (contractor) governing organizational practices.\n - Utilize the CMS Computer Based Training (CBT) system to perform and maintain user security awareness training. found at https://www.cms.gov/cbt/login/ (EUA account required).\n In accordance with HHS policy, CMS reviews and updates agency security and privacy policies and procedures at least every 3 years, or as necessary. CMS policy and procedures are available at: \n 1. CMS Information Systems Security and Privacy Policy (CMS IS2P2), Section 4.2.2\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/CMS-IS2P2.pdf   (Publicly available)\n 2. CMS Information Security and Privacy Acceptable Risk Safeguards (ARS) v3.1 (Page 92)\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/ARS-31-Publication.zip   (Publicly available)",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "c7d1f187-4337-443e-9123-2cf609578fd9"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "bbbdd356-8764-4518-bd8e-fae9abe7d84e"
+                  }
+                ]
+              },
+              {
+                "uuid": "1b0840ec-9bdb-4063-b1fb-832d11bea1c1",
+                "control-id": "at-2.2",
+                "description": "Inheritance Statement: The system inheriting this control must include materials within the Annual Security and Awareness Training program that educates CMS staff and contractors on how to recognize and report potential indicators of insider threat. \n In accordance with HHS policy, CMS reviews and updates agency security and privacy policies and procedures at least every 3 years, or as necessary. CMS policy and procedures are available at: \n 1. CMS Information Systems Security and Privacy Policy (CMS IS2P2), Sections 4.1.5, and Sections 4.2.2\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/CMS-IS2P2.pdf   (Publicly available)\n 2. CMS Acceptable Risk Safeguards Manual (ARS) Manual Appendix containing CMSRs for the appropriate Impact Level\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/ARS-31-Publication.zip   (Publicly available)\n 3. HHS Counterintelligence and Insider Threat Policy, dated June 5, 2015 (internal document)",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "d30661fc-7226-4a6b-8876-3abfdef69287"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "15514f24-939f-4bd0-bf0f-c495c4b24436"
+                  }
+                ]
+              },
+              {
+                "uuid": "c6626cca-18a9-4197-b0b5-e3dda521b59b",
+                "control-id": "at-3",
+                "description": "This is a hybrid control.\n Common: The inheriting system with users with a CMS ID, including both CMS employees and contractors, must append the inheritance statement with all procedures tracking security awareness and role based training, including training taken outside of the CMS CBT.\n CMS maintains information systems security and privacy training records only for individuals who have a CMS EUA user ID and have been designated by his\\her management as having significant security responsibilities (SSR). Information Security and Awareness training (Computer Based Training [CBT]) can be found at https://www.cms.gov/cbt/login. Training information can be entered in the Manage Your Training link. The CBT website can record CMS and non-CMS training.\n System Specific: If a user needs additional training or has taken training outside of what is provided by the ISPG, it is the responsibility of the user and the system to keep track of that training. If a user does not take training in the allotted time period, his/her user ID is revoked. Contractors without access to CMS training must provide equivalent training and training documentation. The records are retained by ISPG for five years. \n In order to inherit this control, individual systems must:\n - Be organizationally bound to follow the controlling CMS content listed above. For contractor organizations, the controlling CMS content listed above must; \n 1) Be formally adopted (in writing) into the practices of the organizational segment performing work on behalf of CMS, by an official with authority to do so, or \n 2) The content and intent of the controlling CMS content listed above must be formally (in writing) incorporated into (contractor) governing organizational practices.\n In accordance with HHS policy, CMS reviews and updates agency security and privacy policies and procedures at least every 3 years, or as necessary. CMS policy and procedures are available at:\n 1. CMS Information Systems Security and Privacy Policy (CMS IS2P2), Sections 4.1.5, and 4.2.2\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/CMS-IS2P2.pdf   (Publicly available)\n 2. CMS Acceptable Risk Safeguards Manual (ARS) Manual Appendix containing CMSRs for the appropriate Impact Level\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/ARS-31-Publication.zip   (Publicly available)",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "0936d304-cb28-4d8b-bdc4-c3c20782ce7c"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "ec832b2c-bd36-4a4d-87de-6731c9398901"
+                  }
+                ]
+              },
+              {
+                "uuid": "aefc92d5-90c9-43ff-8c72-f182dbd04b39",
+                "control-id": "at-4",
+                "description": "This is a hybrid control.\n Common: The inheriting system with users with a CMS ID, including both CMS employees and contractors, must append the inheritance statement with all procedures tracking security awareness and role based training, including training taken outside of the CMS CBT.\n CMS maintains information systems security and privacy training records only for individuals who have a CMS EUA user ID and have been designated by his\\her management as having significant security responsibilities (SSR). Information Security and Awareness training (Computer Based Training [CBT]) can be found at https://www.cms.gov/cbt/login. Training information can be entered in the Manage Your Training link. The CBT website can record CMS and non-CMS training.\n System Specific: If a user needs additional training or has taken training outside of what is provided by the ISPG, it is the responsibility of the user and the system to keep track of that training. If a user does not take training in the allotted time period, his/her user ID is revoked. Contractors without access to CMS training must provide equivalent training and training documentation. The records are retained by ISPG for five years. \n In order to inherit this control, individual systems must:\n - Be organizationally bound to follow the controlling CMS content listed above. For contractor organizations, the controlling CMS content listed above must;\n 1) Be formally adopted (in writing) into the practices of the organizational segment performing work on behalf of CMS, by an official with authority to do so, or\n 2) The content and intent of the controlling CMS content listed above must be formally (in writing) incorporated into (contractor) governing organizational practices.\n In accordance with HHS policy, CMS reviews and updates agency security and privacy policies and procedures at least every 3 years, or as necessary. CMS policy and procedures are available at:\n 1. CMS Information Systems Security and Privacy Policy (CMS IS2P2), Sections 4.1.5, and 4.2.2\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/CMS-IS2P2.pdf   (Publicly available)\n 2. CMS Acceptable Risk Safeguards Manual (ARS) Manual Appendix containing CMSRs for the appropriate Impact Level\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/ARS-31-Publication.zip   (Publicly available)",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "02c34792-1385-4c95-876c-06d4232782d9"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "75907e8e-8d8f-41dc-86fe-37531f05b30a"
+                  }
+                ]
+              },
+              {
+                "uuid": "3eca122b-6a26-4d45-946b-2879edefea66",
+                "control-id": "au-1",
+                "description": "This is a hybrid control. The inheritor must append the Inheritance Statement with all system-specific Audit and Accountability Control Family procedures available for this application. \n Inheritance Statement: In accordance with HHS policy, CMS reviews and updates agency security and privacy policies and procedures at least every 3 years, or as necessary. CMS policy and procedures are available at:\n 1. CMS Information Systems Security and Privacy Policy (CMS IS2P2), Section 4.2.3 \n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/CMS-IS2P2.pdf (Publicly available) \n 2. CMS Information Security and Privacy Acceptable Risk Safeguards (ARS) v3.1 (Page 98)\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/ARS-31-Publication.zip (Publicly available)\n 3. CMS Technical Reference Architecture (TRA) Release 1 Volume 2 Network Services Access Control and Identity Management Sections 5.3.3 and 6.4\n https://share.cms.gov/office/ois/CTO/SitePages/TRA.aspx  (Access restricted)",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "5160d495-659f-4bee-854e-b909f2a43de3"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "2a37d7ea-1e84-4a1f-841a-a2cce3c21ad3"
+                  }
+                ]
+              },
+              {
+                "uuid": "b592f5e0-2166-41eb-9d74-2cfb9e5f8d35",
+                "control-id": "ca-1",
+                "description": "This is a hybrid control. The inheritor must append the Inheritance Statement with all system-specific Security Assessment and Authorization Control Family procedures available for this application.\n Inheritance Statement: In accordance with HHS policy, CMS reviews and updates agency security and privacy policies and procedures at least every 3 years, or as necessary. CMS policy and procedures are available at: \n 1. CMS Information Systems Security and Privacy Policy (CMS IS2P2), Section 4.2.4\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/CMS-IS2P2.pdf (Publicly available)\n 2. CMS Information Security and Privacy Acceptable Risk Safeguards (ARS) v3.1\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/ARS-31-Publication.zip (Publicly available)\n 3. RMH Chapter 12 Security and Privacy Planning\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/RMH-Chapter-12-Security-and-Privacy-Planning.pdf  (Publicly Available)\n 4. Assessment Plan Template\n Security Assessment Plan Template | CMS (Publicly Available)\n 5 Assessment Report Template\n Security Assessment Report Template | CMS (Publicly Available)",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "a68353bf-c13b-4d4a-b57c-d15d1db6dea4"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "89edee1f-7048-4d37-ae99-a145ac9e30f4"
+                  }
+                ]
+              },
+              {
+                "uuid": "8d19eead-8fde-4927-9093-5f12ce263614",
+                "control-id": "cm-1",
+                "description": "This is a hybrid control. The inheritor must append the Inheritance Statement with all system-specific Configuration Management Control Family procedures available for this application.\n Inheritance Statement: In accordance with HHS policy, CMS reviews and updates agency security and privacy policies and procedures at least every 3 years, or as necessary. CMS policy and procedures are available at:\n 1. CMS Information Systems Security and Privacy Policy (CMS IS2P2), Section 4.2.5\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/CMS-IS2P2.pdf (Publicly available)\n 2. CMS Information Security and Privacy Acceptable Risk Safeguards (ARS) v3.1 (Page 143)\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/ARS-31-Publication.zip (Publicly available)\n 3. RMH Chapter 5 Configuration Management\n https://www.cms.gov/files/zip/rmh-chapter-5-configuration-managment-v12zip.zip-0  (Publicly available)",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "050605bf-93b1-4840-89fb-bb7aed7798b6"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "2c7c029d-6a0b-429c-853f-9274b6d38b3e"
+                  }
+                ]
+              },
+              {
+                "uuid": "971848ae-49e3-4db9-9e8c-827a1ad203d2",
+                "control-id": "cp-1",
+                "description": "This is a hybrid control. The inheritor must append the Inheritance Statement with all system-specific Contingency Planning Control Family procedures available for this application.\n Inheritance Statement: In accordance with HHS policy, CMS reviews and updates agency security and privacy policies and procedures at least every 3 years, or as necessary. CMS policy and procedures are available at: \n 1.  CMS Information Systems Security and Privacy Policy (CMS IS2P2), Section 4.2.6\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/CMS-IS2P2.pdf (Publicly available)\n 2.  CMS Information Security and Privacy Acceptable Risk Safeguards (ARS) v3.1 (Page 173)\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/ARS-31-Publication.zip  (Publicly available)\n 3.  Chapter 6 Contingency Planning are available at \n RMH Chapter 6 Contingency Planning | CMS  (Publicly available)\n 4.  Chapter 6 CP Supplemental Exercises are available at\n RMH Chapter 6 Supplemental Contingency Planning Exercise Procedures | CMS   (Publicly available)",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "ecf7447d-abee-4159-8aee-375c5a83c75e"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "260e1985-9347-48dd-ac45-58e73920f99d"
+                  }
+                ]
+              },
+              {
+                "uuid": "abed9528-9ddb-4107-b490-d2c831e5f14e",
+                "control-id": "di-cms-01",
+                "description": "This is an inheritable control. The inheritor must append the Inheritance Statement with all system-specific Data Quality and Integrity Control Family procedures available for this application.\n  Inheritance Statement: \n A., B. Common - In accordance with HHS policy, CMS reviews and updates agency security and privacy policies and procedures at least every 2 years, or as necessary. CMS Governance and Privacy Program policy and procedures are available at: \n\n  CMS Information Systems Security and Privacy Policy (CMS IS2P2), Section 4.3.3: https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Information-Security-Library.html. (Publicly available)\n  CMS Information Security and Privacy Acceptable Risk Safeguards (ARS) v3.1 or as amended: https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Information-Security-Library.html. (Publicly available)\n\n 3. Risk Management Handbook (RMH) Chapter 19 Privacy Procedures: https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Information-Security-Library.html (Publicly available)",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "22808b2b-e14b-4f9e-a8ce-3c9479ad79bd"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "7de7e1d0-f428-40fb-9bb1-1ce5a92e8707"
+                  }
+                ]
+              },
+              {
+                "uuid": "dfdf1003-8641-47d6-b6bc-b59b8d8d30bf",
+                "control-id": "dm-cms-01",
+                "description": "This is an inheritable control. The inheritor must append the Inheritance Statement with all system-specific Data Minimization and Retention Control Family procedures available for this application. Inheritance Statement: \n A., B. Common - In accordance with HHS policy, CMS reviews and updates agency security and privacy policies and procedures at least every 2 years, or as necessary. CMS Governance and Privacy Program policy and procedures are available at: \n\n  CMS Information Systems Security and Privacy Policy (CMS IS2P2), Section 4.3.4: https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Information-Security-Library.html. (Publicly available)\n  CMS Information Security and Privacy Acceptable Risk Safeguards (ARS) v3.1 or as amended: https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Information-Security-Library.html. (Publicly available)\n\n 3. Risk Management Handbook (RMH) Chapter 19 Privacy Procedures: https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Information-Security-Library.html (Publicly available)",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "b492dc72-61a9-4f3d-b923-c30a8fcd9adf"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "95a6c480-3daa-45e2-a81f-fc605031de2a"
+                  }
+                ]
+              },
+              {
+                "uuid": "b725b973-9747-4494-b783-1a15d39fc21c",
+                "control-id": "ia-1",
+                "description": "This is a hybrid control. The inheritor must append the Inheritance Statement with all system-specific Identification and Authentication procedures available for this application. \n Inheritance Statement: In accordance with HHS policy, CMS reviews and updates agency security and privacy policies and procedures at least every 3 years, or as necessary. CMS policy and procedures are available at:\n 1.             CMS Information Systems Security and Privacy Policy (CMS IS2P2), Section 4.2.7 \n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Information-Security-Library.html. (Publicly available)\n 2.             CMS Information Security and Privacy Acceptable Risk Safeguards (ARS) v3.1\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Information-Security-Library.html\n  \n 3.           CMS Technical Reference Architecture (TRA) Release 1 Volume II Network Services, Sections 5.2 p.157 and 6.2 p.139\n  \n https://share.cms.gov/office/ois/CTO/SitePages/TRA.aspx (Access restricted)",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "7115ebce-be0f-44b2-ac9e-4c8c8366561f"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "ed177b1c-96cc-4322-b43b-603d0ba9d94b"
+                  }
+                ]
+              },
+              {
+                "uuid": "81a821cb-0552-4b7e-9a99-0b4b6b7e3053",
+                "control-id": "ip-cms-01",
+                "description": "This is an Inheritable Control. The inheritor must append the Inheritance Statement with all system-specific Individual Participation and Redress procedures available for this application.\n Inheritance Statement: \n A., B. Common - In accordance with HHS policy, CMS reviews and updates agency security and privacy policies and procedures at least every 2 years, or as necessary. CMS Governance and Privacy Program policy and procedures are available at: \n\n \n CMS Information Systems Security and Privacy Policy (CMS IS2P2), Section 4.3.5: https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/CMS-IS2P2.pdf  (Publicly available)\n  \n\n \n CMS Information Security and Privacy Acceptable Risk Safeguards (ARS) v3.1 or as amended (Page 421):\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/ARS-31-Publication.zip  (Publicly available)\n  \n\n \n Risk Management Handbook (RMH) Chapter 19 Privacy Procedures:\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Info-Security-Library-Items/RMH-Chapter-19-Privacy  (Publicly Available)",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "8f0f35b4-33e6-4f4c-a098-7c6bf7a196a9"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "db69d59e-780f-42d3-8b58-152b2e052a30"
+                  }
+                ]
+              },
+              {
+                "uuid": "a1ccab55-45cd-41f5-8d74-42e7827a67b6",
+                "control-id": "ir-1",
+                "description": "This is a hybrid control. The inheritor must append the Inheritance Statement with all system-specific Incident Response procedures available for this application. \n  \n Inheritance Statement: In accordance with HHS policy, CMS reviews and updates agency security and privacy policies and procedures at least every 3 years, or as necessary. CMS policy and procedures are available at: \n  \n 1.             CMS Information Systems Security and Privacy Policy (CMS IS2P2), Section 4.2.8\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Information-Security-Library.html. (Publicly available)\n  \n 2.             CMS Information Security and Privacy Acceptable Risk Safeguards (ARS) v3.1\n  \n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Information-Security-Library.html. (Publicly available)\n  3.             Risk Management Handbook (RMH) Chapter 8 Incident Response\n  \n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Information-Security-Library.html. (Publicly available)",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "a0d916a1-3313-48e1-b335-9acc7d287943"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "b910dd01-1359-4414-9d1c-a71b6e7c3576"
+                  }
+                ]
+              },
+              {
+                "uuid": "748f5001-eeaa-4cf8-8719-4a4b2a8844a6",
+                "control-id": "ma-1",
+                "description": "This is a hybrid control. The inheritor must append the Inheritance Statement with all system-specific System Maintenance procedures available for this application. \n Inheritance Statement: In accordance with HHS policy, CMS reviews and updates agency security and privacy policies and procedures at least every 3 years, or as necessary. CMS Policy and Procedures are available at:\n 1.  CMS Information Systems Security and Privacy Policy (CMS IS2P2), Section 4.2.9\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/CMS-IS2P2.pdf  (Publicly available)\n 2.  CMS Information Security and Privacy Acceptable Risk Safeguards (ARS) v3.1 (Page 133)\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/ARS-31-Publication.zip  (Publicly available)\n 3.  RMH Chapter 9 Maintenance\n https://www.cms.gov/research-statistics-data-and-systemscms-information-technologyinformationsecurityinformation/rmh-chapter-09-maintenance  (Publicly available)",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "d1646e0d-3e72-4539-a616-b2c4a40a0add"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "5a974f7f-40db-4cbd-8bba-f47407bf6f79"
+                  }
+                ]
+              },
+              {
+                "uuid": "83bf2487-e383-4935-b544-cb4612f5512b",
+                "control-id": "mp-1",
+                "description": "This is a hybrid control. The inheritor must append the Inheritance Statement with all system-specific Media Protection procedures available for this application.\n  \n Inheritance Statement: In accordance with HHS policy, CMS reviews and updates agency security and privacy policies and procedures at least every 3 years, or as necessary. CMS policy and procedures are available at:\n  \n 1.             CMS Information Systems Security and Privacy Policy (CMS IS2P2), Section 4.2.10\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Information-Security-Library.html. (Publicly available)\n  \n 2.             CMS Information Security and Privacy Acceptable Risk Safeguards (ARS) v3.1\n   https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Information-Security-Library.html. (Publicly available).        \n  \n 3.            HHS Cyber Security Program:Standard for Encryption of Computing Devices and Information https://intranet.hhs.gov/it/cybersecurity/policies/index.html (HHS Intranet) \n  \n  \n 4.           Risk Management Handbook(RMH) Chapter 10:Media Protection.\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Info-Security-Library-Items/RMH-Chapter-10-Media-Protection",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "60d3b9a2-1e50-41a8-a8d0-78f50a718059"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "8195f4b1-9d5e-4edd-9e44-76808a8bc27f"
+                  }
+                ]
+              },
+              {
+                "uuid": "8c70e99d-2a94-4a0d-955e-e9cc91102718",
+                "control-id": "pe-1",
+                "description": "This is a hybrid control. The inheritor must append the Inheritance Statement with all system-specific Physical and Environmental Protection procedures available for this application.\n  \n Inheritance Statement: In accordance with HHS policy, CMS reviews and updates agency security and privacy policies and procedures at least every 3 years, or as necessary. CMS policy and procedures are available at: \n  \n 1.             CMS Information Systems Security and Privacy Policy (CMS IS2P2), Section 4.2.11\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Information-Security-Library.html. (Publicly available)\n  \n  \n 2.             CMS Information Security and Privacy Acceptable Risk Safeguards (ARS) v3.1\n  \n  https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Information-Security-Library.html. (Publicly available).        \n 3.            Risk Management Handbook(RMH) Chapter 11: Physical and Environmental Protection.\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/RMH-Chapter-11-Physical-and-Environmental-Protection.pdf",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "89984f38-1b6d-4c14-9d9f-9cc89da2e616"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "c023475c-74d6-4e64-979d-c98f32eeb084"
+                  }
+                ]
+              },
+              {
+                "uuid": "5fdf017f-f603-48cd-8894-6281773f1f4b",
+                "control-id": "pl-1",
+                "description": "This is a hybrid control. The inheritor must append the Inheritance Statement with all system-specific Security Planning procedures available for this application.\n  \n Inheritance Statement: In accordance with HHS policy, CMS reviews and updates agency security and privacy policies and procedures at least every 3 years, or as necessary. CMS policy and procedures are available at: \n  \n 1.             CMS Information Systems Security and Privacy Policy (CMS IS2P2), Section 4.2.12\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Information-Security-Library.html. (Publicly available)\n  \n 2.             CMS Information Security and Privacy Acceptable Risk Safeguards (ARS) v3.1\n  https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Information-Security-Library.html. (Publicly available).        \n 3.             Risk Management Handbook (RMH) Chapter 12 Security and Privacy Planning \n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Information-Security-Library.html?DLSort=0&DLEntries=10&DLPage=1&DLSortDir=ascending&DLFilter=plann . (Publicly available)",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "0da52968-1f01-46fa-8b29-6bbb61c042e9"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "940b5a40-6786-4af8-9121-88329cf4e0a4"
+                  }
+                ]
+              },
+              {
+                "uuid": "6bd26756-5aef-4356-b90f-1663cdb5ca4f",
+                "control-id": "pl-4",
+                "description": "This is a hybrid control. This control is only fully inheritable if the system is based at a CMS EDC. If the system is not based at an EDC, then it is the system`s responsibility to make the Rules of Behavior available to all users and receive signed acknowledgement forms. All users accessing CMS systems must comply with the HHS Rules of Behavior. HHS Rules of Behavior document is available at https://www.hhs.gov/ocio/policy/hhs-rob.html. \n  \n Inheritance Statement: \n If a user is a CMS federal employee, then he/she received and signed the acknowledgement form at New Employee Orientation. Contractors with access to CMS computer systems would have received and signed the acknowledgement form prior to receiving access. The acknowledgement form is on the Application for Access to CMS Computer Systems found at: http://intranet.cms.gov/Component/OSSO/Forms/PDF/cms20037-508.pdf\n  \n In order to inherit this control, individual systems must: \n  \n - be organizationally bound to follow the controlling CMS content listed above. For contractor organizations, the controlling CMS content listed above must; 1) be formally adopted (in writing) into the practices of the organizational segment performing work on behalf of CMS, by an official with authority to do so, or 2) the content and intent of the controlling CMS content listed above must be formally (in writing) incorporated into (contractor) governing organizational practices.\n  \n In accordance with HHS policy, CMS reviews and updates agency security and privacy policies and procedures every 365 days, or as necessary. CMS policy and procedures are available at:\n  \n 1.  CMS Information Systems Security and Privacy Policy (CMS IS2P2), Section 4.2.12\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Information-Security-Library.html. (Publicly available)\n  \n 2. CMS Information Security and Privacy Acceptable Risk Safeguards (ARS) v3.1\n  \n  https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Information-Security-Library.html. (Publicly available).        \n 3.  Risk Management Handbook (RMH) Chapter 12 Security and Privacy Planning \n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Information-Security-Library.html?DLSort=0&DLEntries=10&DLPage=1&DLSortDir=ascending&DLFilter=plann . (Publicly available)\n 4.   HHS Rules of Behavior for Use of HHS Information Resources\n https://www.hhs.gov/ocio/policy/hhs-rob.html",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "39855fb8-f17b-4e40-a0e6-f38c1a383122"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "55afcd0f-5999-419a-9db0-dc6c924c1ae2"
+                  }
+                ]
+              },
+              {
+                "uuid": "4e15aac0-7529-4de1-ab27-0a36d5247c6e",
+                "control-id": "pm-1",
+                "description": "This is a hybrid control. The inheritor must append the Inheritance Statement with all system-specific Information Security Program Plan procedures available for this application. \n Inheritance Statement: In accordance with HHS policy, CMS reviews and updates agency security and privacy policies and procedures at least every 3 years, or as necessary. In accordance with HHS policy, CMS reviews and updates agency security and privacy policies and procedures every 365 days, or as necessary. CMS policy and procedures are available at:\n 1.  CMS Information Systems Security and Privacy Policy (CMS IS2P2), Section 4.2.18\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/CMS-IS2P2.pdf  (Publicly available)\n 2.  CMS Acceptable Risk Safeguards Manual (ARS) Manual Appendix containing CMSRs for the appropriate Impact Level\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/ARS-31-Publication.zip  (Publicly available)",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "48ed8cce-094c-4baa-8283-9dedc7c374b4"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "a64d9c91-3080-406f-ad16-f6002945014a"
+                  }
+                ]
+              },
+              {
+                "uuid": "54a34c97-8ffb-41bb-9f4d-c432d2005fd1",
+                "control-id": "pm-2",
+                "description": "Inheritance Statement: In accordance with HHS policy, CMS has appointed the OpDIV CISO and Senior Offical for Privacy (SOP)  as having the responsibility to develop an Information Security and Privacy program. The HHS IS2P requires obligations to other laws such as HIPAA and HITECH be addressed to ensure compliance by its OPDIVs. Violations regarding the Health Insurance Portability and Accountability Act (HIPAA) must be reported to the Department of Health and Human Services (HHS) Office for Civil Rights (OCR). In accofdance to the CMS IS2P2,  CMS has implemented has implemented a number of controls including the Privacy Control Baselines to assist the SOP in managing PII/PHI requirements affecting its systems and the privacy risks associated. In accordance with HHS policy, CMS reviews and updates agency security and privacy policies and procedures every 365 days, or as necessary. CMS policy and procedures are available at:\n 1. Office for Civil Rights:\n https://www.hhs.gov/hipaa\n 2. HHS Information System Security and Privacy Policy IS2P\n HHS FISMA Mailbox at fisma@hhs.gov. \n 3.             CMS Information Systems Security and Privacy Policy (CMS IS2P2), Section 3,  3.3.2-3, 3.4.7, 3.4.13 and Section 4.2.2. 4.2.18 and others\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Information-Security-Library.html. (Publicly available)\n 4.             CMS Acceptable Risk Safeguards Manual (ARS) Manual Appendix containing CMSRs for the appropriate Impact Level\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Information-Security-Library.html. (Publicly available)",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "7024e766-20dd-42bd-b623-3dd7dfbdd5bf"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "6da6eb90-f5fe-434a-b5e8-8c5901e8d68a"
+                  }
+                ]
+              },
+              {
+                "uuid": "8d877f96-d5ee-48b5-80b2-b92746cf6274",
+                "control-id": "pm-4",
+                "description": "Inheritance Statement: The CMS Risk Management Handbook Vol. III Standard 6.2, Plan of Action and Milestone Process Guide, is posted on the Information Security and Privacy Library. The handbook is reviewed every three (3) years and went through a major revision in 2015. Remedial actions are documented using the CMS FISMA Control Tracking System (CFACTS). POA&Ms are reported monthly to the HHS System Data Warehouse (HSDW) for review. In turn, HHS submits an agency level report to OMB. \n  \n Per the POA&M handbook, the ISSO is responsible for ensuring every identified weakness is fully addressed. ISPG performs a validation activity on high risk items, and randomly samples other closed POA&M\u2019s to ensure each weakness is documented in accordance with the POA&M handbook.\n  \n In accordance with HHS policy, CMS reviews and updates agency security and privacy policies and procedures at least every 3 years, or as necessary. CMS policy and procedures are available at:\n  \n 1.             The RMH Vol. III Standard 6.2, Plan of Action and Milestone Process Guide \n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Information-Security-Library.html. (Publicly available)\n  \n 2.             CMS Information Systems Security and Privacy Policy (CMS IS2P2), Section 4.2.18\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Information-Security-Library.html. (Publicly available)\n  \n 3.             CMS Acceptable Risk Safeguards Manual (ARS) Manual Appendix containing CMSRs for the appropriate Impact Level\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Information-Security-Library.html. (Publicly available)",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "35558c22-1a1e-4997-af3b-aeeb04cf709c"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "4b542659-b01f-4d05-88a6-2c5e6026ab6b"
+                  }
+                ]
+              },
+              {
+                "uuid": "71fb029f-70fd-4105-8d24-f7e2e0f0c0e5",
+                "control-id": "pm-6",
+                "description": "Inheritance Statement: CMS ISPG measures performance of systems in each data center where CMS security tools are present. Cybersecurity Business Owner reports are generated and delivered on a weekly basis that contains the measures and effectiveness of the security vulnerability posture of each data center. In addition, a CISO SOP Bi-Weekly report are generated for delivery to the CISO and CIO that provides insight into the effectiveness of the security program. Furthermore, stakeholders such as ISSOs have access to CFACTS that contain dashboards that reveal the effectiveness of the security controls for their FISMA system(s). \n  \n In accordance with HHS policy, CMS reviews and updates agency security and privacy policies and procedures at least every 3 years, or as necessary. CMS policy and procedures are available at:\n  \n 1.             CMS Information Systems Security and Privacy Policy (CMS IS2P2), Section 4.2.18\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Information-Security-Library.html. (Publicly available)\n  \n 2.             CMS Acceptable Risk Safeguards Manual (ARS) Manual Appendix containing CMSRs for the appropriate Impact Level\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Information-Security-Library.html. (Publicly available)\n  \n 3.             SOC Debrief  (Sensitive Internal Document with limited access )",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "f5b06962-1175-4704-97e2-ea1bf80e1dff"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "61e868b8-a1b9-44b4-a52c-770236ee54be"
+                  }
+                ]
+              },
+              {
+                "uuid": "2fda1af7-0be6-4238-ba9c-ccaecaa4b7f8",
+                "control-id": "pm-7",
+                "description": "CMS has a designated Division of Enterprise Architecture (EA). Business Owners are required to submit information to EA which is stored in the departments HHS EA Repository (HEAR). The key field identifier in HEAR is the UUID number. Every FISMA system is assigned a UUID number that must be annotated within the System Security Plan (SSP). \n  \n https://share.cms.gov/office/oei/SAG/DEA/SitePages/New%20System%20Steps.aspx\n  \n The form is linked there, https://share.cms.gov/office/oei/SAG/DEA/EADocuments/Core%20System%20Information%20form_2016_0926.docx",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "3ca946cb-decb-42dd-9cb8-b52cf4cf9be0"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "cf44d82f-2b14-4315-870d-30ee98eeea78"
+                  }
+                ]
+              },
+              {
+                "uuid": "d415d14e-be91-46e0-bb89-76562b59a7db",
+                "control-id": "ps-1",
+                "description": "This is a hybrid control. The inheritor must append the Inheritance Statement with all system-specific Personnel Security procedures available for this application. \n  \n Inheritance Statement: In accordance with HHS policy, CMS reviews and updates agency security and privacy policies and procedures at least every 3 years, or as necessary. CMS Personnel Security Policy and Procedures are available at: \n  \n 1.             CMS Information Systems Security and Privacy Policy (CMS IS2P2), Section 4.2.13\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Information-Security-Library.html. (Publicly available)\n  \n 2.             CMS Information Security and Privacy Acceptable Risk Safeguards (ARS) v3.1\n  \n  https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Information-Security-Library.html. (Publicly available). \n 3.          Risk Management Handbook(RMH) Chapter 13: Personnel Security .(Publicly available). \n             https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/RMH-Chapter-13-Personnel-Security.pdf",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "c5b6b7cb-8990-4613-b630-cfebf477cd3d"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "193f83a2-c8a5-42d9-9761-c2a7981b05e3"
+                  }
+                ]
+              },
+              {
+                "uuid": "a5f5ac62-671a-4501-8f96-14a1bf868132",
+                "control-id": "ra-1",
+                "description": "This is a hybrid control. The inheritor must append the Inheritance Statement with all system-specific Risk Assessment procedures available for this application.\n Inheritance Statement: In accordance with HHS policy, CMS reviews and updates agency security and privacy policies and procedures at least every 3 years, or as necessary. \n In accordance with HHS policy, CMS reviews and updates agency security and privacy policies and procedures every three (3) years, or as necessary. CMS Risk Assessment policy and procedures are available at: \n 1.  CMS Information Systems Security and Privacy Policy (CMS IS2P2), Section 4.2.14 \n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/CMS-IS2P2.pdf  (Publicly available)\n 2.  CMS Information Security and Privacy Acceptable Risk Safeguards (ARS) v3.1  (Page 291)\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/ARS-31-Publication.zip  (Publicly available)\n 3.  RMH Chapter 14 Risk Assessment:\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Info-Security-Library-Items/RMH-Chapter-14-Risk-Assessment  (Publicly available)\n 4.  Risk Assessment Template\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Info-Security-Library-Items/Information-System-Risk-Assessment-Template (Publicly available)",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "48e89bb1-3a54-44e2-8c07-96fee04db214"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "efa3094a-29b8-4136-b2bd-1755ca69e9a4"
+                  }
+                ]
+              },
+              {
+                "uuid": "63d7851c-0be0-4ff3-b1ed-c6da6ff5edaf",
+                "control-id": "sa-1",
+                "description": "This is a hybrid control. The inheritor must append the Inheritance Statement with all system-specific System and Services Acquisition Policy and Procedures available for this application.\n Inheritance Statement: In accordance with HHS policy, CMS reviews and updates agency security and privacy policies and procedures at least every 3 years, or as necessary. CMS policy and procedures are available at: \n 1.  CMS Information Systems Security and Privacy Policy (CMS IS2P2), Section 4.2.15\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/CMS-IS2P2.pdf  (Publicly available)\n 2.  CMS Information Security and Privacy Acceptable Risk Safeguards (ARS) v3.1  (Page 299)\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/ARS-31-Publication.zip  (Publicly available)",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "57b7b3a0-ab4e-4872-b7c0-89a9ceacae3f"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "19129eb5-47ca-433f-a473-0d87cffc5aa5"
+                  }
+                ]
+              },
+              {
+                "uuid": "19771ec4-a757-4efb-833d-9555e3c4af96",
+                "control-id": "sa-10",
+                "description": "This is a hybrid control. The inheritor must append the Inheritance Statement with all system-specific Developer Configuration Management procedures available for this application. \n Inheritance Statement: The ISPG is responsible for the configuration management settings. CMS baseline configuration settings are as stated in control CM-6(1). Individual systems are fully responsible ensuring the requirements for a) through e) of this control are implemented and managed at the system level. \n In order to inherit this control, individual systems must:\n - be organizationally bound to follow the controlling CMS content listed above. For contractor organizations, the controlling CMS content listed above must; 1) be formally adopted (in writing) into the practices of the organizational segment performing work on behalf of CMS, by an official with authority to do so, or 2) the content and intent of the controlling CMS content listed above must be formally (in writing) incorporated into (contractor) governing organizational practices.\n Configuration settings can also be found in \n 1.  CMS Business Partners System Security Manual, located at: \n https://www.cms.gov/Regulations-and-Guidance/Guidance/Manuals/Downloads/117_Systems_security.pdf \n In accordance with HHS policy, CMS reviews and updates agency security and privacy policies and procedures at least every 3 years, or as necessary. CMS policy and procedures are available at:\n 2.  CMS Information Systems Security and Privacy Policy (CMS IS2P2), Section 4.2.15\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/CMS-IS2P2.pdf  (Publicly available)\n 3.  CMS Information Security and Privacy Acceptable Risk Safeguards (ARS) v3.1  (Page 309)\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/ARS-31-Publication.zip  (Publicly available)",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "5a7f19e8-4548-41d1-a663-30b5cd8817aa"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "9fb40c1f-5d21-44b9-8137-1f5dcedbd7b4"
+                  }
+                ]
+              },
+              {
+                "uuid": "f13d54a8-2149-4ff0-a8ae-0ee3a5088b32",
+                "control-id": "sc-1",
+                "description": "This is a Hybrid control: The inheritor must append the Inheritance Statement with all system-specific System and Communications Protection Policy and Procedures available for this application. \n Inheritance Statement: In accordance with HHS policy, CMS reviews and updates agency security and privacy policies and procedures at least every 3 years, or as necessary. CMS policy and procedures are available at: \n 1.  CMS Information Systems Security and Privacy Policy (CMS IS2P2), Section 4.2.16\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/CMS-IS2P2.pdf  (Publicly available)\n 2.  CMS Information Security and Privacy Acceptable Risk Safeguards (ARS) v3.1  (Page 321)\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/ARS-31-Publication.zip  (Publicly available)\n 3.  HHS Cyber Security Program: Standard for Encryption of Computing Devices and Information\n  https://intranet.hhs.gov/it/cybersecurity/policies/index.html  (HHS Intranet)",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "5a7b3949-a596-4ce2-a0e8-1917e48423a1"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "789e0507-c250-4483-a324-109512f33f00"
+                  }
+                ]
+              },
+              {
+                "uuid": "194c35fd-09c9-494e-b6a1-768072342a33",
+                "control-id": "sc-8",
+                "description": "This is a hybrid control. The inheritor must append the Inheritance Statement with all system-specific requirements and information identified within the CIO Memorandum\n  \n Inheritance Statement: This is a Program Implementation supporting the CMS Encryption Strategy. In accordance to CMS/HHS Policy Information systems must protect the Confidentiality, Integrity and Availability (CIA) of its sensitive information at rest and in-transit. This strategy requires all CMS information systems that participate to implement the required Compensating Controls and/or the required Core Controls within an 18 month timeline. \n  \n System Specific:\n Systems must implement the following Strategy: \n  \n\n Enroll into the ECAP process \n Inherit the required Core Encryption Controls from the OCISO Inheritable Controls, and agree to the milestones identified within the associated POAMs\n Within 6 months from the date of the CIO Memorandum assess, prioritize, and document the encryption approach for each system in an Encryption Corrective Action Plan (E-CAP)\n Submit the completed E-CAP to ISPG for review and approval\n Implement the ECAP Plan within 18 months from the date of the CIO Memorandum \n\n  \n  \n CMS Strategy for Encrypting Sensitive Information (internal):\n\n https://share.cms.gov/Office/OIT/ISPG/Security%20%20Privacy%20NonInternet%20Notifications%20Librar/CIO%20Directives%20and%20Memorandums/CIO_Memorandum_CMS_Strategy_for_Encrypting_Sensitive_Info_INFORMATIONAL.pdf\n\n  \n RMH Chapter 16 System and Communications Protection\n https://www.cms.gov/research-statistics-data-and-systemscms-information-technologyinformationsecurityinformation/rmh-chapter-16-system-and-communications-protection\n  \n Sensitive PII Definition and Guidance (Internal):\n https://share.cms.gov/Office/OIT/ISPG/ISPG%20CMS%20Internal%20Requirements%20Documentation/HHS%20Memorandums%20and%20Guidance/Sensitive%20PII_hhs_minimum_configuration_standards_20120430.pdf\n  \n HHS Standard for Encryption of Computing Devices and Information (Internal)\n https://intranet.hhs.gov/technical-support/cybersecurity/policies-standards-memoranda-guides/standards",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "c6eda057-9b80-4efc-96cc-f6fc8867de36"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "3acecd99-00a6-4b9b-9845-85eca954fe7d"
+                  }
+                ]
+              },
+              {
+                "uuid": "22bd89bc-a7f2-4eba-84d7-24597d51a13a",
+                "control-id": "sc-28",
+                "description": "This is a hybrid control. The inheritor must append the Inheritance Statement with all system-specific requirements and information identified within the CIO Memorandum\n  \n Inheritance Statement: This is a Program Implementation supporting the CMS Encryption Strategy. In accordance to CMS/HHS Policy information systems must protect the Confidentiality, Integrity and Availability (CIA) of its sensitive information at rest and in-transit. This strategy requires all CMS information systems that participate to implement the required Compensating Controls and/or the required Core Controls within an 18 month timeline.\n  \n System Specific:\n Systems must implement the following Strategy:\n  \n\n Enroll into the ECAP process\n Inherit the required Core Encryption Controls from the OCISO Inheritable Controls, and agree to the milestones identified within the associated POAMs\n Within 6 months from the date of the CIO Memorandum assess, prioritize, and document the encryption approach for each system in an Encryption Corrective Action Plan (E-CAP)\n Submit the completed E-CAP to ISPG for review and approval\n Implement the ECAP Plan within 18 months from the date of the CIO Memorandum\n\n  \n  \n CMS Strategy for Encrypting Sensitive Information (internal): \n\n https://share.cms.gov/Office/OIT/ISPG/Security%20%20Privacy%20NonInternet%20Notifications%20Librar/CIO%20Directives%20and%20Memorandums/CIO_Memorandum_CMS_Strategy_for_Encrypting_Sensitive_Info_INFORMATIONAL.pdf\n\n  \n RMH Chapter 16 System and Communications Protection\n https://www.cms.gov/research-statistics-data-and-systemscms-information-technologyinformationsecurityinformation/rmh-chapter-16-system-and-communications-protection\n  \n Sensitive PII Definition and Guidance (Internal):\n https://share.cms.gov/Office/OIT/ISPG/ISPG%20CMS%20Internal%20Requirements%20Documentation/HHS%20Memorandums%20and%20Guidance/Sensitive%20PII_hhs_minimum_configuration_standards_20120430.pdf\n  \n HHS Standard for Encryption of Computing Devices and Information (Internal)\n https://intranet.hhs.gov/technical-support/cybersecurity/policies-standards-memoranda-guides/standards",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "ebecbc1b-07ca-4c8f-bf7a-a9c0479ef198"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "878e39bd-ab45-47ce-88e2-dbafe327c46e"
+                  }
+                ]
+              },
+              {
+                "uuid": "78a978dc-b6a5-4426-9498-0b955380e2b7",
+                "control-id": "sc-cms-01",
+                "description": "Inheritance Statement:\n This control is ONLY applicable to users who have an xxx@cms.hhs.gov email address. All other email services are NOT covered by this control implementation. Responsibility of implementing this control is on the user. \n  \n In order to inherit this control, individual systems must:\n  \n - be organizationally bound to follow the controlling CMS content listed above. For contractor organizations, the controlling CMS content listed above must; 1) be formally adopted (in writing) into the practices of the organizational segment performing work on behalf of CMS, by an official with authority to do so, or 2) the content and intent of the controlling CMS content listed above must be formally (in writing) incorporated into (contractor) governing organizational practices.\n  \n - have users with an xxx@cms.hhs.gov email address that is applicable to this system. \n  \n In accordance with HHS policy, CMS reviews and updates agency security and privacy policies and procedures at least every 3 years, or as necessary. CMS policy and procedures are available at:\n  \n 1.             CMS Information Systems Security and Privacy Policy (CMS IS2P2), Section 4.1.7, 4.2.16\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Information-Security-Library.html. (Publicly available)\n  \n 2.             CMS Acceptable Risk Safeguards Manual (ARS) Manual Appendix containing CMSRs for the appropriate Impact Level\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Information-Security-Library.html. (Publicly available)\n  \n 3.             Supplemental Security Controls by Security Level, How to Meet The CMS Moderate/High Technical Security Requirements \n  \n http://intranet.cms.gov/Component/OIS/Desktop-Voice-and-Video/policies-procedures/Documents/Supplemental-Security-Controls.pdf",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "41585253-42c9-4d65-a0d4-14ccaf9a0552"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "b1fa5d51-2b89-4be8-9e45-4c21d8a0735a"
+                  }
+                ]
+              },
+              {
+                "uuid": "ac24b11e-ed4e-4975-8773-43970609b3e0",
+                "control-id": "se-cms-01",
+                "description": "This is an inheritable control. The inheritor must append the Inheritance Statement with all system-specific Security procedures available for this application. \n Inheritance Statement: In accordance with HHS policy, CMS reviews and updates agency security and privacy policies and procedures at least every 2 years, or as necessary. CMS Governance and Privacy Program policy and procedures are available at: \n 1. CMS Information Systems Security and Privacy Policy (CMS IS2P2), Section 4.3.6 https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/CMS-IS2P2.pdf (Publicly available)\n 2. CMS Information Security and Privacy Acceptable Risk Safeguards (ARS) v3.1 (Page 425)\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/ARS-31-Publication.zip (Publicly available)\n 3. Risk Management Handbook (RMH) Chapter 19 Privacy Procedures: \n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Info-Security-Library-Items/RMH-Chapter-19-Privacy  (Publicly Available)",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "f77a5790-e457-4dac-808f-9a6af49cbe61"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "31a32e62-b1e2-4283-b09c-48618f2e09d2"
+                  }
+                ]
+              },
+              {
+                "uuid": "ed389fb0-d941-47eb-a4c6-b03fdf66eefa",
+                "control-id": "si-1",
+                "description": "This is a hybrid control. The inheritor must append the Inheritance Statement with all system-specific System and Information Integrity Policy and Procedures available for this application. \n Inheritance Statement: In accordance with HHS policy, CMS reviews and updates agency security and privacy policies and procedures at least every 3 years, or as necessary. CMS policy and procedures are available at: \n 1.  CMS Information Systems Security and Privacy Policy (CMS IS2P2), Section 4.2.17\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/CMS-IS2P2.pdf  (Publicly available)\n 2.  CMS Information Security and Privacy Acceptable Risk Safeguards (ARS) v3.1  (Page 348)\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/ARS-31-Publication.zip  (Publicly available)",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "6623d178-b23f-4437-a2e5-278c4d012ca9"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "5dad829f-dce4-4a7a-b78c-859682284efe"
+                  }
+                ]
+              },
+              {
+                "uuid": "55856d1f-c557-4912-9817-acf5ac31185e",
+                "control-id": "si-8",
+                "description": "This is a hybrid control. In accordance with HHS policy, CMS reviews and updates agency security and privacy policies and procedures at least every 3 years, or as necessary. This control is ONLY inheritable for those email addresses that are xxx@cms.hhs.gov. CMS inherits this control from HHS, who manages and maintains the CMS Federal email system. All other email systems MUST account for this control locally. In order to inherit this control, individual systems must: \n - be organizationally bound to follow the controlling CMS content listed above. For contractor organizations, the controlling CMS content listed above must; 1) be formally adopted (in writing) into the practices of the organizational segment performing work on behalf of CMS, by an official with authority to do so, or 2) the content and intent of the controlling CMS content listed above must be formally (in writing) incorporated into (contractor) governing organizational practices.\n - utilize email addresses that are xxx@cms.hhs.gov for applicable users and applications. The CMS SOC has developed an Outlook add-on for which provides a 1 click solution for the end user for submitting spam. The user would select an spam email and once the button is pressed, it automatically creates a new email, attaches suspicious email to maintain pertinent metadata, forwards to HHS Spam Mailbox, and moves email to Outlook\u2019s delete folder.\n In accordance with HHS policy, CMS reviews and updates agency security and privacy policies and procedures at least every 3 years, or as necessary. CMS policy and procedures are available at:\n 1.  CMS Information Systems Security and Privacy Policy (CMS IS2P2), Section 4.2.17\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/CMS-IS2P2.pdf  (Publicly available)\n 2.  CMS Information Security and Privacy Acceptable Risk Safeguards (ARS) v3.1  (Page 369)\n https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/ARS-31-Publication.zip  (Publicly available)",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "ab98214e-e5bc-4bf7-9786-d1bacb09f558"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "aa002f3b-3003-415c-ac7a-80a81a904cd0"
+                  }
+                ]
+              },
+              {
+                "uuid": "7bf9b0e0-b428-45ff-be6b-56fd5a59614e",
+                "control-id": "tr-cms-01",
+                "description": "This is an inheritable control. The inheritor must append the Inheritance Statement with all system-specific Transparency procedures available for this application. \n  Inheritance Statement: \n A., B. Common - In accordance with HHS policy, CMS reviews and updates agency security and privacy policies and procedures at least every 2 years, or as necessary. CMS Governance and Privacy Program policy and procedures are available at: \n 1.  CMS Information Systems Security and Privacy Policy (CMS IS2P2), Section 4.3.7: https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Information-Security-Library.html. (Publicly available)\n 2.  CMS Information Security and Privacy Acceptable Risk Safeguards (ARS) v3.1 or as amended: https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Information-Security-Library.html. (Publicly available)\n 3.  Risk Management Handbook (RMH) Chapter 19 Privacy Procedures: https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Information-Security-Library.html (Publicly available)",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "0e364ae6-e5d7-4f75-91d6-ced6b0f973be"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "f959d6d4-e3ee-4af4-8d9a-2d0797d638f9"
+                  }
+                ]
+              },
+              {
+                "uuid": "68b593be-4a82-45d1-8b3a-c0a1c6e79a98",
+                "control-id": "ul-cms-01",
+                "description": "This is an inheritable control. The inheritor must append the Inheritance Statement with all system-specific Use Limitations procedures available for this application. \n  Inheritance Statement: \n A., B. Common - In accordance with HHS policy, CMS reviews and updates agency security and privacy policies and procedures at least every 2 years, or as necessary. CMS Governance and Privacy Program policy and procedures are available at: \n 1.  CMS Information Systems Security and Privacy Policy (CMS IS2P2), Section 4.3.8: https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Information-Security-Library.html. (Publicly available)\n 2.  CMS Information Security and Privacy Acceptable Risk Safeguards (ARS) v3.1 or as amended: https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Information-Security-Library.html. (Publicly available)\n 3.  Risk Management Handbook (RMH) Chapter 19 Privacy Procedures: https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Information-Security-Library.html (Publicly available)",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Inherited",
+                    "uuid": "3d32ca5b-7995-4c12-87b5-2a94be6bafb2"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "Yes",
+                    "uuid": "15c60f1b-7a42-422e-a04c-44b2e3b1504e"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

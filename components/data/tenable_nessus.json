@@ -1,0 +1,129 @@
+{
+  "component-definition": {
+    "uuid": "14cb86f3-363b-40aa-a1a3-ad0236bd9437",
+    "metadata": {
+      "title": "Tenable Nessus",
+      "published": "2021-09-04T02:25:31.115408+00:00",
+      "last-modified": "2021-09-04T02:25:31.115411+00:00",
+      "version": "unknown",
+      "oscal-version": "1.0.0"
+    },
+    "components": [
+      {
+        "uuid": "cf68548d-20f8-4e12-9cc4-8752f0c32664",
+        "type": "software",
+        "title": "Tenable Nessus",
+        "description": "Tenable Nessus",
+        "control-implementations": [
+          {
+            "uuid": "6d7442a0-c914-4e09-b480-ab18b8b4a937",
+            "source": "https://raw.githubusercontent.com/CMSgov/ars-machine-readable/main/3.1/oscal/json/CMS_ARS_3_1_catalog.json",
+            "description": "CMS_ARS_3_1",
+            "implemented-requirements": [
+              {
+                "uuid": "361bc30e-32c2-448c-8854-253d0fa34380",
+                "control-id": "ca-7",
+                "description": "Requirements are implemented as described in the included statements.",
+                "statements": [
+                  {
+                    "statement-id": "ca-7_smt.c",
+                    "uuid": "1e51bb0d-a35a-4d6e-8fa5-79912f55c637",
+                    "description": "The Nessus scanner employs the United States Government Configuration Baseline (USGCB) STIG to define scanning metrics."
+                  },
+                  {
+                    "statement-id": "ca-7_smt.d",
+                    "uuid": "f04f41c6-cfb0-4f03-b6f6-3afd24ed2083",
+                    "description": "Tenable Nessus is used to scan the network for unauthorized activity or anomalies. The Nessus tool is used continuously to evaluate security metrics. Nessus vulnerability scan frequency is no less than once every 72 hours."
+                  },
+                  {
+                    "statement-id": "ca-7_smt.e",
+                    "uuid": "9539fb44-3ecd-4492-8c6f-d2ad33b365e5",
+                    "description": "When there is a significant change to the system, a Security Risk Assessment is performed to evaluate the state of the sytem security controls based on the change. Vulnerabilities discovered by the SRA or through pen-tests are tracked monthly by the system owner and ISSO as part of POA&M documented in CFACTS. CMS Cloud establishes baselines for the system and scans the system with Nessus when changes occur within the system to ensure compliance with established baselines"
+                  }
+                ]
+              },
+              {
+                "uuid": "38c5bacd-317e-4aa9-a3dc-82aceba68c5f",
+                "control-id": "cm-6",
+                "description": "Requirements are implemented as described in the included statements.",
+                "statements": [
+                  {
+                    "statement-id": "cm-6_smt.d",
+                    "uuid": "27529733-4969-414c-8bdd-3a154e7c4bac",
+                    "description": "Tenable Nessus monitors the inventory of systems for malicious configuration changes."
+                  }
+                ]
+              },
+              {
+                "uuid": "03342dd1-d38d-47ac-8fba-2d860270364e",
+                "control-id": "cm-7.1",
+                "description": "Requirements are implemented as described in the included statements.",
+                "statements": [
+                  {
+                    "statement-id": "cm-7.1_smt.b",
+                    "uuid": "71fecf03-4e78-4bbc-b19f-5565b9a050b3",
+                    "description": "Tenable Nessus is used to perform automated scans of information systems at least once every seventy-two (72) hours to identify changes to functions, ports, protocols, and services."
+                  }
+                ]
+              },
+              {
+                "uuid": "1e329da1-04dc-4164-aacf-79a22be5dd2b",
+                "control-id": "cm-8.3",
+                "description": "Requirements are implemented as described in the included statements.",
+                "statements": [
+                  {
+                    "statement-id": "cm-8.3_smt.a",
+                    "uuid": "e4e19544-89c3-40c4-9676-4db3c53f0252",
+                    "description": "Nessus software vulnerability scans are performed weekly to identify any unauthorized system components (hardware, software, and firmware) on the information system environment. Should the scans detect any unauthorized components, system administrators immediately disable network access to the components and alert the Director of IT, as well as personnel identified in the system security plan, to begin an investigation to determine whether such components qualify as an incident or breach."
+                  }
+                ]
+              },
+              {
+                "uuid": "e5f6511c-c70a-4ef9-8217-560007fc1333",
+                "control-id": "ra-5",
+                "description": "Requirements are implemented as described in the included statements.",
+                "statements": [
+                  {
+                    "statement-id": "ra-5_smt.a",
+                    "uuid": "7e3639cd-bba1-4bd1-934a-9baebd2195df",
+                    "description": "Tenable Nessus is used to run scheduled vulnerability scans on all information systems at least once every seventy-two (72) hours or when new vulnerabiliites are identified that affect any system, whichever comes first. The Nessus application is updated through automated updates from Tenable."
+                  }
+                ]
+              },
+              {
+                "uuid": "4d8c1f2e-cd94-4d30-a3aa-3c0b9903974f",
+                "control-id": "ra-5.1",
+                "description": "Vulnerability scanning updates are managed by the Application Developer's Security team,  automated through the use of an internal Nessus Security Center Update Server. The Nessus products are scheduled to poll the update server nightly to check for updates. Once updates have been received by the update server, an automated email is sent to the vulnerability management team with the current version number and any versions that have been retired."
+              },
+              {
+                "uuid": "b07b28c4-fb01-45b4-b0db-b9077ce74906",
+                "control-id": "ra-5.2",
+                "description": "Tenable Nessus is configured to update the database of known information system vulnerabilities no less often than every 72 hours, immediately prior to a new scan, and when new vulnerabilities are identified and reported."
+              },
+              {
+                "uuid": "c783530b-176e-4387-a182-a68d01fccd7c",
+                "control-id": "ra-5.3",
+                "description": "The Nessus vulnerability scanning tool contains reports that list all systems scanned and vulnerabilities found. The Nessus vulnerability scanning tool reports the list all systems scanned, the vulnerabilities scanned for as well as the vulnerabilities found."
+              },
+              {
+                "uuid": "9d34d291-0a16-436d-b305-aa82e2cbe1be",
+                "control-id": "ra-5.5",
+                "description": "Tenable supports privileged access authorization to operating system, telecommunications, and configuration components employing credentials that meet CMS authentication requirements."
+              },
+              {
+                "uuid": "dc3c79e0-f193-484e-8c1c-d4b86b214a90",
+                "control-id": "si-2.2",
+                "description": "CMS has implemented automated scanning mechanisms, using Nessus vulnerability scanner  that checks for compliance at least once every seventy-two (72) hours to determine the state of system components. The application team identifies, reports, and corrects information system flaws as needed. Flaw remediation requirements apply to all identified components for which a patch or work-around exists for each vendor-identified CVE/CWE identified vulnerability."
+              },
+              {
+                "uuid": "4faa7112-e5e5-4f0e-a8bd-94dfad877ac5",
+                "control-id": "si-7.1",
+                "description": "Tenable Security Center continuously monitors for the file integrity of system files, software and firmware including checks for the modification, deletion, and addition of unauthorized files."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
