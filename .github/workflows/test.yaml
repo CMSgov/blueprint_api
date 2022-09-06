@@ -9,8 +9,10 @@ on:
 
 jobs:
   test:
-    name: Test
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [ '3.9', '3.10', '3.11' ]
     services:
       postgres:
         image: postgres
@@ -25,12 +27,13 @@ jobs:
           --health-retries 3
         ports:
           - 5432:5432
+    name: Python ${{ matrix.python-version }} Test
     steps:
       - uses: actions/checkout@v3.0.2
-      - name: Set up Python 3.9
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
+          python-version: ${{ matrix.python-version }}
       - name: Upgrade pip
         run: pip install --upgrade pip
       - name: Install poetry  # This is not ideal; should investigate available actions for installing/using poetry properly
