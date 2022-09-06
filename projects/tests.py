@@ -780,6 +780,18 @@ class RetrieveUpdateProjectControlViewTestCase(AuthenticatedAPITestCase):
             with self.subTest(field=field):
                 self.assertEqual(control[field], value)
 
+    def test_get_project_control_project_info(self):
+        response = self.client.get(
+            reverse("project-get-control", kwargs={"project_id": self.project.id, "control_id": "ac-1"})
+        )
+        self.assertEqual(response.status_code, 200)
+
+        content = response.json()
+        project = content["project"]
+        expected = {'id': 1, 'title': 'Test project', 'acronym': 'TP', 'private_component': 1}
+
+        self.assertDictEqual(project, expected)
+
     def test_missing_control_returns_404(self):
         response = self.client.get(
             reverse("project-get-control", kwargs={"project_id": self.project.id, "control_id": "not-a-control"})
