@@ -66,10 +66,16 @@ class ProjectSerializer(serializers.ModelSerializer):
 
 class BasicViewProjectSerializer(serializers.ModelSerializer):
     """Project serializer for the case where only basic project info is needed."""
+    private_component = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = Project
-        fields = ("id", "title", "acronym", )
+        fields = ("id", "title", "acronym", "private_component", )
         read_only_fields = ("id", "title", "acronym", )
+
+    # noinspection PyMethodMayBeStatic
+    def get_private_component(self, obj: Project) -> int:
+        return obj.components.get(title=f"{obj.title} private").id
 
 
 class ProjectControlSerializer(serializers.ModelSerializer):

@@ -447,11 +447,9 @@ class ProjectControlPage(AuthenticatedAPITestCase):
             catalog=test_catalog,
         )
 
-        test_project.components.set(
-            [
-                test_component,
-                test_component_2,
-            ]
+        test_project.components.add(
+            test_component,
+            test_component_2,
         )
 
         cls.test_project = test_project
@@ -779,6 +777,19 @@ class RetrieveUpdateProjectControlViewTestCase(AuthenticatedAPITestCase):
         for field, value in expected.items():
             with self.subTest(field=field):
                 self.assertEqual(control[field], value)
+
+    def test_get_project_control_project_info(self):
+        response = self.client.get(
+            reverse("project-get-control", kwargs={"project_id": self.project.id, "control_id": "ac-1"})
+        )
+        self.assertEqual(response.status_code, 200)
+
+        content = response.json()
+        project = content["project"]
+        self.assertTrue(all(item in project for item in ("id", "title", "acronym", "private_component", )))
+        self.assertIsNotNone(project["private_component"])
+        self.assertEqual(project["title"], "Test project")
+        self.assertEqual(project["acronym"], "TP")
 
     def test_missing_control_returns_404(self):
         response = self.client.get(
