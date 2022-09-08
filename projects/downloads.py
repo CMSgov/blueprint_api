@@ -24,7 +24,7 @@ from components.componentio import ComponentTools
 from projects.models import Project
 
 
-class OscalSSP:
+class OscalSSP: # pylint: disable=too-many-instance-attributes
     metadata = None
     sec_impact_level = None
     import_profile = None
@@ -38,8 +38,6 @@ class OscalSSP:
 
     def __init__(self, project: Project):
         self.project = project
-
-    def get_ssp(self):
         self.set_metadata()
         self.set_roles()
         self.set_impact_level()
@@ -50,6 +48,8 @@ class OscalSSP:
         self.add_components()
         self.add_implemented_requirements()
         self.set_back_matter()
+
+    def get_ssp(self):
         ssp = SystemSecurityPlan(
             metadata=self.metadata,
             import_profile=self.import_profile,
