@@ -34,6 +34,7 @@ SchemaView = get_schema_view(
 
 urlpatterns = [
     path("", views.index, name="index"),
+    path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
     path("admin/", admin.site.urls),
     path('api-token-auth/', views.UserObtainTokenView.as_view()),
     path("api/catalogs/", include("catalogs.urls")),
