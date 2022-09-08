@@ -24,7 +24,7 @@ from components.componentio import ComponentTools
 from projects.models import Project
 
 
-class OscalSSP(object):
+class OscalSSP:
     metadata = None
     sec_impact_level = None
     import_profile = None
@@ -38,6 +38,8 @@ class OscalSSP(object):
 
     def __init__(self, project: Project):
         self.project = project
+
+    def get_ssp(self):
         self.set_metadata()
         self.set_roles()
         self.set_impact_level()
@@ -48,8 +50,6 @@ class OscalSSP(object):
         self.add_components()
         self.add_implemented_requirements()
         self.set_back_matter()
-
-    def get_ssp(self):
         ssp = SystemSecurityPlan(
             metadata=self.metadata,
             import_profile=self.import_profile,
@@ -138,7 +138,7 @@ class OscalSSP(object):
             description="EXAMPLE SSP", implemented_requirements=[]
         )
         for control in self.project.controls.all():
-            ir = ImplementedRequirement(
+            implemented_requirement = ImplementedRequirement(
                 control_id=control.control_id,
                 statements=[],
             )
@@ -146,13 +146,13 @@ class OscalSSP(object):
                 cmpt = ComponentTools(component.component_json)
                 if control.control_id in component.controls:
                     ctrl = cmpt.get_control_by_id(control.control_id)
-                    ir.add_by_component(
+                    implemented_requirement.add_by_component(
                         ByComponent(
                             component_uuid=self.component_ref[component.title],
                             description=ctrl[0].get("description"),
                         )
                     )
-            self.control_implementations.implemented_requirements.append(ir)
+            self.control_implementations.implemented_requirements.append(implemented_requirement)
 
     def set_back_matter(self):
         self.back_matter = BackMatter(resources=[Resource(title="Test Resource")])

@@ -46,7 +46,7 @@ urlpatterns = [
         name="components-not-in-project",
     ),
     path(
-        "<int:project_id>/download/oscal",
+        "<int:project_id>/downloads/oscal",
         ProjectSspDownloadView.as_view({"get": "download"}),
         name="download-ssp",
     ),

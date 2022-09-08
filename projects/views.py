@@ -1,5 +1,3 @@
-import json
-
 from wsgiref.util import FileWrapper
 
 from django.core.files.base import ContentFile
@@ -197,7 +195,7 @@ class RetrieveUpdateProjectControlView(generics.RetrieveUpdateAPIView):
         return get_object_or_404(ProjectControl, control__control_id=self.kwargs.get("control_id"), project=project)
 
 
-class PassthroughRenderer(renderers.BaseRenderer):
+class PassthroughRenderer(renderers.BaseRenderer): # pylint: disable=too-few-public-methods
     media_type = ""
     format = ""
 
@@ -205,7 +203,7 @@ class PassthroughRenderer(renderers.BaseRenderer):
         return data
 
 
-class ProjectSspDownloadView(viewsets.ReadOnlyModelViewSet):
+class ProjectSspDownloadView(viewsets.ReadOnlyModelViewSet): # pylint: disable=too-many-ancestors
     queryset = Project.objects.all()
 
     @action(methods=["get"], detail=True, renderer_classes=(PassthroughRenderer,))
@@ -220,6 +218,6 @@ class ProjectSspDownloadView(viewsets.ReadOnlyModelViewSet):
         response = HttpResponse(FileWrapper(file), "application/json")
         response["Content-Length"] = file.size
         response["Content-Disposition"] = (
-            'attachment; filename="%s-ssp.json"' % project.title
+            f'attachment; filename="{project.title}-ssp.json"'
         )
         return response
