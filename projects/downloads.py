@@ -25,35 +25,28 @@ from projects.models import Project
 
 
 class OscalSSP(object):
+    metadata = None
+    sec_impact_level = None
+    import_profile = None
+    information_type = None
+    system_information = None
+    system_characteristics = None
+    component_ref = {}
+    system_implementation = None
+    control_implementations = None
+    back_matter = None
+
     def __init__(self, project: Project):
         self.project = project
-        self.metadata = None
         self.set_metadata()
         self.set_roles()
-
-        self.sec_impact_level = None
         self.set_impact_level()
-
-        self.import_profile = None
         self.set_import_profile()
-
-        self.information_type = None
         self.set_information_type()
-
-        self.system_information = None
         self.set_system_information()
-
-        self.system_characteristics = None
         self.set_system_characteristics()
-
-        self.component_ref = {}
-        self.system_implementation = None
         self.add_components()
-
-        self.control_implementations = None
         self.add_implemented_requirements()
-
-        self.back_matter = None
         self.set_back_matter()
 
     def get_ssp(self):
@@ -76,12 +69,14 @@ class OscalSSP(object):
         )
 
     def set_roles(self):
-        ciso = Role(id="security-operations", title="CISO")  # Example
+        preparer = Role(id="prepared_by", title="Prepared by")
         fen = Party(
-            type="person", name="Fen", email_address="fen@example.com"
+            type="person",
+            name="Fen",
+            email_address="fen@example.com"
         )  # Example
         self.metadata.parties = ([fen],)
-        self.metadata.roles = [ciso]
+        self.metadata.roles = [preparer]
 
     def set_impact_level(self):
         self.sec_impact_level = SecurityImpactLevel(
