@@ -21,7 +21,7 @@ class Environment:
             # allowed hosts.
             metadata_uri = os.environ.get("ECS_CONTAINER_METADATA_URI")
             if metadata_uri:
-                container_metadata = requests.get(metadata_uri).json()
+                container_metadata = requests.get(metadata_uri, timeout=30).json()
                 hosts.add(container_metadata["Networks"][0]["IPv4Addresses"][0])
         cors_origin = (
             os.environ.get("CORS_ALLOW_ALL_ORIGINS", "True").capitalize() == "True"
