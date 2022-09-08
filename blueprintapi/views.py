@@ -43,7 +43,7 @@ class UserObtainTokenView(ObtainAuthToken):
             try:
                 auth.authenticate_credentials(token.key)
             except AuthenticationFailed:
-                new_token, _ = Token.objects.create(user=user)
+                new_token = Token.objects.create(user=user)
                 response_data["token"] = new_token.key
 
             return Response(response_data)
