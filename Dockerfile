@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 python:slim-buster
+FROM --platform=linux/amd64 python:3.10-slim-buster
 
 ENV PYTHONFAULTHANDLER=1 \
     PYTHONUNBUFFERED=1 \
