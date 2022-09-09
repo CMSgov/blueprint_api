@@ -5,14 +5,11 @@ ENV PYTHONFAULTHANDLER=1 \
     PYTHONHASHSEED=random \
     PIP_NO_CACHE_DIR=off \
     PIP_DISABLE_PIP_VERSION_CHECK=on \
-    PIP_DEFAULT_TIMEOUT=100 \
-    POETRY_VERSION=1.1.13
+    PIP_DEFAULT_TIMEOUT=100
 
 WORKDIR /usr/local
 
-RUN pip install pydantic
-
-RUN pip install "poetry==$POETRY_VERSION"
+RUN pip install --upgrade pip && pip install poetry
 
 COPY poetry.lock pyproject.toml /usr/local/
 
