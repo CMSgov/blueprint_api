@@ -271,7 +271,7 @@ class RoleIDEnum(str, Enum):
 
 
 class Role(OSCALElement):
-    id: RoleIDEnum
+    id: str
     title: MarkupLine
     short_name: Optional[str]
     description: Optional[MarkupMultiLine]

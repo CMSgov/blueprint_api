@@ -143,16 +143,16 @@ class OscalSSP: # pylint: disable=too-many-instance-attributes
                 statements=[],
             )
             for component in self.project.components.all():
-                cmpt = ComponentTools(component.component_json)
+                cmp = ComponentTools(component.component_json)
                 if control.control_id in component.controls:
-                    ctrl = cmpt.get_control_by_id(control.control_id)
+                    ctrl = cmp.get_control_by_id(control.control_id)
                     implemented_requirement.add_by_component(
                         ByComponent(
                             component_uuid=self.component_ref[component.title],
                             description=ctrl[0].get("description"),
                         )
                     )
-            self.control_implementations.implemented_requirements.append(implemented_requirement)
+                    self.control_implementations.implemented_requirements.append(implemented_requirement)
 
     def set_back_matter(self):
         self.back_matter = BackMatter(resources=[Resource(title="Test Resource")])
