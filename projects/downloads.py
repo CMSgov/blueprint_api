@@ -1,3 +1,6 @@
+import re
+from typing import List
+
 from blueprintapi.oscal.oscal import Metadata, Property
 from blueprintapi.oscal.ssp import (
     BackMatter,
@@ -22,34 +25,32 @@ from blueprintapi.oscal.ssp import (
 )
 from components.componentio import ComponentTools
 from projects.models import Project
-import re
 
 
-class OscalSSP: # pylint: disable=too-many-instance-attributes
-    metadata = None
-    sec_impact_level = None
-    import_profile = None
-    information_type = None
-    system_information = None
-    system_characteristics = None
-    component_ref = {}
-    system_implementation = None
-    control_implementations = None
-    back_matter = None
-    users = []
-
+class OscalSSP:
     def __init__(self, project: Project, extras: str):
         self.project = project
         self.extras = extras
+        self.metadata = None
         self.set_metadata()
+        self.users: List = []
         self.set_roles()
+        self.sec_impact_level = None
         self.set_impact_level()
-        self.set_import_profile()
+        self.import_profile = ImportProfile(href=self.project.catalog.source)
+        self.information_type = None
         self.set_information_type()
-        self.set_system_information()
+        self.system_information = SystemInformation(
+            information_types=[self.information_type]
+        )
+        self.system_characteristics = None
         self.set_system_characteristics()
+        self.component_ref: dict = {}
+        self.system_implementation = None
         self.add_components()
+        self.control_implementations = None
         self.add_implemented_requirements()
+        self.back_matter = None
         # self.set_back_matter()
 
     def get_ssp(self):
@@ -78,11 +79,10 @@ class OscalSSP: # pylint: disable=too-many-instance-attributes
         for stakeholder in self.extras.get("stakeholders"):
             title, short_name, role_id = "", "", ""
             for key, value in stakeholder.items():
-                print(value.get("props"))
                 if re.search(r"\((.*?)\)", key):
                     short = re.search(r"\((.*?)\)", key)
                     short_name = short.group(1)
-                    title = key[:key.find(" (")]
+                    title = key[: key.find(" (")]
                 else:
                     title = key
                     words = title.split()
@@ -95,17 +95,21 @@ class OscalSSP: # pylint: disable=too-many-instance-attributes
             role_id = title.replace(" ", "-").lower()
             if title and role_id not in ids:
                 ids.append(role_id)
-                self.users.append(User(
-                    role_ids=[role_id],
-                    title=title,
-                    short_name=short_name,
-                    props=[properties],
-                ))
-                self.metadata.roles.append(Role(
-                    title=title.strip(),
-                    short_name=short_name.upper(),
-                    id=role_id,
-                ))
+                self.users.append(
+                    User(
+                        role_ids=[role_id],
+                        title=title,
+                        short_name=short_name,
+                        props=[properties],
+                    )
+                )
+                self.metadata.roles.append(
+                    Role(
+                        title=title.strip(),
+                        short_name=short_name.upper(),
+                        id=role_id,
+                    )
+                )
 
     def set_impact_level(self):
         self.sec_impact_level = SecurityImpactLevel(
@@ -113,9 +117,6 @@ class OscalSSP: # pylint: disable=too-many-instance-attributes
             security_objective_availability=f"fips-199-{self.project.impact_level}",
             security_objective_integrity=f"fips-199-{self.project.impact_level}",
         )
-
-    def set_import_profile(self):
-        self.import_profile = ImportProfile(href=self.project.catalog.source)
 
     def set_information_type(self):
         self.information_type = InformationType(
@@ -126,11 +127,6 @@ class OscalSSP: # pylint: disable=too-many-instance-attributes
             availability_impact=Impact(base=f"fips-199-{self.project.impact_level}"),
         )
 
-    def set_system_information(self):
-        self.system_information = SystemInformation(
-            information_types=[self.information_type]
-        )
-
     def set_system_characteristics(self):
         self.system_characteristics = SystemCharacteristics(
             system_name=self.project.title,
@@ -138,7 +134,9 @@ class OscalSSP: # pylint: disable=too-many-instance-attributes
             security_sensitivity_level=self.project.impact_level,
             system_information=self.system_information,
             security_impact_level=self.sec_impact_level,
-            authorization_boundary=NetworkDiagram(description="INSERT AUTHORIZATION BOUNDARY"),
+            authorization_boundary=NetworkDiagram(
+                description="INSERT AUTHORIZATION BOUNDARY DESCRIPTION HERE"
+            ),
             status=SystemStatus(state="operational"),
         )
 
@@ -182,7 +180,9 @@ class OscalSSP: # pylint: disable=too-many-instance-attributes
                             description=ctrl[0].get("description"),
                         )
                     )
-                    self.control_implementations.implemented_requirements.append(implemented_requirement)
+                    self.control_implementations.implemented_requirements.append(
+                        implemented_requirement
+                    )
 
     def set_back_matter(self):
         self.back_matter = BackMatter(resources=[Resource(title="Test Resource")])
