@@ -41,7 +41,7 @@ class Command(BaseCommand):
 
         try:
             with open(input_file, mode="rb") as catalog:
-                file = File(catalog)
+                file = File(catalog, name=input_file)
                 Catalog.objects.create(file_name=file, name=name, **catalog_args)
         except IntegrityError as exc:
             raise CommandError(f"Error in creating new catalog: {exc}") from exc
