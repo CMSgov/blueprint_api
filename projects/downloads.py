@@ -27,7 +27,7 @@ from components.componentio import ComponentTools
 from projects.models import Project
 
 
-class OscalSSP:
+class OscalSSP:  # pylint: disable=too-many-instance-attributes
     def __init__(self, project: Project, extras: str):
         self.project = project
         self.extras = extras
@@ -35,32 +35,20 @@ class OscalSSP:
         self.set_metadata()
         self.users: List = []
         self.set_roles()
-        self.sec_impact_level = None
-        self.set_impact_level()
-        self.import_profile = ImportProfile(href=self.project.catalog.source)
-        self.information_type = None
-        self.set_information_type()
-        self.system_information = SystemInformation(
-            information_types=[self.information_type]
-        )
-        self.system_characteristics = None
-        self.set_system_characteristics()
         self.component_ref: dict = {}
         self.system_implementation = None
         self.add_components()
         self.control_implementations = None
         self.add_implemented_requirements()
-        self.back_matter = None
-        # self.set_back_matter()
 
     def get_ssp(self):
         ssp = SystemSecurityPlan(
             metadata=self.metadata,
-            import_profile=self.import_profile,
-            system_characteristics=self.system_characteristics,
+            import_profile=self.get_import_profile(),
+            system_characteristics=self.get_system_characteristics(),
             system_implementation=self.system_implementation,
             control_implementation=self.control_implementations,
-            back_matter=self.back_matter,
+            back_matter=self.get_back_matter(),
         )
         root = Model(system_security_plan=ssp)
         return root.json(indent=2)
@@ -111,15 +99,18 @@ class OscalSSP:
                     )
                 )
 
-    def set_impact_level(self):
-        self.sec_impact_level = SecurityImpactLevel(
+    def get_impact_level(self):
+        return SecurityImpactLevel(
             security_objective_confidentiality=f"fips-199-{self.project.impact_level}",
             security_objective_availability=f"fips-199-{self.project.impact_level}",
             security_objective_integrity=f"fips-199-{self.project.impact_level}",
         )
 
-    def set_information_type(self):
-        self.information_type = InformationType(
+    def get_import_profile(self):
+        return ImportProfile(href=self.project.catalog.source)
+
+    def get_information_type(self):
+        return InformationType(
             title=self.project.title,
             description=self.project.title,
             confidentiality_impact=Impact(base=f"fips-199-{self.project.impact_level}"),
@@ -127,15 +118,21 @@ class OscalSSP:
             availability_impact=Impact(base=f"fips-199-{self.project.impact_level}"),
         )
 
-    def set_system_characteristics(self):
-        self.system_characteristics = SystemCharacteristics(
+    def get_system_information(self):
+        information_type = self.get_information_type()
+        return SystemInformation(
+            information_types=[information_type]
+        )
+
+    def get_system_characteristics(self):
+        return SystemCharacteristics(
             system_name=self.project.title,
             description=self.project.acronym,
             security_sensitivity_level=self.project.impact_level,
-            system_information=self.system_information,
-            security_impact_level=self.sec_impact_level,
+            system_information=self.get_system_information(),
+            security_impact_level=self.get_impact_level(),
             authorization_boundary=NetworkDiagram(
-                description="INSERT AUTHORIZATION BOUNDARY DESCRIPTION HERE"
+                description="INSERT AUTHORIZATION BOUNDARY"
             ),
             status=SystemStatus(state="operational"),
         )
@@ -184,5 +181,5 @@ class OscalSSP:
                         implemented_requirement
                     )
 
-    def set_back_matter(self):
-        self.back_matter = BackMatter(resources=[Resource(title="Test Resource")])
+    def get_back_matter(self):
+        return BackMatter(resources=[Resource(title="Test Resource")])
