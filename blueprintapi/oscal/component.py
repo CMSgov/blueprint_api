@@ -9,7 +9,7 @@ from uuid import UUID, uuid4
 
 from pydantic import Field
 
-from .oscal import (
+from blueprintapi.oscal.oscal import (
     BackMatter,
     Link,
     MarkupLine,
@@ -21,6 +21,7 @@ from .oscal import (
     ResponsibleRole,
     SetParameter,
 )
+from catalogs.models import Catalog
 
 
 class ComponentTypeEnum(str, Enum):
@@ -160,6 +161,17 @@ class Component(OSCALElement):
                 for item in implementation.implemented_requirements
             }
         )
+
+    @property
+    def catalog_versions(self) -> List[Catalog.Version]:
+        versions = set()
+        for item in self.control_implementations:
+            try:
+                versions.add(Catalog.Version(item.description))
+            except ValueError:
+                continue
+
+        return list(versions)
 
 
 class IncorporatesComponent(OSCALElement):
