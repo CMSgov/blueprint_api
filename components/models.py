@@ -1,6 +1,8 @@
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
+from catalogs.models import Catalog
+
 
 class Component(models.Model):
     class Status(models.IntegerChoices):
@@ -25,12 +27,9 @@ class Component(models.Model):
         unique=False,
         help_text="Type category of the component",
     )
-    catalog = models.ForeignKey(
-        to="catalogs.Catalog",
-        null=False,
-        on_delete=models.PROTECT,
-        related_name="components_for_catalog",
-        help_text="Catalog id that this component applies to",
+    supported_catalog_versions = ArrayField(
+        models.CharField(choices=Catalog.Version.choices, max_length=16),
+        help_text="Catalog versions that this component is defined on.",
     )
     controls = ArrayField(
         models.CharField(max_length=30, blank=True),

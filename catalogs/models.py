@@ -25,6 +25,10 @@ class Catalog(models.Model):
         MODERATE = "moderate", _("Moderate")
         HIGH = "high", _("High")
 
+    class Version(models.TextChoices):
+        CMS_ARS_3_1 = "CMS_ARS_3_1", _("CMS ARS 3.1")
+        CMS_ARS_5_0 = "CMS_ARS_5_0", _("CMS ARS 5.0")
+
     name = models.CharField(max_length=100, help_text="Name of Catalog", unique=True)
     file_name = models.FileField(
         max_length=100,
@@ -38,9 +42,10 @@ class Catalog(models.Model):
         "SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
     )
     version = models.CharField(
-        max_length=64,
+        choices=Version.choices,
+        max_length=16,
         blank=False,
-        default="CMS ARS 3.1",
+        default=Version.CMS_ARS_3_1,
     )
     impact_level = models.CharField(
         choices=ImpactLevel.choices,
@@ -54,6 +59,9 @@ class Catalog(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        unique_together = ("version", "impact_level")
 
 
 class Controls(models.Model):
