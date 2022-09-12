@@ -1,5 +1,5 @@
 from wsgiref.util import FileWrapper
-
+import json
 from django.core.files.base import ContentFile
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Count, Q
@@ -211,7 +211,9 @@ class ProjectSspDownloadView(viewsets.ReadOnlyModelViewSet): # pylint: disable=t
         project = get_object_or_404(Project, pk=self.kwargs.get("project_id"))
         self.check_object_permissions(self.request, project)
 
-        ssp = OscalSSP(project)
+        with open("projects/project_extra.json") as read_file:
+            extras = json.load(read_file)
+        ssp = OscalSSP(project, extras)
         data = ssp.get_ssp()
         file = ContentFile(data)
 

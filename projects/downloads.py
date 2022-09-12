@@ -1,4 +1,4 @@
-from blueprintapi.oscal.oscal import Metadata
+from blueprintapi.oscal.oscal import Metadata, Property
 from blueprintapi.oscal.ssp import (
     BackMatter,
     ByComponent,
@@ -10,7 +10,6 @@ from blueprintapi.oscal.ssp import (
     InformationType,
     Model,
     NetworkDiagram,
-    Party,
     Resource,
     Role,
     SecurityImpactLevel,
@@ -19,9 +18,11 @@ from blueprintapi.oscal.ssp import (
     SystemInformation,
     SystemSecurityPlan,
     SystemStatus,
+    User,
 )
 from components.componentio import ComponentTools
 from projects.models import Project
+import re
 
 
 class OscalSSP: # pylint: disable=too-many-instance-attributes
@@ -35,9 +36,11 @@ class OscalSSP: # pylint: disable=too-many-instance-attributes
     system_implementation = None
     control_implementations = None
     back_matter = None
+    users = []
 
-    def __init__(self, project: Project):
+    def __init__(self, project: Project, extras: str):
         self.project = project
+        self.extras = extras
         self.set_metadata()
         self.set_roles()
         self.set_impact_level()
@@ -47,7 +50,7 @@ class OscalSSP: # pylint: disable=too-many-instance-attributes
         self.set_system_characteristics()
         self.add_components()
         self.add_implemented_requirements()
-        self.set_back_matter()
+        # self.set_back_matter()
 
     def get_ssp(self):
         ssp = SystemSecurityPlan(
@@ -69,14 +72,40 @@ class OscalSSP: # pylint: disable=too-many-instance-attributes
         )
 
     def set_roles(self):
-        preparer = Role(id="prepared_by", title="Prepared by")
-        fen = Party(
-            type="person",
-            name="Fen",
-            email_address="fen@example.com"
-        )  # Example
-        self.metadata.parties = ([fen],)
-        self.metadata.roles = [preparer]
+        self.metadata.roles = []
+        ids = []
+        properties = None
+        for stakeholder in self.extras.get("stakeholders"):
+            title, short_name, role_id = "", "", ""
+            for key, value in stakeholder.items():
+                print(value.get("props"))
+                if re.search(r"\((.*?)\)", key):
+                    short = re.search(r"\((.*?)\)", key)
+                    short_name = short.group(1)
+                    title = key[:key.find(" (")]
+                else:
+                    title = key
+                    words = title.split()
+                    short = [word[0] for word in words]
+                    short_name = "".join(short)
+                properties = Property(
+                    name=value.get("props").get("name"),
+                    value=value.get("props").get("value"),
+                )
+            role_id = title.replace(" ", "-").lower()
+            if title and role_id not in ids:
+                ids.append(role_id)
+                self.users.append(User(
+                    role_ids=[role_id],
+                    title=title,
+                    short_name=short_name,
+                    props=[properties],
+                ))
+                self.metadata.roles.append(Role(
+                    title=title.strip(),
+                    short_name=short_name.upper(),
+                    id=role_id,
+                ))
 
     def set_impact_level(self):
         self.sec_impact_level = SecurityImpactLevel(
@@ -109,12 +138,13 @@ class OscalSSP: # pylint: disable=too-many-instance-attributes
             security_sensitivity_level=self.project.impact_level,
             system_information=self.system_information,
             security_impact_level=self.sec_impact_level,
-            authorization_boundary=NetworkDiagram(description="Authorization Boundary"),
+            authorization_boundary=NetworkDiagram(description="INSERT AUTHORIZATION BOUNDARY"),
             status=SystemStatus(state="operational"),
         )
 
     def add_components(self):
         self.system_implementation = SystemImplementation()
+        self.system_implementation.users = self.users
         for component in self.project.components.all():
             if component.status == 1:
                 cpt = Component(
@@ -135,7 +165,7 @@ class OscalSSP: # pylint: disable=too-many-instance-attributes
 
     def add_implemented_requirements(self):
         self.control_implementations = ControlImplementation(
-            description="EXAMPLE SSP", implemented_requirements=[]
+            description="[INSERT SYSTEM DESCRIPTION HERE]", implemented_requirements=[]
         )
         for control in self.project.controls.all():
             implemented_requirement = ImplementedRequirement(
