@@ -40,7 +40,8 @@ def add_controls(sender, instance: Component, *args, **kwargs):  # pylint: disab
         instance.controls = tool.get_control_ids()
 
 
-def add_supported_catalog_versions(sender, instance: Component, *args, **kwargs):
+# noinspection PyUnusedLocal
+def add_supported_catalog_versions(sender, instance: Component, *args, **kwargs):  # pylint: disable=unused-argument
     if not hasattr(instance, "supported_catalog_versions") or not instance.supported_catalog_versions:
         component_data = ComponentModel(**instance.component_json)
         # Assume a single item in the "component" field for now

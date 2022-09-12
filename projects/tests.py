@@ -318,7 +318,7 @@ class ProjectAddComponentViewTest(AuthenticatedAPITestCase):
             impact_level=Catalog.ImpactLevel.MODERATE,
         )
 
-        test_catalog, test_catalog_2 = Catalog.objects.order_by("name")
+        test_catalog = Catalog.objects.get(name="NIST Test Catalog")
 
         cls.test_component = Component.objects.create(
             title="Cool Component",
