@@ -52,7 +52,7 @@ class ProjectAddComponentView(generics.GenericAPIView):
         component_id = int(request.data.get("component_id"))
         component = get_object_or_404(Component, pk=component_id)
 
-        if project.catalog.id == component.catalog.id:
+        if project.catalog.version in component.supported_catalog_versions:
             project.components.add(component.id)
             response = {
                 "message": (
@@ -64,7 +64,7 @@ class ProjectAddComponentView(generics.GenericAPIView):
             return Response(response, status=status.HTTP_200_OK)
 
         return Response(
-            {"response": "Incompatible catalog selected"},
+            {"response": "Selected component is not compatible with this project's catalog."},
             status=status.HTTP_400_BAD_REQUEST,
         )
 

@@ -13,7 +13,7 @@ class ComponentAdminForm(ModelForm):
         fields = [
             "title",
             "component_file",
-            "catalog",
+            "supported_catalog_versions",
         ]
 
     def clean_component_file(self):

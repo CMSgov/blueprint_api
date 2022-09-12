@@ -27,11 +27,12 @@ class ComponentListSerializer(serializers.ModelSerializer):
             "title",
             "description",
             "type",
-            "catalog",
+            "supported_catalog_versions",
             "component_json",
             "component_file",
             "controls_count",
         )
+        read_only_fields = ("supported_catalog_versions", "id", )
 
 
 class ComponentSerializer(serializers.ModelSerializer):
@@ -40,7 +41,7 @@ class ComponentSerializer(serializers.ModelSerializer):
     project_data = serializers.SerializerMethodField()
 
     def get_catalog_data(self, obj):
-        data = collect_catalog_data(obj.controls, obj.catalog)
+        data = collect_catalog_data(obj.controls, obj.supported_catalog_versions)
         return data
 
     def get_component_data(self, obj):
@@ -81,7 +82,7 @@ class ComponentSerializer(serializers.ModelSerializer):
             "title",
             "description",
             "type",
-            "catalog",
+            "supported_catalog_versions",
             "controls",
             "search_terms",
             "status",
@@ -91,12 +92,19 @@ class ComponentSerializer(serializers.ModelSerializer):
         )
 
 
-def collect_catalog_data(controls: list, catalog: Catalog) -> dict:
+def collect_catalog_data(controls: list, catalog_versions: List[Catalog.Version]) -> dict:
     """Return the Catalog data for the given Controls."""
-    cat_data = CatalogTools(catalog.file_name.path)
-    data = {"version": cat_data.catalog_title, "controls": {}}
-    for control in controls:
-        data["controls"][control] = cat_data.get_control_data_simplified(control)
+    data = {}
+    catalogs = Catalog.objects.filter(version__in=catalog_versions)
+
+    for catalog in catalogs:
+        if (version := catalog.version) not in data:
+            data[version] = {}
+
+        cat_data = CatalogTools(catalog.file_name.path)
+        data[version][catalog.impact_level] = {
+            "controls": {control: cat_data.get_control_data_simplified(control) for control in controls}
+        }
 
     return data
 
@@ -144,7 +152,7 @@ class ComponentListBasicSerializer(serializers.ModelSerializer):
             "title",
             "description",
             "type",
-            "catalog",
+            "supported_catalog_versions",
             "controls_count",
         )
 

@@ -10,11 +10,11 @@ class ComponentFilter(filters.FilterSet):
 
     search = filters.CharFilter(method="keyword_search", label="Search")
     type = filters.CharFilter(lookup_expr="iexact")
-    catalog = filters.NumberFilter()
+    catalog_version = filters.CharFilter(field_name="supported_catalog_versions", lookup_expr="contains")
 
     class Meta:
         model = Component
-        fields = ["search", "type", "catalog"]
+        fields = ["search", "type"]
 
     def keyword_search(self, queryset, name, value):  # pylint: disable=unused-argument
         return queryset.filter(
