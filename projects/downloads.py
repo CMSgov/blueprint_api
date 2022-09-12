@@ -18,6 +18,7 @@ from blueprintapi.oscal.ssp import (
     SecurityImpactLevel,
     SystemCharacteristics,
     SystemImplementation,
+    SystemId,
     SystemInformation,
     SystemSecurityPlan,
     SystemStatus,
@@ -25,7 +26,7 @@ from blueprintapi.oscal.ssp import (
 )
 from components.componentio import ComponentTools
 from projects.models import Project
-
+import uuid
 
 class OscalSSP:  # pylint: disable=too-many-instance-attributes
     def __init__(self, project: Project, extras: str):
@@ -126,6 +127,12 @@ class OscalSSP:  # pylint: disable=too-many-instance-attributes
 
     def get_system_characteristics(self):
         return SystemCharacteristics(
+            system_ids=[
+                SystemId(
+                    id=uuid.uuid5(uuid.NAMESPACE_OID, self.project.title),
+                    identifier_type="https://ietf.org/rfc/rfc4122",
+                )
+            ],
             system_name=self.project.title,
             description=self.project.acronym,
             security_sensitivity_level=self.project.impact_level,
@@ -165,7 +172,6 @@ class OscalSSP:  # pylint: disable=too-many-instance-attributes
         for control in self.project.controls.all():
             implemented_requirement = ImplementedRequirement(
                 control_id=control.control_id,
-                statements=[],
             )
             for component in self.project.components.all():
                 cmp = ComponentTools(component.component_json)

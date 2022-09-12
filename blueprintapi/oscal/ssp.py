@@ -123,8 +123,8 @@ class SecurityImpactLevel(OSCALElement):
 
 
 class SystemId(OSCALElement):
-    identifier_type: Optional[str]  # really URI
-    id: Optional[str]
+    identifier_type: Optional[str]  # really URN
+    id: Optional[UUID]
 
     class Config:
         fields = {"identifier_type": "identifier-type"}

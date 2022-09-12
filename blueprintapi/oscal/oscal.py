@@ -280,6 +280,10 @@ class Role(OSCALElement):
     links: Optional[List[Link]]
     remarks: Optional[MarkupMultiLine]
 
+    class Config:
+        fields = {"short_name": "short-name"}
+        allow_population_by_field_name = True
+
 
 class ResponsibleParty(OSCALElement):
     role_id: RoleIDEnum
