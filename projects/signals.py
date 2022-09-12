@@ -27,13 +27,13 @@ def _add_project_controls(instance: Project):
 def _add_default_component(instance: Project, group: Group):
     default_json = create_empty_component_json(
         title=f"{instance.title} private",
-        catalog=instance.catalog,
+        catalog_version=instance.catalog.version,
+        impact_level=instance.impact_level
     )
     default = Component(
         title=f"{instance.title} private",
         description=f"{instance.title} default system component",
         component_json=json.loads(default_json),
-        catalog_id=instance.catalog.id,
         status=1,
     )
     default.save()
