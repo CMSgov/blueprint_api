@@ -1,5 +1,6 @@
 import json
 
+from blueprintapi.oscal.component import Model as ComponentModel
 from components.componentio import ComponentTools
 from components.models import Component
 
@@ -37,3 +38,11 @@ def add_controls(sender, instance: Component, *args, **kwargs):  # pylint: disab
     if instance.component_json:
         tool = ComponentTools(instance.component_json)
         instance.controls = tool.get_control_ids()
+
+
+def add_supported_catalog_versions(sender, instance: Component, *args, **kwargs):
+    if not hasattr(instance, "supported_catalog_versions") or not instance.supported_catalog_versions:
+        component_data = ComponentModel(**instance.component_json)
+        # Assume a single item in the "component" field for now
+        implemented_versions = component_data.component_definition.components[0].catalog_versions
+        instance.supported_catalog_versions = implemented_versions
