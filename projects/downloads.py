@@ -29,7 +29,8 @@ from blueprintapi.oscal.ssp import (
 from components.componentio import ComponentTools
 from projects.models import Project
 
-class OscalSSP:  # pylint: disable=too-many-instance-attributes
+
+class OscalSSP:
     def __init__(self, project: Project, extras: str):
         self.project = project
         self.extras = extras
