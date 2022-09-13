@@ -1,4 +1,6 @@
 import re
+import uuid
+
 from typing import List
 
 from blueprintapi.oscal.oscal import Metadata, Property
@@ -26,7 +28,6 @@ from blueprintapi.oscal.ssp import (
 )
 from components.componentio import ComponentTools
 from projects.models import Project
-import uuid
 
 class OscalSSP:  # pylint: disable=too-many-instance-attributes
     def __init__(self, project: Project, extras: str):
