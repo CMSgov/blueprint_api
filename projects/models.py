@@ -100,6 +100,7 @@ class ProjectControl(models.Model):
         NOT_STARTED = "not_started", _("Not started")
         INCOMPLETE = "incomplete", _("Incomplete")
         COMPLETE = "completed", _("Completed")
+        NA = "not_applicable", _("Not applicable")
 
     project = models.ForeignKey(
         "projects.Project",
@@ -118,6 +119,10 @@ class ProjectControl(models.Model):
         null=False,
         help_text="The Project Control status; completed, incomplete, or not started",
     )
+    remarks = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ["control_id"]
 
     def __str__(self):
         return self.control.control_id
