@@ -92,7 +92,7 @@ class ProjectControlSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProjectControl
-        fields = ("status", "project", "control", "catalog_data", "component_data", )
+        fields = ("status", "project", "control", "remarks", "catalog_data", "component_data", )
 
     def get_catalog_data(self, obj: ProjectControl) -> Optional[dict]:
         """Get the Catalog data for a given Control."""
