@@ -95,7 +95,7 @@ class ProjectControlSerializer(serializers.ModelSerializer):
         fields = ("status", "project", "control", "remarks", "catalog_data", "component_data", )
 
     def validate(self, data):
-        if data.get("status") == "not_applicable" and data.get("remarks") is None:
+        if data.get("status") == ProjectControl.Status.NA and data.get("remarks") is None:
             raise serializers.ValidationError("A justification is required for non-applicable controls.")
         return data
 
