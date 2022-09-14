@@ -121,8 +121,5 @@ class ProjectControl(models.Model):
     )
     remarks = models.TextField(blank=True)
 
-    class Meta:
-        ordering = ["control_id"]
-
     def __str__(self):
         return self.control.control_id
