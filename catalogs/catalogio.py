@@ -1,6 +1,6 @@
 import json
 import logging
-from typing import Any, List, Optional
+from typing import Any, List, Optional, Tuple
 
 logger = logging.getLogger("catalogs.catalogio")
 
@@ -88,8 +88,15 @@ class CatalogTools:
         return controls
 
     def get_control_ids(self) -> List:
+        def _sort(control_id_: str) -> Tuple[str, float]:
+            parts = control_id_.split("-")
+            sub = float(parts.pop(-1))
+            id_ = "-".join(parts)
+
+            return id_, sub
+
         search_collection = self.get_controls()
-        return sorted(item.get("id") for item in search_collection)
+        return sorted((item.get("id") for item in search_collection), key=_sort)
 
     def get_controls_all(self) -> List:
         controls: List[dict] = []
