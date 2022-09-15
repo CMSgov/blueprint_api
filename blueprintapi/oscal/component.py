@@ -66,6 +66,25 @@ class ImplementedRequirement(OSCALElement):
     statements: Optional[List[Statement]]
     remarks: Optional[MarkupMultiLine]
 
+    def _props_filter(self, name: str) -> Optional[str]:
+        if self.props is None:
+            return
+
+        property_ = next(filter(lambda prop: prop.name == name, self.props), None)
+
+        if property_ is None:
+            return property_
+
+        return property_.value
+
+    @property
+    def responsibility(self) -> Optional[str]:
+        return self._props_filter("security_control_type")
+
+    @property
+    def provider(self) -> Optional[str]:
+        return self._props_filter("provider")
+
     def add_statement(self, statement: Statement):
         key = statement.statement_id
         if not self.statements:
