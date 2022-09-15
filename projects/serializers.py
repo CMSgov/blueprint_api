@@ -94,10 +94,10 @@ class ProjectControlSerializer(serializers.ModelSerializer):
         model = ProjectControl
         fields = ("status", "project", "control", "remarks", "catalog_data", "component_data", )
 
-    def validate(self, data):
-        if data.get("status") == ProjectControl.Status.NA and data.get("remarks") is None:
+    def validate(self, attrs):
+        if attrs.get("status") == ProjectControl.Status.NA and attrs.get("remarks") is None:
             raise serializers.ValidationError("A justification is required for non-applicable controls.")
-        return data
+        return attrs
 
     def get_catalog_data(self, obj: ProjectControl) -> Optional[dict]:
         """Get the Catalog data for a given Control."""
