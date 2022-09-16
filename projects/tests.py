@@ -774,6 +774,9 @@ class RetrieveUpdateProjectControlViewTestCase(AuthenticatedAPITestCase):
             "title": "Policy and Procedures"
         }
 
+        with self.subTest(msg="Test next control"):
+            self.assertEqual(content["catalog_data"]["next_id"], "ac-2")
+
         for field, value in expected.items():
             with self.subTest(field=field):
                 self.assertEqual(control[field], value)

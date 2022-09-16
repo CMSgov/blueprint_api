@@ -169,7 +169,7 @@ class ProjectGetControlList(generics.ListAPIView):
         queryset = get_objects_for_user(user, "projects.view_project", Project.objects.all(), accept_global_perms=False)
         project = get_object_or_404(queryset, pk=self.kwargs.get("project_id"))
 
-        return ProjectControl.objects.filter(project=project)
+        return ProjectControl.objects.filter(project=project).order_by("control_id")
 
 
 class RetrieveUpdateProjectControlView(generics.RetrieveUpdateAPIView):
