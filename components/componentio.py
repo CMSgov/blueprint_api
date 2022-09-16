@@ -65,10 +65,12 @@ class ComponentTools:
                     return prop.get("value")
 
 
-def create_empty_component_json(title: str, catalog: Catalog) -> str:
+def create_empty_component_json(title: str, catalog_version: str, impact_level: str) -> str:
+    source = Catalog.objects.get(version=catalog_version, impact_level=impact_level).source
+
     control_implementation = oscal_component.ControlImplementation(
-        description=catalog.name,
-        source=catalog.source,
+        description=catalog_version,
+        source=source,
     )
     control_implementation.implemented_requirements = []
 

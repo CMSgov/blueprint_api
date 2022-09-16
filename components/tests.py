@@ -69,106 +69,16 @@ TEST_COMPONENT_JSON_BLOB = {
         ],
     }
 }
-
-
-class ComponentModelTest(AuthenticatedAPITestCase):
-    @classmethod
-    def setUpTestData(cls):
-        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as file:
-            catalog = File(file)
-            cls.test_catalog = Catalog.objects.create(
-                name="NIST Test Catalog",
-                file_name=catalog,
-                version="NIST 800-53",
-                impact_level="low",
-            )
-
-        cls.test_component = Component.objects.create(
-            title="Cool Component",
-            description="Probably the coolest component you ever did see. It's magical.",
-            catalog=Catalog.objects.get(id=cls.test_catalog.id),
-            search_terms=["cool", "magic", "software"],
-            type="software",
-            component_json=TEST_COMPONENT_JSON_BLOB,
-        )
-
-    # Tests for field labels
-    def test_title_label(self):
-        project = Component.objects.get(id=self.test_component.id)
-        field_label = project._meta.get_field("title").verbose_name
-        self.assertEqual(field_label, "title")
-
-    def test_description_label(self):
-        project = Component.objects.get(id=self.test_component.id)
-        field_label = project._meta.get_field("description").verbose_name
-        self.assertEqual(field_label, "description")
-
-    def test_controls_label(self):
-        project = Component.objects.get(id=self.test_component.id)
-        field_label = project._meta.get_field("controls").verbose_name
-        self.assertEqual(field_label, "controls")
-
-    def test_type_label(self):
-        project = Component.objects.get(id=self.test_component.id)
-        field_label = project._meta.get_field("type").verbose_name
-        self.assertEqual(field_label, "type")
-
-    def test_search_terms_label(self):
-        project = Component.objects.get(id=self.test_component.id)
-        field_label = project._meta.get_field("search_terms").verbose_name
-        self.assertEqual(field_label, "search terms")
-
-    def test_component_json_label(self):
-        project = Component.objects.get(id=self.test_component.id)
-        field_label = project._meta.get_field("component_json").verbose_name
-        self.assertEqual(field_label, "component json")
-
-    def test_created_label(self):
-        project = Component.objects.get(id=self.test_component.id)
-        field_label = project._meta.get_field("created").verbose_name
-        self.assertEqual(field_label, "created")
-
-    def test_updated_label(self):
-        project = Component.objects.get(id=self.test_component.id)
-        field_label = project._meta.get_field("updated").verbose_name
-        self.assertEqual(field_label, "updated")
-
-    # Tests for max length
-    def test_title_max_length(self):
-        project = Component.objects.get(id=self.test_component.id)
-        max_length = project._meta.get_field("title").max_length
-        self.assertEqual(max_length, 100)
-
-    def test_description_max_length(self):
-        project = Component.objects.get(id=self.test_component.id)
-        max_length = project._meta.get_field("description").max_length
-        self.assertEqual(max_length, 500)
-
-    def test_type_max_length(self):
-        project = Component.objects.get(id=self.test_component.id)
-        max_length = project._meta.get_field("type").max_length
-        self.assertEqual(max_length, 100)
-
-
 TEST_COMPONENT_CONTROLS = ["ac-1", "ac-2", "at-1", "at-2", "st-3"]
 
 
 class GetAllComponentsTest(AuthenticatedAPITestCase):
     @classmethod
     def setUpTestData(cls):
-        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as file:
-            catalog = File(file)
-            test_catalog = Catalog.objects.create(
-                name="NIST Test Catalog",
-                file_name=catalog,
-                version="NIST 800-53",
-                impact_level="low",
-            )
-
         Component.objects.create(
             title="Cool Component",
             description="Probably the coolest component you ever did see. It's magical.",
-            catalog=Catalog.objects.get(id=test_catalog.id),
+            supported_catalog_versions=[Catalog.Version.CMS_ARS_3_1],
             controls=TEST_COMPONENT_CONTROLS,
             search_terms=["cool", "magic", "software"],
             type="software",
@@ -178,7 +88,7 @@ class GetAllComponentsTest(AuthenticatedAPITestCase):
         Component.objects.create(
             title="Another Even Cooler Component",
             description="This one is better.",
-            catalog=Catalog.objects.get(id=test_catalog.id),
+            supported_catalog_versions=[Catalog.Version.CMS_ARS_3_1],
             controls=TEST_COMPONENT_CONTROLS,
             search_terms=["cool", "best"],
             type="software",
@@ -186,7 +96,6 @@ class GetAllComponentsTest(AuthenticatedAPITestCase):
         )
 
     def test_get_all_components(self):
-
         response = self.client.get(reverse("component-list"))
         components = Component.objects.all().order_by("pk")
         serializer = ComponentListSerializer(components, many=True)
@@ -211,19 +120,10 @@ class GetAllComponentsTest(AuthenticatedAPITestCase):
 class GetSingleComponentTest(AuthenticatedAPITestCase):
     @classmethod
     def setUpTestData(cls):
-        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as file:
-            catalog = File(file)
-            cls.test_catalog = Catalog.objects.create(
-                name="NIST Test Catalog",
-                file_name=catalog,
-                version="NIST 800-53",
-                impact_level="low",
-            )
-
         cls.test_component = Component.objects.create(
             title="Cool Component",
             description="Probably the coolest component you ever did see. It's magical.",
-            catalog=Catalog.objects.get(id=cls.test_catalog.id),
+            supported_catalog_versions=[Catalog.Version.CMS_ARS_3_1],
             search_terms=["cool", "magic", "software"],
             type="software",
             component_json=TEST_COMPONENT_JSON_BLOB,
@@ -251,22 +151,10 @@ class GetSingleComponentTest(AuthenticatedAPITestCase):
 
 
 class CreateNewComponentTest(AuthenticatedAPITestCase):
-    @classmethod
-    def setUpTestData(cls):
-        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as file:
-            catalog = File(file)
-            cls.test_catalog = Catalog.objects.create(
-                name="NIST Test Catalog",
-                file_name=catalog,
-                version="NIST 800-53",
-                impact_level="low",
-            )
-
     def test_create_valid_component(self):
         valid_payload = {
             "title": "Cool Component",
             "description": "Probably the coolest component you ever did see. It's magical.",
-            "catalog": self.test_catalog.id,
             "search_terms": ["cool", "magic", "software"],
             "type": "software",
             "component_json": TEST_COMPONENT_JSON_BLOB,
@@ -297,7 +185,6 @@ class CreateNewComponentTest(AuthenticatedAPITestCase):
         valid_payload_without_search_terms = {
             "title": "Cool Component",
             "description": "Probably the coolest component you ever did see. It's magical.",
-            "catalog": self.test_catalog.id,
             "type": "software",
             "component_json": TEST_COMPONENT_JSON_BLOB,
         }
@@ -314,7 +201,6 @@ class CreateNewComponentTest(AuthenticatedAPITestCase):
     def test_title_field_is_required(self):
         invalid_payload_without_title = {
             "description": "Probably the coolest component you ever did see. It's magical.",
-            "catalog": self.test_catalog.id,
             "search_terms": ["cool", "magic", "software"],
             "type": "software",
             "component_json": TEST_COMPONENT_JSON_BLOB,
@@ -327,28 +213,10 @@ class CreateNewComponentTest(AuthenticatedAPITestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    @prevent_request_warnings
-    def test_catalog_field_is_required(self):
-        invalid_payload_without_catalog = {
-            "title": "Cool Component",
-            "description": "Probably the coolest component you ever did see. It's magical.",
-            "search_terms": ["cool", "magic", "software"],
-            "type": "software",
-            "component_json": TEST_COMPONENT_JSON_BLOB,
-        }
-
-        response = self.client.post(
-            reverse("component-list"),
-            data=json.dumps(invalid_payload_without_catalog),
-            content_type="application/json",
-        )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
     def test_type_field_is_lowercase(self):
         uppercase_type_field = {
             "title": "Cool Component",
             "description": "Probably the coolest component you ever did see. It's magical.",
-            "catalog": self.test_catalog.id,
             "search_terms": ["cool", "magic", "software"],
             "type": "SOFTWARE",
             "component_json": TEST_COMPONENT_JSON_BLOB,
@@ -370,19 +238,10 @@ class CreateNewComponentTest(AuthenticatedAPITestCase):
 class ComponentViewTest(AuthenticatedAPITestCase):
     @classmethod
     def setUpTestData(cls):
-        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as file:
-            catalog = File(file)
-            cls.test_catalog = Catalog.objects.create(
-                name="NIST Test Catalog",
-                file_name=catalog,
-                version="NIST 800-53",
-                impact_level="low",
-            )
-
         cls.test_component = Component.objects.create(
             title="Cool Component",
             description="Probably the coolest component you ever did see. It's magical.",
-            catalog=Catalog.objects.get(id=cls.test_catalog.id),
+            supported_catalog_versions=[Catalog.Version.CMS_ARS_3_1],
             search_terms=["cool", "magic", "software"],
             type="software",
             component_json=TEST_COMPONENT_JSON_BLOB,
@@ -390,16 +249,27 @@ class ComponentViewTest(AuthenticatedAPITestCase):
         cls.test_component_2 = Component.objects.create(
             title="testing title",
             description="testing description",
-            catalog=Catalog.objects.get(id=cls.test_catalog.id),
+            supported_catalog_versions=[Catalog.Version.CMS_ARS_3_1],
+            search_terms=["cool", "magic", "software"],
+            type="policy",
+            component_json=TEST_COMPONENT_JSON_BLOB,
+        )
+
+        cls.test_component_3 = Component.objects.create(
+            title="testing different catalog",
+            description="testing description",
+            supported_catalog_versions=[Catalog.Version.CMS_ARS_5_0],
             search_terms=["cool", "magic", "software"],
             type="policy",
             component_json=TEST_COMPONENT_JSON_BLOB,
         )
 
     def test_search_empty_request(self):
-        resp = self.client.get("/api/components/search/?format=json")
+        resp = self.client.get("/api/components/search/", format="json")
         self.assertEqual(resp.status_code, 200)
-        self.assertEqual(json.loads(resp.content)[2].get("total_item_count"), 2)
+
+        content = resp.json()
+        self.assertEqual(content[3].get("total_item_count"), 3)
 
     def test_search_query_win(self):
         resp = self.client.get("/api/components/search/?search=win", format="json")
@@ -417,13 +287,14 @@ class ComponentViewTest(AuthenticatedAPITestCase):
     def test_search_filter_type_policy(self):
         resp = self.client.get("/api/components/search/?type=policy", format="json")
         self.assertEqual(resp.status_code, 200)
-        self.assertEqual(json.loads(resp.content)[0].get("type"), "policy")
-        self.assertEqual(json.loads(resp.content)[1].get("total_item_count"), 1)
 
-    def test_search_filter_catalog_id(self):
+        content = resp.json()
+        self.assertTrue(all(item["type"] == "policy" for item in content if "total_item_count" not in item))
+        self.assertEqual(content[2]["total_item_count"], 2)
+
+    def test_search_filter_catalog_version(self):
         resp = self.client.get(
-            "/api/components/search/?catalog=" + str(self.test_catalog.id),
-            format="json",
+            f"/api/components/search/?catalog_version={Catalog.Version.CMS_ARS_3_1}", format="json",
         )
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(json.loads(resp.content)[0].get("type"), "software")
@@ -431,21 +302,15 @@ class ComponentViewTest(AuthenticatedAPITestCase):
 
 
 class ComponentioTest(TestCase):
-    def setUp(self):
-        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as file:
-            catalog = File(file)
-            self.cat = Catalog.objects.create(
-                name="Test Catalog",
-                file_name=catalog,
-                version="NIST 800-53",
-                impact_level="low",
-            )
-        self.test_component = Component.objects.create(
+    @classmethod
+    def setUpTestData(cls):
+        test_component = Component.objects.create(
             title="Cool Component",
-            catalog=self.cat,
+            supported_catalog_versions=[Catalog.Version.CMS_ARS_3_1],
             component_json=TEST_COMPONENT_JSON_BLOB,
         )
-        self.tools = ComponentTools(self.test_component.component_json)
+        cls.tools = ComponentTools(test_component.component_json)
+        cls.test_component = test_component
 
     def test_get_components(self):
         components = self.tools.get_components()
@@ -476,19 +341,10 @@ class ComponentioTest(TestCase):
 class ComponentTypesViewTest(AuthenticatedAPITestCase):
     @classmethod
     def setUpTestData(cls):
-        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as file:
-            catalog = File(file)
-            cls.test_catalog = Catalog.objects.create(
-                name="NIST Test Catalog",
-                file_name=catalog,
-                version="NIST 800-53",
-                impact_level="low",
-            )
-
         cls.test_component = Component.objects.create(
             title="Cool Component",
             description="Probably the coolest component you ever did see. It's magical.",
-            catalog=cls.test_catalog,
+            supported_catalog_versions=[Catalog.Version.CMS_ARS_3_1],
             controls=["ac-2.1", "ac-6.10", "ac-8", "au-6.1", "sc-2"],
             search_terms=["cool", "magic", "software"],
             type="software",
@@ -497,7 +353,7 @@ class ComponentTypesViewTest(AuthenticatedAPITestCase):
         cls.test_component_2 = Component.objects.create(
             title="testing title",
             description="testing description",
-            catalog=cls.test_catalog,
+            supported_catalog_versions=[Catalog.Version.CMS_ARS_3_1],
             controls=["ac-2.1"],
             search_terms=["cool", "magic", "software"],
             type="policy",
@@ -508,7 +364,7 @@ class ComponentTypesViewTest(AuthenticatedAPITestCase):
         Component.objects.create(
             title="Duplicate Type Component",
             description="Component with duplicate type",
-            catalog=cls.test_catalog,
+            supported_catalog_versions=[Catalog.Version.CMS_ARS_3_1],
             controls=[
                 "ac-2.1",
             ],
@@ -538,7 +394,7 @@ class ComponentTypesViewTest(AuthenticatedAPITestCase):
         Component.objects.create(
             title="Private component",
             description="testing description",
-            catalog=self.test_catalog,
+            supported_catalog_versions=[Catalog.Version.CMS_ARS_3_1],
             search_terms=["cool", "magic", "software"],
             type="crazy-type",
             component_json=TEST_COMPONENT_JSON_BLOB,
@@ -560,22 +416,23 @@ class CreateEmptComponentTest(TestCase):
     def setUpTestData(cls):
         with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as file:
             catalog = File(file)
-            cls.test_catalog = Catalog.objects.create(
+            Catalog.objects.create(
                 name="NIST Test Catalog",
                 file_name=catalog,
-                version="NIST 800-53",
+                version=Catalog.Version.CMS_ARS_3_1,
                 impact_level="low",
             )
         title = "Empty Component"
         default_json = create_empty_component_json(
             title=title,
-            catalog=cls.test_catalog,
+            catalog_version=Catalog.Version.CMS_ARS_3_1,
+            impact_level=Catalog.ImpactLevel.LOW,
         )
         cls.default = Component(
             title=f"{title} private",
             description=f"{title} default system component",
             component_json=json.loads(default_json),
-            catalog_id=cls.test_catalog.id,
+            supported_catalog_versions=[Catalog.Version.CMS_ARS_3_1],
             status=1,
         )
         cls.tools = ComponentTools(cls.default.component_json)
@@ -591,17 +448,10 @@ class CreateEmptComponentTest(TestCase):
 class ComponentImplementedRequirementViewTest(AuthenticatedAPITestCase):
     @classmethod
     def setUpTestData(cls):
-        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as file:
-            catalog = File(file)
-            test_catalog = Catalog.objects.create(
-                name="NIST Test Catalog",
-                file_name=catalog,
-            )
-
         test_component = Component.objects.create(
             title="Cool Component",
             description="Probably the coolest component you ever did see. It's magical.",
-            catalog=Catalog.objects.get(id=test_catalog.id),
+            supported_catalog_versions=[Catalog.Version.CMS_ARS_3_1],
             controls=["ac-2.1", "ac-6.10", "ac-8", "au-6.1", "sc-2"],
             search_terms=["cool", "magic", "software"],
             type="software",

@@ -9,7 +9,6 @@ from rest_framework import serializers
 from blueprintapi.oscal.component import ImplementedRequirement, Model
 from catalogs.catalogio import CatalogTools
 from catalogs.models import Catalog
-from components.componentio import ComponentTools
 from components.models import Component
 from projects.models import Project
 
@@ -27,11 +26,12 @@ class ComponentListSerializer(serializers.ModelSerializer):
             "title",
             "description",
             "type",
-            "catalog",
+            "supported_catalog_versions",
             "component_json",
             "component_file",
             "controls_count",
         )
+        read_only_fields = ("supported_catalog_versions", "id", )
 
 
 class ComponentSerializer(serializers.ModelSerializer):
@@ -39,8 +39,24 @@ class ComponentSerializer(serializers.ModelSerializer):
     component_data = serializers.SerializerMethodField()
     project_data = serializers.SerializerMethodField()
 
+    class Meta:
+        model = Component
+        fields = (
+            "id",
+            "title",
+            "description",
+            "type",
+            "controls",
+            "search_terms",
+            "status",
+            "catalog_data",
+            "component_data",
+            "project_data",
+        )
+        read_only_fields = ("id", "catalog_data", "component_data", "project_data", )
+
     def get_catalog_data(self, obj):
-        data = collect_catalog_data(obj.controls, obj.catalog)
+        data = collect_catalog_data(obj.controls, obj.supported_catalog_versions)
         return data
 
     def get_component_data(self, obj):
@@ -74,53 +90,45 @@ class ComponentSerializer(serializers.ModelSerializer):
 
         return form_values
 
-    class Meta:
-        model = Component
-        fields = (
-            "id",
-            "title",
-            "description",
-            "type",
-            "catalog",
-            "controls",
-            "search_terms",
-            "status",
-            "catalog_data",
-            "component_data",
-            "project_data",
-        )
 
-
-def collect_catalog_data(controls: list, catalog: Catalog) -> dict:
+def collect_catalog_data(controls: list, catalog_versions: List[Catalog.Version]) -> dict:
     """Return the Catalog data for the given Controls."""
-    cat_data = CatalogTools(catalog.file_name.path)
-    data = {"version": cat_data.catalog_title, "controls": {}}
-    for control in controls:
-        data["controls"][control] = cat_data.get_control_data_simplified(control)
+    data = {}
+    catalogs = Catalog.objects.filter(version__in=catalog_versions)
+
+    for catalog in catalogs:
+        if (version := catalog.version) not in data:
+            data[version] = {}
+
+        cat_data = CatalogTools(catalog.file_name.path)
+        data[version][catalog.impact_level] = {
+            "controls": {control: cat_data.get_control_data_simplified(control) for control in controls}
+        }
 
     return data
 
 
 def collect_component_data(component: dict) -> dict:
-    tools = ComponentTools(component)
-
-    control_list = tools.get_controls()
-    controls: dict = {}
-    for control in control_list:
-        controls[control.get("control-id")] = {
-            "narrative": control.get("description"),
-            "responsibility": get_control_responsibility(control, "security_control_type"),
-            "provider": get_control_responsibility(control, "provider"),
-        }
-
-    component_ = tools.get_components()[0]
+    component_model = Model(**component)
+    component_def = component_model.component_definition.components[0]
 
     return {
-        "title": component_.get("title"),
-        "description": component_.get("description"),
-        "standard": component_.get("control-implementations")[0].get("description"),
-        "source": component_.get("control-implementations")[0].get("source"),
-        "controls": controls
+        "title": component_def.title,
+        "description": component_def.description,
+        "standards": {
+            item.description: {
+                "source": item.source,
+                "controls": {
+                    control.control_id: {
+                        "narrative": control.description,
+                        "responsibility": control.responsibility,
+                        "provider": control.provider
+                    }
+                    for control in item.implemented_requirements
+                }
+            }
+            for item in component_def.control_implementations
+        }
     }
 
 
@@ -144,7 +152,7 @@ class ComponentListBasicSerializer(serializers.ModelSerializer):
             "title",
             "description",
             "type",
-            "catalog",
+            "supported_catalog_versions",
             "controls_count",
         )
 

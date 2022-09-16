@@ -126,11 +126,13 @@ class CatalogTools:
         try:
             next_idx = search_collection.index(control_id) + 1
             return search_collection[next_idx]
-        except ValueError as exc:
-            raise MissingControlError(
-                "Cannot determine next control. Provided id does not exist"
-            ) from exc
+        except ValueError:
+            logger.warning(
+                "Cannot determine next control. Provided control does not exist in catalog(s): %s", control_id
+            )
+            return ""
         except IndexError:  # control_id was at the end of the list
+            logger.info("No new controls.")
             return ""
 
     def get_control_statement(self, control: dict) -> List:
@@ -182,7 +184,7 @@ class CatalogTools:
         elif "props" in control:
             prop = self.find_dict_by_value(control.get("props"), "name", property_name)
         else:
-            print(f"Can't find property {property_name} in {control}")
+            logger.warning("Can't find property '%s' in control data", property_name)
         if prop is not None:
             value = prop.get("value")
         return value

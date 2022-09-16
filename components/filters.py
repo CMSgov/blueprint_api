@@ -10,16 +10,19 @@ class ComponentFilter(filters.FilterSet):
 
     search = filters.CharFilter(method="keyword_search", label="Search")
     type = filters.CharFilter(lookup_expr="iexact")
-    catalog = filters.NumberFilter()
+    catalog_version = filters.CharFilter(field_name="supported_catalog_versions", method="filter_version")
 
     class Meta:
         model = Component
-        fields = ["search", "type", "catalog"]
+        fields = ["search", "type"]
 
     def keyword_search(self, queryset, name, value):  # pylint: disable=unused-argument
         return queryset.filter(
             Q(title__icontains=value) | Q(description__icontains=value)
         )
+
+    def filter_version(self, queryset, name, value):
+        return queryset.filter(**{name: [value]})
 
 
 class ComponentPermissionsFilter(BaseFilterBackend):

@@ -9,7 +9,7 @@ from uuid import UUID, uuid4
 
 from pydantic import Field
 
-from .oscal import (
+from blueprintapi.oscal.oscal import (
     BackMatter,
     Link,
     MarkupLine,
@@ -21,6 +21,7 @@ from .oscal import (
     ResponsibleRole,
     SetParameter,
 )
+from catalogs.models import Catalog
 
 
 class ComponentTypeEnum(str, Enum):
@@ -64,6 +65,25 @@ class ImplementedRequirement(OSCALElement):
     responsible_roles: Optional[List[ResponsibleRole]]
     statements: Optional[List[Statement]]
     remarks: Optional[MarkupMultiLine]
+
+    def _props_filter(self, name: str) -> Optional[str]:
+        if self.props is None:
+            return
+
+        property_ = next(filter(lambda prop: prop.name == name, self.props), None)
+
+        if property_ is None:
+            return property_
+
+        return property_.value
+
+    @property
+    def responsibility(self) -> Optional[str]:
+        return self._props_filter("security_control_type")
+
+    @property
+    def provider(self) -> Optional[str]:
+        return self._props_filter("provider")
 
     def add_statement(self, statement: Statement):
         key = statement.statement_id
@@ -160,6 +180,17 @@ class Component(OSCALElement):
                 for item in implementation.implemented_requirements
             }
         )
+
+    @property
+    def catalog_versions(self) -> List[Catalog.Version]:
+        versions = set()
+        for item in self.control_implementations:
+            try:
+                versions.add(Catalog.Version(item.description))
+            except ValueError:
+                continue
+
+        return list(versions)
 
 
 class IncorporatesComponent(OSCALElement):
