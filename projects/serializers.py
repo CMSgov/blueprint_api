@@ -3,10 +3,11 @@ from rest_framework import serializers
 
 from catalogs.catalogio import CatalogTools
 from catalogs.serializers import ControlSerializer
-from components.componentio import ComponentTools
 from components.models import Component
 from components.serializers import ComponentListSerializer
 from projects.models import Project, ProjectControl
+
+from blueprintapi.oscal.component import Model as ComponentModel
 
 
 class ProjectListSerializer(serializers.ModelSerializer):
@@ -41,6 +42,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     completed_controls = serializers.IntegerField(required=False)
     total_controls = serializers.IntegerField(required=False)
 
+    # noinspection PyMethodMayBeStatic
     def get_components_count(self, obj):
         return obj.components.count()
 
@@ -99,37 +101,53 @@ class ProjectControlSerializer(serializers.ModelSerializer):
     def get_component_data(self, obj: ProjectControl) -> dict:
         """Get the narratives from any Component that includes the given Control."""
         if obj.project.components.exists():
-            return self._get_control_data(obj.project.components.all(), self.context.get("control_id"))
+            return self._get_control_data(
+                obj.project.components.all(), self.context.get("control_id"), obj.project.catalog_version
+            )
 
         return {}
 
     @staticmethod
-    def _get_control_data(components: QuerySet, control_id: str) -> dict:
-        component_data = {
-            "responsibility": "Allocated",
-            "components": {"inherited": {}, "private": {}},
+    def _get_control_data(components: QuerySet, control_id: str, catalog_version: str) -> dict:
+        type_map = {
+            Component.Status.PUBLIC: "inherited",
+            Component.Status.SYSTEM: "private"
         }
-        count = 0
+
+        result = {
+            "responsibility": "Allocated",
+            "components": {"inherited": {}, "private": {"description": None}},
+        }
+
         responsibility: str = ""
+        count = 0
+
         for component in components:
-            status = "inherited" if component.status == Component.Status.PUBLIC else "private"
-            if control_id in component.controls:
+            component_def = ComponentModel(**component.component_json).component_definition.components[0]
+
+            try:
+                control_data = component_def.get_control(control_id, catalog_version=catalog_version)
                 count += 1
-                controls = ComponentTools(component.component_json)
-                control_data = controls.get_control_by_id(control_id)
-                responsibility = controls.get_control_props(control_data[0], "security_control_type")
-                component_data["components"][status][component.title] = {
-                    "description": control_data[0].get("description"),
-                    "responsibility": responsibility,
-                    "provider": controls.get_control_props(control_data[0], "provider"),
-                }
+            except KeyError:
+                control_data = None
+
+            if control_data is not None:
+                if (status := type_map[component.status]) == "private":
+                    result["components"][status] = {"description": control_data.description}
+                else:
+                    # noinspection PyTypeChecker
+                    result["components"][status][component.title] = {
+                        "description": control_data.description,
+                        "responsibility": control_data.responsibility,
+                        "provider": control_data.provider
+                    }
 
         if count > 1:
-            component_data["responsibility"] = "Hybrid"
+            result["responsibility"] = "Hybrid"
         elif count == 1:
-            component_data["responsibility"] = responsibility
+            result["responsibility"] = responsibility
 
-        return component_data
+        return result
 
 
 class ProjectControlListSerializer(serializers.ModelSerializer):
