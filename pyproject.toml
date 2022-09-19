@@ -24,7 +24,7 @@ django-rest-swagger = "^2.2.0"
 drf-yasg = "^1.21.3"
 
 [tool.poetry.dev-dependencies]
-pylint = "^2.14.5"
+pylint = "^2.15.3"
 pylint-django = "^2.5.3"
 
 [build-system]
