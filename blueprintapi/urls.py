@@ -16,10 +16,19 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path, re_path
 from drf_yasg import openapi
+from drf_yasg.generators import OpenAPISchemaGenerator
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 
 from . import views
+
+
+class CustomSchemaGenerator(OpenAPISchemaGenerator):
+    def get_schema(self, request=None, public=False):
+        schema = super().get_schema(request, public)
+        schema.schemes = ["http", "https"]
+
+        return schema
 
 
 SchemaView = get_schema_view(
@@ -28,8 +37,9 @@ SchemaView = get_schema_view(
         default_version="v1",
         description="Welcome to the world of RapidATO",
     ),
+    generator_class=CustomSchemaGenerator,
     public=True,
-    permission_classes=(permissions.AllowAny,),
+    permission_classes=[permissions.AllowAny, ],
 )
 
 urlpatterns = [
