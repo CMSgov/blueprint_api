@@ -460,7 +460,7 @@ class ComponentImplementedRequirementViewTest(AuthenticatedAPITestCase):
 
         cls.url = f"/api/components/{test_component.id}/implemented-requirements/"
 
-    def test_missing_fields_returns_400(self):
+    def test_bad_data_returns_400(self):
         test_cases = [
             {  # Missing catalog_version
                 "action": "add",
@@ -476,64 +476,56 @@ class ComponentImplementedRequirementViewTest(AuthenticatedAPITestCase):
                 "action": "add",
                 "catalog_version": "CMS_ARS_3_1",
                 "description": "Missing controls",
-            }
+            },
+            {  # Empty controls list
+                "action": "add",
+                "catalog_version": "CMS_ARS_3_1",
+                "description": "Empty controls list",
+                "controls": []
+            },
+            {  # Multiple controls
+                "action": "add",
+                "catalog_version": "CMS_ARS_3_1",
+                "description": "Multiple controls list",
+                "controls": ["ac-1", "ac-2"]
+            },
+            {  # Invalid catalog version
+                "action": "add",
+                "catalog_version": "HELLO",
+                "description": "Invalid catalog version",
+                "controls": ["ac-1", "ac-2"]
+            },
+            {  # Missing description
+                "action": "add",
+                "catalog_version": "CMS_ARS_3_1",
+                "controls": ["ac-1"]
+            },
+            {  # Empty description
+                "action": "add",
+                "catalog_version": "CMS_ARS_3_1",
+                "controls": ["ac-1"],
+                "description": ""
+            },
+
         ]
 
         for test in test_cases:
-            with self.subTest(request=test["description"]):
+            with self.subTest(
+                    request=(
+                            description.replace("", "Empty description")
+                            if (description := test.get("description")) is not None
+                            else "Missing description"
+                    )
+            ):
                 response = self.client.patch(self.url, test)
                 self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_empty_controls_list_returns_400(self):
-        request_json = {
-            "action": "add",
-            "catalog_version": "CMS_ARS_3_1",
-            "description": "Empty controls list",
-            "controls": []
-        }
-
-        response = self.client.patch(self.url, request_json)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_multiple_controls_returns_400(self):
-        request_json = {
-            "action": "add",
-            "catalog_version": "CMS_ARS_3_1",
-            "description": "Multiple controls list",
-            "controls": ["ac-1", "ac-2"]
-        }
-
-        response = self.client.patch(self.url, request_json)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_adding_existing_control_returns_400(self):
-        request_json = {
-            "action": "add",
-            "catalog_version": "CMS_ARS_3_1",
-            "description": "Duplicate controls list",
-            "controls": ["ac-1"]
-        }
-
-        response = self.client.patch(self.url, request_json)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_update_on_missing_control_returns_400(self):
-        request_json = {
-            "action": "update",
-            "catalog_version": "CMS_ARS_3_1",
-            "description": "Can't update missing control",
-            "controls": ["ac-500"]
-        }
-
-        response = self.client.patch(self.url, request_json)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_update_control_description(self):
         test_control_id = "ac-1"
         test_description = "updated description of ac-1 narrative"
         resp = self.client.patch(self.url,
             {
-                "action": "update",
+                "action": "add",
                 "catalog_version": "CMS_ARS_3_1",
                 "controls": [test_control_id],
                 "description": test_description,
