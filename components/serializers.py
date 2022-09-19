@@ -187,7 +187,7 @@ class ComponentControlSerializer(serializers.ModelSerializer):
             _check_required_field(field)
 
         if attrs.get("action") == self.Action.ADD and not attrs.get("description"):
-            raise serializers.ValidationError(f"'description' is required for 'add' action.")
+            raise serializers.ValidationError("'description' is required for 'add' action.")
 
         return attrs
 
