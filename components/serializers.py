@@ -239,7 +239,7 @@ class ComponentControlSerializer(serializers.ModelSerializer):
 
         for component in component_data.component_definition.components:
             for implementation in component.control_implementations:
-                if catalog_version in implementation.description:
+                if catalog_version == implementation.description:
                     return implementation.implemented_requirements, component_data
 
     @staticmethod
