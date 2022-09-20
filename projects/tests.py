@@ -112,6 +112,36 @@ class ProjectModelTest(TestCase):
         private_component = self.test_project.components.get(title="Pretty Ordinary Project private")
         self.assertEqual(private_component.status, Component.Status.SYSTEM)
 
+    def test_project_ssp(self):
+        from projects.downloads import OscalSSP
+        import jsonschema
+        from jsonschema.exceptions import SchemaError, ValidationError
+        with open("projects/project_extra.json") as read_file:
+            extras = json.load(read_file)
+        ssp = OscalSSP(self.test_project, extras)
+        data = json.loads(ssp.get_ssp())
+
+        ssp_base = data.get("system-security-plan")
+        metadata = ssp_base.get("metadata")
+        self.assertEqual(metadata.get("title"), "Pretty Ordinary Project")
+
+        roles = metadata.get("roles")
+        self.assertEqual(7, len(roles))
+
+        implementation = ssp_base.get("system-implementation")
+        components = implementation.get("components")
+        has_ociso = False
+        has_this_sytem = False
+        for comps in components:
+            if comps.get("title") == "OCISO":
+                has_ociso = True
+            if comps.get("type") == "this-system":
+                has_this_sytem = True
+        self.assertTrue(has_ociso)
+        self.assertTrue(has_this_sytem)
+
+
+
 
 class ProjectListCreateViewTestCase(AuthenticatedAPITestCase):
     @classmethod
