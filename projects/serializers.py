@@ -119,33 +119,33 @@ class ProjectControlSerializer(serializers.ModelSerializer):
             "components": {"inherited": {}, "private": {"description": None}},
         }
 
-        responsibility: str = ""
-        count = 0
-
+        responsibilities = []
         for component in components:
             component_def = ComponentModel(**component.component_json).component_definition.components[0]
 
             try:
                 control_data = component_def.get_control(control_id, catalog_version=catalog_version)
-                count += 1
             except KeyError:
                 control_data = None
 
             if control_data is not None:
+                responsibility = control_data.responsibility
+                responsibilities.append(responsibility)
+
                 if (status := type_map[component.status]) == "private":
                     result["components"][status] = {"description": control_data.description}
                 else:
                     # noinspection PyTypeChecker
                     result["components"][status][component.title] = {
                         "description": control_data.description,
-                        "responsibility": control_data.responsibility,
+                        "responsibility": responsibility,
                         "provider": control_data.provider
                     }
 
-        if count > 1:
+        if len(responsibilities) > 1:
             result["responsibility"] = "Hybrid"
-        elif count == 1:
-            result["responsibility"] = responsibility
+        elif len(responsibilities) == 1:
+            result["responsibility"] = responsibilities[0]
 
         return result
 
