@@ -46,17 +46,6 @@ class CatalogModelTest(AuthenticatedAPITestCase):
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
-class CatalogEndpointTest(AuthenticatedAPITestCase):
-    def test_valid_catalog(self):
-        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as file:
-            catalog = File(file)
-            resp = self.client.post(
-                "/api/catalogs/",
-                {"name": "Test Catalog", "file_name": catalog},
-            )
-            self.assertEqual(resp.status_code, 201)
-
-
 class LoadCatalogCommandTestCase(TestCase):
     def test_load_standard_catalogs(self):
         test_cases = [
