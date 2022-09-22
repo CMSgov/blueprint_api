@@ -4,7 +4,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Literal, Optional, Union
 
-from pydantic import BaseModel, Field, UUID4, ValidationError
+from pydantic import BaseModel, Field, UUID4, ValidationError  # pylint: disable=no-name-in-module
 
 
 class CatalogMeta(BaseModel):
