@@ -1,7 +1,11 @@
+from typing import Optional
+
 from django.db.models import QuerySet
 from rest_framework import serializers
 
 from catalogs.catalogio import CatalogTools
+from catalogs.io.v5_0 import CatalogModel
+from catalogs.models import Catalog
 from catalogs.serializers import ControlSerializer
 from components.models import Component
 from components.serializers import ComponentListSerializer
@@ -90,11 +94,21 @@ class ProjectControlSerializer(serializers.ModelSerializer):
         model = ProjectControl
         fields = ("status", "project", "control", "catalog_data", "component_data", )
 
-    def get_catalog_data(self, obj: ProjectControl) -> dict:
+    def get_catalog_data(self, obj: ProjectControl) -> Optional[dict]:
         """Get the Catalog data for a given Control."""
-        catalog = CatalogTools(obj.control.catalog.file_name.path)
-        control_data = catalog.get_control_data_simplified(control_id=self.context.get("control_id"))
-        control_data["version"] = catalog.catalog_title
+        control_data = {}
+
+        file = obj.control.catalog.file_name.path
+        control_id = self.context.get("control_id")
+
+        match obj.project.catalog_version:
+            case Catalog.Version.CMS_ARS_3_1:
+                catalog = CatalogTools(file)
+                control_data = catalog.get_control_data_simplified(control_id=control_id)
+                control_data["version"] = catalog.catalog_title
+            case Catalog.Version.CMS_ARS_5_0:
+                catalog = CatalogModel.from_json(file)
+                control_data.update({"version": catalog.metadata.title, **catalog.control_summary(control_id)})
 
         return control_data
 
