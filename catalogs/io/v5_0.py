@@ -139,12 +139,12 @@ class Family(BaseControl):
     controls: list[Control]
 
     @validator("controls")
-    def set_family_id(cls, v: list[Control], values) -> list[Control]:
-        for item in v:
+    def set_family_id(cls, value: list[Control], values) -> list[Control]:  # pylint: disable=no-self-argument
+        for item in value:
             if not item.family_id:
                 item.family_id = values.get("id")
 
-        return v
+        return value
 
 
 class CatalogModel(BaseModel):
