@@ -1,10 +1,13 @@
 import json
+import logging
 
 from datetime import datetime
 from pathlib import Path
 from typing import Literal, Optional, Union
 
-from pydantic import BaseModel, Field, UUID4, ValidationError  # pylint: disable=no-name-in-module
+from pydantic import BaseModel, Field, UUID4, ValidationError, validator  # pylint: disable=no-name-in-module
+
+logger = logging.getLogger(__name__)
 
 
 class CatalogMeta(BaseModel):
@@ -37,34 +40,90 @@ class Link(BaseModel):
     rel: str
 
 
-class Part(BaseModel):
+# noinspection PyUnresolvedReferences
+class FilterMixin:
+    def _filter_list_field(self, key: str, field: str):
+        return next(filter(lambda item_: item_.name == key, getattr(self, field)), None)
+
+    def _get_prop(self, key: str) -> "Prop":
+        return self._filter_list_field(key, field="props")
+
+    def _get_part(self, key: str) -> "Part":
+        return self._filter_list_field(key, field="parts")
+
+    @property
+    def label(self) -> str:
+        prop = self._get_prop("label")
+
+        if not prop:
+            return self.id
+
+        return prop.value
+
+
+class Part(BaseModel, FilterMixin):
     id: str
     name: str
     props: Optional[list[Prop]] = []
     parts: Optional[list["Part"]] = []
-    prose: Optional[str]
+    prose: Optional[str] = ""
 
 
-class Control(BaseControl):
+class Control(BaseControl, FilterMixin):
+    family_id: Optional[str] = Field(default="", exclude=True)
     props: Optional[list[Prop]] = []
     links: Optional[list[Link]] = []
     parts: Optional[list[Part]] = []
 
-    def _get_prop(self, key: str, default: str = "") -> str:
-        prop = next(filter(lambda prop_: prop_.name == key, self.props), None)
-
-        if prop:
-            return prop.value
-
-        return default
-
-    @property
-    def label(self) -> str:
-        return self._get_prop("label", self.title)
-
     @property
     def sort_id(self) -> str:
-        return self._get_prop("sort-id", self.title)
+        prop = self._get_prop("sort-id")
+
+        if not prop:
+            return self.title
+
+        return prop.value
+
+    @property
+    def statement(self) -> Part:
+        return self._get_part("statement")
+
+    @property
+    def implementation(self) -> str:
+        part = self._get_part("implementation")
+
+        if not part:
+            return ""
+
+        return part.prose
+
+    @property
+    def guidance(self) -> str:
+        part = self._get_part("guidance")
+
+        if not part:
+            return ""
+
+        return part.prose
+
+    @property
+    def description(self) -> str:
+        def _get_prose(item, depth=0):
+            depth += 1
+            tabs = "\t" * depth
+
+            if prose := getattr(item, "prose", ""):
+                prose = f"\n{tabs}{item.label}. {prose}"
+                parts.append(prose)
+
+            if parts_ := getattr(item, "parts", []):
+                for part in parts_:
+                    _get_prose(part, depth)
+
+        parts = []
+        _get_prose(self.statement, depth=-3)
+
+        return "".join(parts).strip()
 
     def to_orm(self) -> dict:
         return {
@@ -79,6 +138,14 @@ class Family(BaseControl):
     item_class: Literal["family"] = Field(..., alias="class")
     controls: list[Control]
 
+    @validator("controls")
+    def set_family_id(cls, v: list[Control], values) -> list[Control]:
+        for item in v:
+            if not item.family_id:
+                item.family_id = values.get("id")
+
+        return v
+
 
 class CatalogModel(BaseModel):
     uuid: UUID4
@@ -87,7 +154,33 @@ class CatalogModel(BaseModel):
 
     @property
     def controls(self) -> list[Control]:
-        return [item for group in self.groups for item in group.controls]
+        return sorted((item for group in self.groups for item in group.controls), key=lambda control: control.sort_id)
+
+    def get_control(self, control_id: str) -> Optional[Control]:
+        return next(filter(lambda control: control.id == control_id, self.controls), None)
+
+    def get_next(self, control: Control) -> str:
+        try:
+            next_idx = self.controls.index(control) + 1
+            return self.controls[next_idx].id
+        except (ValueError, IndexError):
+            return ""
+
+    def control_summary(self, control_id: str) -> dict:
+        control = self.get_control(control_id)
+        next_id = self.get_next(control)
+
+        return {
+            "label": control.label,
+            "sort_id": control.sort_id,
+            "title": control.title,
+            "family": control.family_id,
+            "description": control.description,
+            "implementation": control.implementation,
+            "guidance": control.guidance,
+            "next_id": next_id
+
+        }
 
     @classmethod
     def from_json(cls, json_file: Union[str, Path]):
