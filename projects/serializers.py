@@ -179,5 +179,6 @@ class ProjectControlListSerializer(serializers.ModelSerializer):
             "status",
             "control",
             "project",
+            "remarks",
         )
-        read_only_fields = ("status", "control", "project", )
+        read_only_fields = ("status", "control", "project", "remarks", )
