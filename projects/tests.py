@@ -32,7 +32,7 @@ TEST_COMPONENT_JSON_BLOB = {
                     {
                         "uuid": "f94a7f03-6ac5-4386-98eb-fa0392f26a1c",
                         "source": "https://raw.githubusercontent.com/NIST/catalog.json",
-                        "description": "CMS_ARS_3_1",
+                        "description": Catalog.Version.CMS_ARS_3_1,
                         "implemented-requirements": [
                             {
                                 "uuid": "6698d762-5cdc-452e-9f9e-3074df5292c6",
@@ -120,7 +120,7 @@ class ProjectListCreateViewTestCase(AuthenticatedAPITestCase):
             "load_catalog",
             name="NIST Test Catalog",
             catalog_file="blueprintapi/testdata/NIST_SP-800-53_rev5_test.json",
-            catalog_version="NIST 800-53",
+            catalog_version=Catalog.Version.CMS_ARS_3_1,
             impact_level=Catalog.ImpactLevel.LOW,
         )
 
@@ -133,7 +133,7 @@ class ProjectListCreateViewTestCase(AuthenticatedAPITestCase):
             creator=user,
             title="MyProject",
             acronym="MP",
-            catalog_version="NIST 800-53",
+            catalog_version=Catalog.Version.CMS_ARS_3_1,
             impact_level=Project.ImpactLevel.LOW,
             location="other"
         )
@@ -146,7 +146,7 @@ class ProjectListCreateViewTestCase(AuthenticatedAPITestCase):
             creator=user,
             title="MyProject2",
             acronym="MP2",
-            catalog_version="NIST 800-53",
+            catalog_version=Catalog.Version.CMS_ARS_3_1,
             impact_level=Project.ImpactLevel.LOW,
             location="other"
         )
@@ -155,14 +155,14 @@ class ProjectListCreateViewTestCase(AuthenticatedAPITestCase):
         test_cases = (
             {
                 "acronym": "NTP",
-                "catalog_version": "NIST 800-53",
+                "catalog_version": Catalog.Version.CMS_ARS_3_1,
                 "impact_level": "low",
                 "location": "other",
                 "catalog": self.test_catalog.id,
             },
             {
                 "title": "No Acronym Project",
-                "catalog_version": "NIST 800-53",
+                "catalog_version": Catalog.Version.CMS_ARS_3_1,
                 "impact_level": "low",
                 "location": "other",
                 "catalog": self.test_catalog.id,
@@ -184,7 +184,7 @@ class ProjectListCreateViewTestCase(AuthenticatedAPITestCase):
         project_data = {
             "title": "Test project",
             "acronym": "TP",
-            "catalog_version": "NIST 800-53",
+            "catalog_version": Catalog.Version.CMS_ARS_3_1,
             "impact_level": Project.ImpactLevel.LOW,
             "location": "other"
         }
@@ -308,14 +308,6 @@ class ProjectAddComponentViewTest(AuthenticatedAPITestCase):
             catalog_file="blueprintapi/testdata/NIST_SP-800-53_rev5_test.json",
             catalog_version=Catalog.Version.CMS_ARS_3_1,
             impact_level=Catalog.ImpactLevel.LOW,
-        )
-
-        call_command(
-            "load_catalog",
-            name="NIST Test Catalog 2",
-            catalog_file="blueprintapi/testdata/NIST_SP-800-53_rev5_test.json",
-            catalog_version=Catalog.Version.CMS_ARS_5_0,
-            impact_level=Catalog.ImpactLevel.MODERATE,
         )
 
         test_catalog = Catalog.objects.get(name="NIST Test Catalog")
@@ -523,7 +515,7 @@ class ProjectPostSaveAddComponentTest(TestCase):
         project = Project.objects.create(
             title="Basic Project",
             acronym="BP",
-            catalog_version="NIST 800-53",
+            catalog_version=Catalog.Version.CMS_ARS_3_1,
             impact_level="low",
             location="other",
             creator=self.test_user,
@@ -536,7 +528,7 @@ class ProjectPostSaveAddComponentTest(TestCase):
         project = Project.objects.create(
             title="Basic Project",
             acronym="BP",
-            catalog_version="NIST 800-53",
+            catalog_version=Catalog.Version.CMS_ARS_3_1,
             impact_level="low",
             location="cms_aws",
             creator=self.test_user,
@@ -733,7 +725,7 @@ class RetrieveUpdateProjectControlViewTestCase(AuthenticatedAPITestCase):
             "load_catalog",
             name="NIST Test Catalog",
             catalog_file="blueprintapi/testdata/NIST_SP-800-53_rev5_test.json",
-            catalog_version="NIST 800-53",
+            catalog_version=Catalog.Version.CMS_ARS_3_1,
             impact_level=Catalog.ImpactLevel.LOW,
         )
 
@@ -742,7 +734,7 @@ class RetrieveUpdateProjectControlViewTestCase(AuthenticatedAPITestCase):
         cls.project = Project.objects.create(
             title="Test project",
             acronym="TP",
-            catalog_version="NIST 800-53",
+            catalog_version=Catalog.Version.CMS_ARS_3_1,
             impact_level="low",
             location="other",
             creator=user,
