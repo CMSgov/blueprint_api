@@ -3,28 +3,35 @@ import os
 from typing import List
 
 from catalogs.catalogio import CatalogTools
+from catalogs.io.v5_0 import CatalogModel
 from catalogs.models import Catalog, Controls
 
 
 # noinspection PyUnusedLocal
 def add_controls(sender, instance: Catalog, created: bool, **kwargs):  # pylint: disable=unused-argument
     if created:
-        catalog = CatalogTools(instance.file_name.path)
-        control_ids = catalog.get_controls_all_ids()
-        if control_ids:
-            control_objects: List = []
-            for control_id in control_ids:
-                control_data = catalog.get_control_data_simplified(control_id)
-                control_objects.append(
-                    Controls(
-                        catalog=instance,
-                        control_id=control_id,
-                        control_label=control_data.get("label"),
-                        sort_id=control_data.get("sort_id"),
-                        title=control_data.get("title"),
+        if instance.version == Catalog.Version.CMS_ARS_3_1:
+            catalog = CatalogTools(instance.file_name.path)
+            control_ids = catalog.get_controls_all_ids()
+            if control_ids:
+                control_objects: List = []
+                for control_id in control_ids:
+                    control_data = catalog.get_control_data_simplified(control_id)
+                    control_objects.append(
+                        Controls(
+                            catalog=instance,
+                            control_id=control_id,
+                            control_label=control_data.get("label"),
+                            sort_id=control_data.get("sort_id"),
+                            title=control_data.get("title"),
+                        )
                     )
-                )
-            Controls.objects.bulk_create(control_objects)
+                Controls.objects.bulk_create(control_objects)
+        else:
+            catalog_data = CatalogModel.from_json(instance.file_name.path)
+            Controls.objects.bulk_create(
+                [Controls(**{"catalog": instance, **item.to_orm()}) for item in catalog_data.controls]
+            )
 
 
 # noinspection PyUnusedLocal
