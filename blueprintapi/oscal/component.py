@@ -171,6 +171,12 @@ class Component(OSCALElement):
         allow_population_by_field_name = True
         exclude_if_false = ["control-implementations"]
 
+    def get_control_implementation(self, catalog_version: str) -> ControlImplementation:
+        try:
+            return next(filter(lambda imp: imp.description == catalog_version, self.control_implementations))
+        except StopIteration as exc:
+            raise KeyError(f"Provided catalog version is not in control implementations: '{catalog_version}'.") from exc
+
     @property
     def control_ids(self) -> List[str]:
         return list(
@@ -180,6 +186,24 @@ class Component(OSCALElement):
                 for item in implementation.implemented_requirements
             }
         )
+
+    def controls(self, catalog_version: str = None) -> List[ImplementedRequirement]:
+        if not catalog_version:
+            return [
+                item
+                for implementation in self.control_implementations
+                for item in implementation.implemented_requirements
+            ]
+
+        return self.get_control_implementation(catalog_version).implemented_requirements
+
+    def get_control(self, control_id: str, catalog_version: str) -> ImplementedRequirement:
+        implementation = self.get_control_implementation(catalog_version)
+
+        try:
+            return next(filter(lambda req: req.control_id == control_id, implementation.implemented_requirements))
+        except StopIteration as exc:
+            raise KeyError(f"{control_id} is not implemented in this component.") from exc
 
     @property
     def catalog_versions(self) -> List[Catalog.Version]:

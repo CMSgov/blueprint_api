@@ -161,7 +161,6 @@ class ComponentControlSerializer(serializers.ModelSerializer):
     class Action(TextChoices):
         ADD = "add", _("Add control")
         REMOVE = "remove", _("Remove control")
-        UPDATE = "update", _("Update control description")
 
     catalog_version = serializers.CharField(write_only=True)
     action = serializers.ChoiceField(choices=Action.choices, write_only=True)
@@ -187,6 +186,9 @@ class ComponentControlSerializer(serializers.ModelSerializer):
         for field in ("action", "controls", "catalog_version"):
             _check_required_field(field)
 
+        if attrs.get("action") == self.Action.ADD and not attrs.get("description"):
+            raise serializers.ValidationError("'description' is required for 'add' action.")
+
         return attrs
 
     # noinspection PyMethodMayBeStatic
@@ -196,17 +198,33 @@ class ComponentControlSerializer(serializers.ModelSerializer):
 
         return value
 
+    # noinspection PyMethodMayBeStatic
+    def validate_catalog_version(self, value: str):
+        try:
+            catalog_version = Catalog.Version(value)
+        except ValueError as exc:
+            raise serializers.ValidationError(f"Invalid catalog version: '{value}'") from exc
+
+        return catalog_version
+
     def update(self, instance: Component, validated_data: dict) -> Component:
         control = validated_data["controls"][0]
         action = validated_data["action"]
         catalog_version = validated_data["catalog_version"]
 
+        try:
+            location, component_model = self._find_update_location(instance, catalog_version)
+        except (TypeError, ValueError) as exc:
+            raise serializers.ValidationError(
+                f"Could not find a matching section for the provided catalog version, {catalog_version}."
+            ) from exc
+
         if action == self.Action.REMOVE:
-            self._remove_implemented_requirement(instance, control, catalog_version)
-        elif action == self.Action.ADD:
-            self._add_implemented_requirement(instance, control, validated_data["description"], catalog_version)
+            self._remove_implemented_requirement(instance, control, location, component_model)
         else:
-            self._update_implemented_requirement(instance, control, catalog_version, validated_data["description"])
+            self._add_implemented_requirement(
+                instance, control, validated_data["description"], location, component_model
+            )
 
         instance.save()
 
@@ -221,40 +239,38 @@ class ComponentControlSerializer(serializers.ModelSerializer):
 
         for component in component_data.component_definition.components:
             for implementation in component.control_implementations:
-                if catalog_version in implementation.description:
+                if catalog_version == implementation.description:
                     return implementation.implemented_requirements, component_data
 
-    def _add_implemented_requirement(self, instance: Component, control: str, description: str, catalog_version: str):
-        if control in instance.controls:
-            raise serializers.ValidationError(f"{control} has already been added to {instance}.")
-
-        location, component_model = self._find_update_location(instance, catalog_version)
-
-        if location:
-            location.append(ImplementedRequirement(control_id=control, description=description))
-            instance.component_json = json.loads(component_model.json(by_alias=True, exclude_none=True))
-
-    def _remove_implemented_requirement(self, instance: Component, control: str, catalog_version: str):
-        if control not in instance.controls:
-            raise serializers.ValidationError(f"Missing control, {control} cannot be removed from {instance}.")
-
-        location, component_model = self._find_update_location(instance, catalog_version)
-
-        if location:
-            location.remove(next(filter(lambda requirement: requirement.control_id == control, location)))
-            instance.component_json = json.loads(component_model.json(by_alias=True, exclude_none=True))
-
-    def _update_implemented_requirement(
-            self, instance: Component, control: str, catalog_version: str, description: str
+    @staticmethod
+    def _add_implemented_requirement(
+            instance: Component,
+            control: str,
+            description: str,
+            location: List[ImplementedRequirement],
+            component_model: Model
     ):
-        if control not in instance.controls:
-            raise serializers.ValidationError(f"Missing control, {control} cannot be updated in {instance}")
+        requirement = next(filter(lambda req: req.control_id == control, location), None)
 
-        location, component_model = self._find_update_location(instance, catalog_version)
+        if requirement is None:
+            location.append(ImplementedRequirement(control_id=control, description=description))
+        else:
+            requirement.description = description
 
-        if location:
-            for requirement in location:
-                if requirement.control_id == control:
-                    requirement.description = description
+        instance.component_json = json.loads(component_model.json(by_alias=True, exclude_none=True))
 
-            instance.component_json = json.loads(component_model.json(by_alias=True, exclude_none=True))
+    @staticmethod
+    def _remove_implemented_requirement(
+            instance: Component,
+            control: str,
+            location: List[ImplementedRequirement],
+            component_model: Model
+    ):
+        try:
+            location.remove(next(filter(lambda requirement: requirement.control_id == control, location)))
+        except StopIteration as exc:
+            raise serializers.ValidationError(
+                f"Could not remove control, {control} from {instance.title}. Matching control not found."
+            ) from exc
+
+        instance.component_json = json.loads(component_model.json(by_alias=True, exclude_none=True))
