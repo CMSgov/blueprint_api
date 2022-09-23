@@ -1,10 +1,8 @@
-import io
 import json
 
 from django.core.management import call_command
 from django.test import TestCase
 from django.urls import reverse
-from jsonschema import validate, ValidationError, SchemaError
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 
@@ -158,7 +156,7 @@ class ProjectSspDownload(AuthenticatedAPITestCase):
             reverse("download-ssp", kwargs={"project_id": self.test_project.pk})
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEquals(
+        self.assertEqual(
             response.get("Content-Disposition"),
             f'attachment; filename="{self.test_project.title}-ssp.json"'
         )
