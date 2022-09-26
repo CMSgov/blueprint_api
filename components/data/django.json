@@ -1,157 +1,265 @@
 {
   "component-definition": {
-    "uuid": "4bc1953c-d201-43d9-8d49-70bb6a1c4327",
+    "uuid": "71da3723-c33e-4d2c-8168-5c3816df7dc7",
     "metadata": {
       "title": "Django",
-      "published": "2022-08-01T21:05:10.806928+00:00",
-      "last-modified": "2022-08-01T21:05:10.806935+00:00",
+      "published": "2022-09-09T02:05:22.041562+00:00",
+      "last-modified": "2022-09-09T02:05:22.041572+00:00",
       "version": "unknown",
       "oscal-version": "1.0.0"
     },
     "components": [
       {
-        "uuid": "d42844ee-50a3-40f5-8a02-ccc351e2a95a",
+        "uuid": "4ee6d4c7-a9e1-4f4b-bfcd-cb8d364d55af",
         "type": "software",
         "title": "Django",
         "description": "Django is a free and open-source, Python-based web framework that follows the model\u2013template\u2013views architectural pattern.",
         "control-implementations": [
           {
-            "uuid": "8a89220e-c679-4970-904a-e319f92cb8ca",
+            "uuid": "d4ecc2c9-76b3-4426-ab1b-b305a23eb168",
             "source": "https://raw.githubusercontent.com/CMSgov/ars-machine-readable/main/3.1/oscal/json/CMS_ARS_3_1_catalog.json",
             "description": "CMS_ARS_3_1",
             "implemented-requirements": [
               {
-                "uuid": "809e54d5-1670-45d5-a852-8a34e03d5e95",
+                "uuid": "eb7388a8-1179-4583-80b3-e03ef991b0bd",
                 "control-id": "ac-3",
-                "description": "The Django web framework implements role-based access control to enforce logical access to its information and services.",
+                "description": "The Django web framework can be configured to enforce logical access to its information and services.",
                 "props": [
                   {
                     "name": "security_control_type",
                     "value": "Hybrid",
-                    "uuid": "925c9e7b-9f60-41f6-bffd-82bcbd882d65"
+                    "uuid": "765d9ef7-c39c-4213-b5e0-eef1f7b7e19f"
                   }
                 ]
               },
               {
-                "uuid": "c6f3a55d-e6aa-4ea1-9892-43336a665b6a",
+                "uuid": "c64b2bff-880c-4eba-ae74-e8e2ee579449",
                 "control-id": "ac-7",
-                "description": "Django can be configured to lock an account after a specified number of invalid login attempts within a specified time period. These values have been configured in accordance with CMS ARS guidance to lock the account automatically after three (3) invalid login attempts during a 120-minute time window.",
+                "description": "Django can be configured to lock an account after a specified number of invalid login attempts within a specified time period.",
                 "props": [
                   {
                     "name": "security_control_type",
-                    "value": "Inherited",
-                    "uuid": "5d43cfe4-d0cf-44eb-abaf-ee5be464e820"
+                    "value": "Hybrid",
+                    "uuid": "232502a1-3409-4f5d-ba23-75029a110f62"
                   }
                 ]
               },
               {
-                "uuid": "3ccd9823-cc86-4604-a0cf-083628066524",
+                "uuid": "c6d1d85d-cf5b-462a-b898-353310549c92",
                 "control-id": "ac-11",
-                "description": "The Django web framework has built-in session management that includes locking and terminating a session after a specific duration of inactivity. The duration of a session is set by configuring the `SESSION_COOKIE_AGE` in `settings.py`.",
+                "description": "The Django web framework has built-in session management that includes locking a session after a specific duration of inactivity.",
                 "props": [
                   {
                     "name": "security_control_type",
-                    "value": "Inherited",
-                    "uuid": "48aaf444-76c4-47e8-86b1-665b48a6ffd3"
+                    "value": "Hybrid",
+                    "uuid": "060c5a89-5b46-455a-af2c-8bb2df99f25e"
                   }
                 ]
               },
               {
-                "uuid": "b51d2cac-9e6a-4ce8-8e70-60ae64b559d7",
+                "uuid": "369872eb-f091-46fc-ba03-9396c3f5a0b7",
                 "control-id": "ac-12",
-                "description": "Django is configured to terminate the user session after 15 minutes of inactivity.",
+                "description": "Django can be configured to terminate a user session when defined conditions or trigger events occur.",
                 "props": [
                   {
                     "name": "security_control_type",
-                    "value": "Inherited",
-                    "uuid": "5d9ef4b6-d48f-42a2-8f3f-53e58d3b4a6d"
+                    "value": "Hybrid",
+                    "uuid": "e1abc6b4-c076-4371-8889-d488d1eaebb9"
                   }
                 ]
               },
               {
-                "uuid": "1a57bdaf-6a30-41d6-b42e-ea9ee0651d0e",
+                "uuid": "ad2c22d0-26b0-45fb-81ef-151111e04fda",
                 "control-id": "ac-14",
-                "description": "The Django web framework has built-in session management and path routing that are combined to control which actions can be performed by the anonymous end-users without authentication.",
+                "description": "The Django web framework has built-in session management and path routing that are combined to control which actions can be performed by anonymous end-users without authentication.",
                 "props": [
                   {
                     "name": "security_control_type",
                     "value": "Hybrid",
-                    "uuid": "9263c4aa-d2e6-4f63-882f-e62840a58fd4"
+                    "uuid": "8d3d2df9-02c8-4483-87af-0fff1aab1637"
                   },
                   {
                     "name": "provider",
                     "value": "No",
-                    "uuid": "4e4c980d-5fb0-48ca-8a22-80a10a03beb4"
+                    "uuid": "91b7ccec-d318-4404-81d9-845d88b0173a"
                   }
                 ]
               },
               {
-                "uuid": "f518a71c-7ac3-4915-8878-5a818a26bf7c",
+                "uuid": "b901b187-ec94-4b0c-b37b-579742a198e7",
                 "control-id": "au-2",
-                "description": "The auditable events provided by Django for logging include:\n\n\n  - Web traffic logs\n  - User access logs\n  - Page request log\n  - Use of administrator privileges (write)",
+                "description": "Django can be configured to provide auditable event logs.",
                 "props": [
                   {
                     "name": "security_control_type",
                     "value": "Hybrid",
-                    "uuid": "ce96595e-04dc-43c4-9046-bbd000d4b721"
+                    "uuid": "0895053b-7a3f-40da-8756-7094f0fffa25"
                   },
                   {
                     "name": "provider",
                     "value": "No",
-                    "uuid": "4f1fba40-ad22-4e66-a80c-98706716cf29"
+                    "uuid": "eaac1813-0eb3-4a96-86be-015c00a9ad5f"
                   }
                 ]
               },
               {
-                "uuid": "623f74d8-520e-4cf8-aa2a-0c40c603f8d0",
-                "control-id": "au-6.1",
-                "description": "Django logs are fed into Splunk for aggregation, review and analysis.",
-                "props": [
-                  {
-                    "name": "security_control_type",
-                    "value": "Hybrid",
-                    "uuid": "7052b802-71bb-4903-b65a-b555bdc80602"
-                  },
-                  {
-                    "name": "provider",
-                    "value": "No",
-                    "uuid": "98b9eb8e-d711-4127-a03a-23563ffd2272"
-                  }
-                ]
-              },
-              {
-                "uuid": "e43af96e-9590-4f4a-b5cc-6b97c2975e92",
+                "uuid": "1e56ccf6-4551-421b-96af-7566c0af4c1f",
                 "control-id": "ia-2",
-                "description": "The Django web framework integrates with EUA/IDM to enforce logical access to information and services.",
+                "description": "Django user Authentication can be done via username and password or can be delegated to a Single Sign-On service.",
                 "props": [
                   {
                     "name": "security_control_type",
                     "value": "Hybrid",
-                    "uuid": "3c8c26d8-5389-497e-aee7-9a26d4389712"
+                    "uuid": "5dbf1a30-98e3-4885-b9b7-a75830315244"
                   }
                 ]
               },
               {
-                "uuid": "aba3f63a-7f18-4b41-8556-a87a9acb8a0b",
+                "uuid": "13b8c667-ba3f-4b14-8024-d82e3434c3a2",
                 "control-id": "ia-6",
-                "description": "The Django web framework obscures passwords as they are entered during the authentication process. Failed login attempts return a generic error message to the user, not allowing the user to ascertain whether the username or password provided exists in the system.",
-                "props": [
-                  {
-                    "name": "security_control_type",
-                    "value": "Inherited",
-                    "uuid": "645b38a1-df64-42df-aa95-5b92d1b58d46"
-                  }
-                ]
-              },
-              {
-                "uuid": "a94325dd-16f6-4fed-b5e3-2b989fcaa191",
-                "control-id": "sc-2",
-                "description": "The Django web framework has separate admin functionality that requires staff and/or admin role authentication for access.",
+                "description": "The Django web framework obscures passwords when entered during the authentication process. Failed login attempts return a generic error message to the user, not allowing the user to ascertain whether the username or password provided exists in the system.",
                 "props": [
                   {
                     "name": "security_control_type",
                     "value": "Hybrid",
-                    "uuid": "1bb05927-6971-47ae-aa51-e3e8986343f3"
+                    "uuid": "8ac9969d-54d8-412b-8f59-e6de4db765a8"
+                  }
+                ]
+              },
+              {
+                "uuid": "28a4395e-6c20-41ba-a462-b14f220190e6",
+                "control-id": "sc-2",
+                "description": "The Django web framework has separate admin functionality that requires Admininstrator role authentication for access to system management functionality.",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "704f9940-18ac-409a-b95f-a16483fadba5"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "aa1923a4-bb92-45d1-8776-389f62751fac",
+            "source": "https://raw.githubusercontent.com/CMSgov/ars-machine-readable/main/5.0/oscal/json/CMS_ARS_5_0_catalog.json",
+            "description": "CMS_ARS_5_0",
+            "implemented-requirements": [
+              {
+                "uuid": "e6ddea11-8e7d-4691-8469-75089f335f2f",
+                "control-id": "ac-3",
+                "description": "The Django web framework can be configured to enforce logical access to its information and services.",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "a6aadbf6-d09c-48be-84aa-2a6caebc85ea"
+                  }
+                ]
+              },
+              {
+                "uuid": "f0cb851e-a465-47b6-bd36-0a65570f7e33",
+                "control-id": "ac-7",
+                "description": "Django can be configured to lock an account after a specified number of invalid login attempts within a specified time period.",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "b314cf92-4ff3-4672-8cac-4bf76444ce88"
+                  }
+                ]
+              },
+              {
+                "uuid": "28a367c1-f9b5-4870-8240-e623791824b7",
+                "control-id": "ac-11",
+                "description": "The Django web framework has built-in session management that includes locking a session after a specific duration of inactivity.",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "593b32f7-10fc-417c-9602-4d1059e22fff"
+                  }
+                ]
+              },
+              {
+                "uuid": "ce4c4873-4702-41f1-8f8e-e71f55c29add",
+                "control-id": "ac-12",
+                "description": "Django can be configured to terminate a user session when defined conditions or trigger events occur.",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "323d77e1-a4c4-4281-828f-a4ced3a12688"
+                  }
+                ]
+              },
+              {
+                "uuid": "b77b416e-2290-41ec-b35e-4f670b3fa8b5",
+                "control-id": "ac-14",
+                "description": "The Django web framework has built-in session management and path routing that are combined to control which actions can be performed by anonymous end-users without authentication.",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "020f3023-9978-4f45-94b2-09e14a9b3286"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "No",
+                    "uuid": "5b3d6cad-9033-4233-9a87-3cf5c761d424"
+                  }
+                ]
+              },
+              {
+                "uuid": "94f86785-6e66-431d-84c2-6e5cfd371dc8",
+                "control-id": "au-2",
+                "description": "Django can be configured to provide auditable event logs.",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "7e046372-138e-453a-813e-ea652cb1d4c7"
+                  },
+                  {
+                    "name": "provider",
+                    "value": "No",
+                    "uuid": "cd88144f-e9e1-4b67-a653-4e95e99e2c56"
+                  }
+                ]
+              },
+              {
+                "uuid": "bebfb78a-4db8-44ae-9317-89c30cafe76f",
+                "control-id": "ia-2",
+                "description": "Django user Authentication can be done via username and password or can be delegated to a Single Sign-On service.",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "541210f3-2451-4afb-a8be-26ee1e9482bf"
+                  }
+                ]
+              },
+              {
+                "uuid": "a48116a5-6b23-4851-826c-7df61efaeb9b",
+                "control-id": "ia-6",
+                "description": "The Django web framework obscures passwords when entered during the authentication process. Failed login attempts return a generic error message to the user, not allowing the user to ascertain whether the username or password provided exists in the system.",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "63ec7806-15c5-4708-9c53-4af334b439f8"
+                  }
+                ]
+              },
+              {
+                "uuid": "f5f47802-5ade-4a3b-ae43-a9d27988b0ce",
+                "control-id": "sc-2",
+                "description": "The Django web framework has separate admin functionality that requires Admininstrator role authentication for access to system management functionality.",
+                "props": [
+                  {
+                    "name": "security_control_type",
+                    "value": "Hybrid",
+                    "uuid": "b120ec8f-5901-45b1-9a25-4b867076ab34"
                   }
                 ]
               }
