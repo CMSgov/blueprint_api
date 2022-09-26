@@ -411,7 +411,7 @@ class ComponentTypesViewTest(AuthenticatedAPITestCase):
         self.assertEqual(flattened, ["policy", "software"])
 
 
-class CreateEmptComponentTest(TestCase):
+class CreateEmptyComponentTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as file:
