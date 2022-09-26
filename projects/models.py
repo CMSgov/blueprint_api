@@ -1,5 +1,6 @@
 import logging
 
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -54,6 +55,7 @@ class Project(models.Model):
         to="catalogs.Controls",
         through="ProjectControl",
         related_name="project_controls",
+        through_fields=("project", "control")
     )
     impact_level = models.CharField(
         choices=ImpactLevel.choices,
@@ -120,6 +122,12 @@ class ProjectControl(models.Model):
         help_text="The Project Control status; completed, incomplete, or not started",
     )
     remarks = models.TextField(blank=True)
+
+    disabled_narratives = ArrayField(
+        models.IntegerField(),
+        blank=True,
+        default=list
+    )
 
     def __str__(self):
         return self.control.control_id
