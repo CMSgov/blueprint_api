@@ -21,7 +21,7 @@ django-filter = "^22.1"
 pydantic = "^1.9.2"
 requests = "^2.28.1"
 django-rest-swagger = "^2.2.0"
-drf-yasg = "^1.21.3"
+drf-yasg = "^1.21.4"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.15.3"
