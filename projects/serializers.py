@@ -108,7 +108,7 @@ class ProjectControlSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("A justification is required for non-applicable controls.")
         return attrs
 
-    def validate_disabled_narratives(self, value: list[int]) -> list[int]:
+    def validate_disable_narratives(self, value: list[int]) -> list[int]:
         invalid = []
         for item in value:
             if not self.instance.project.components.filter(id=item).exists():
@@ -132,7 +132,6 @@ class ProjectControlSerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
-
 
     def get_catalog_data(self, obj: ProjectControl) -> Optional[dict]:
         """Get the Catalog data for a given Control."""
