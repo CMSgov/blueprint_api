@@ -3,6 +3,14 @@
 from django.db import migrations, models
 
 
+def change_existing_values(apps, schema_editor):
+    ProjectControl = apps.get_model('projects', 'ProjectControl')
+
+    for project_control in ProjectControl.objects.filter(status="completed"):
+        project_control.status = "complete"
+        project_control.save()
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -15,4 +23,5 @@ class Migration(migrations.Migration):
             name='status',
             field=models.CharField(choices=[('not_started', 'Not started'), ('incomplete', 'Incomplete'), ('complete', 'Complete')], default='not_started', help_text='The Project Control status; completed, incomplete, or not started', max_length=20),
         ),
+        migrations.RunPython(change_existing_values)
     ]
