@@ -131,7 +131,7 @@ class ProjectListCreateViewTestCase(AuthenticatedAPITestCase):
         )
 
         control_status = project.to_project.first()
-        control_status.status = "complete"
+        control_status.status = ProjectControl.Status.COMPLETE
         control_status.save()
 
         Project.objects.create(
