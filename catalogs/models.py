@@ -71,11 +71,11 @@ class Controls(models.Model):
         help_text="Catalog control ID, for example ac-1",
     )
     control_label = models.CharField(
-        max_length=12,
+        max_length=16,
         help_text="Catalog control label, for example AC-01",
     )
     sort_id = models.CharField(
-        max_length=12,
+        max_length=16,
         help_text="Catalog ID used for sorting, for example ac-01",
     )
     title = models.CharField(

@@ -10,7 +10,7 @@ from .models import Catalog
 from .serializers import CatalogListSerializer
 
 
-class CatalogListView(generics.ListCreateAPIView):
+class CatalogListView(generics.ListAPIView):
     """Use for read-write endpoints to represent a collection of model instances.
     Provides get and post method handlers.
     """

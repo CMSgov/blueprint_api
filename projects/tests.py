@@ -32,7 +32,7 @@ TEST_COMPONENT_JSON_BLOB = {
                     {
                         "uuid": "f94a7f03-6ac5-4386-98eb-fa0392f26a1c",
                         "source": "https://raw.githubusercontent.com/NIST/catalog.json",
-                        "description": "CMS_ARS_3_1",
+                        "description": Catalog.Version.CMS_ARS_3_1,
                         "implemented-requirements": [
                             {
                                 "uuid": "6698d762-5cdc-452e-9f9e-3074df5292c6",
@@ -116,15 +116,7 @@ class ProjectModelTest(TestCase):
 class ProjectListCreateViewTestCase(AuthenticatedAPITestCase):
     @classmethod
     def setUpTestData(cls):
-        call_command(
-            "load_catalog",
-            name="NIST Test Catalog",
-            catalog_file="blueprintapi/testdata/NIST_SP-800-53_rev5_test.json",
-            catalog_version="NIST 800-53",
-            impact_level=Catalog.ImpactLevel.LOW,
-        )
-
-        cls.test_catalog = Catalog.objects.get(name="NIST Test Catalog")
+        call_command("load_catalog", load_standard_catalogs=True)
 
         user = User.objects.create()
         cls.user = user
@@ -133,7 +125,7 @@ class ProjectListCreateViewTestCase(AuthenticatedAPITestCase):
             creator=user,
             title="MyProject",
             acronym="MP",
-            catalog_version="NIST 800-53",
+            catalog_version=Catalog.Version.CMS_ARS_3_1,
             impact_level=Project.ImpactLevel.LOW,
             location="other"
         )
@@ -146,7 +138,7 @@ class ProjectListCreateViewTestCase(AuthenticatedAPITestCase):
             creator=user,
             title="MyProject2",
             acronym="MP2",
-            catalog_version="NIST 800-53",
+            catalog_version=Catalog.Version.CMS_ARS_3_1,
             impact_level=Project.ImpactLevel.LOW,
             location="other"
         )
@@ -155,17 +147,15 @@ class ProjectListCreateViewTestCase(AuthenticatedAPITestCase):
         test_cases = (
             {
                 "acronym": "NTP",
-                "catalog_version": "NIST 800-53",
+                "catalog_version": Catalog.Version.CMS_ARS_3_1,
                 "impact_level": "low",
                 "location": "other",
-                "catalog": self.test_catalog.id,
             },
             {
                 "title": "No Acronym Project",
-                "catalog_version": "NIST 800-53",
+                "catalog_version": Catalog.Version.CMS_ARS_3_1,
                 "impact_level": "low",
                 "location": "other",
-                "catalog": self.test_catalog.id,
             },
         )
 
@@ -181,29 +171,48 @@ class ProjectListCreateViewTestCase(AuthenticatedAPITestCase):
         token = Token.objects.create(user=self.user)
         self.client.force_authenticate(user=self.user, token=token)
 
-        project_data = {
-            "title": "Test project",
-            "acronym": "TP",
-            "catalog_version": "NIST 800-53",
-            "impact_level": Project.ImpactLevel.LOW,
-            "location": "other"
-        }
+        test_cases = [
+            {
+                "title": "Test project",
+                "acronym": "TP",
+                "catalog_version": Catalog.Version.CMS_ARS_3_1,
+                "impact_level": Project.ImpactLevel.LOW,
+                "location": "other",
+                "catalog": (
+                    Catalog.objects.get(version=Catalog.Version.CMS_ARS_3_1, impact_level=Catalog.ImpactLevel.LOW).id
+                )
+            },
+            {
+                "title": "Other Test project",
+                "acronym": "OTP",
+                "catalog_version": Catalog.Version.CMS_ARS_5_0,
+                "impact_level": Project.ImpactLevel.LOW,
+                "location": "other",
+                "catalog": (
+                    Catalog.objects.get(version=Catalog.Version.CMS_ARS_5_0, impact_level=Catalog.ImpactLevel.LOW).id
+                )
+            }
+        ]
 
-        response = self.client.post(
-            reverse("project-list"), data=json.dumps(project_data), content_type="application/json"
-        )
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        for test_case in test_cases:
+            with self.subTest(msg=test_case["title"]):
+                expected_catalog = test_case.pop("catalog")
 
-        content = response.json()
+                response = self.client.post(
+                    reverse("project-list"), data=json.dumps(test_case), content_type="application/json"
+                )
+                self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        # Check user and catalog
-        self.assertEqual(content["creator"], self.user.id)
-        self.assertEqual(content["catalog"], self.test_catalog.id)
+                content = response.json()
 
-        # Check input data was successfully added
-        for field in ("title", "acronym", "catalog_version", "impact_level"):
-            with self.subTest(field=field):
-                self.assertEqual(content[field], project_data[field])
+                # Check user and catalog
+                self.assertEqual(content["creator"], self.user.id)
+                self.assertEqual(content["catalog"], expected_catalog)
+
+                # Check input data was successfully added
+                for field in ("title", "acronym", "catalog_version", "impact_level"):
+                    with self.subTest(field=field):
+                        self.assertEqual(content[field], test_case[field])
 
     def test_project_list_percent_complete(self):
         response = self.client.get(reverse("project-list"))
@@ -216,7 +225,7 @@ class ProjectListCreateViewTestCase(AuthenticatedAPITestCase):
             with self.subTest(project=project["title"]):
                 self.assertEqual(project["completed_controls"], expected)
                 # Both projects have the same number of controls based on the catalog
-                self.assertEqual(project["total_controls"], 53)
+                self.assertEqual(project["total_controls"], 183)
 
 
 class ProjectComponentsTest(AuthenticatedAPITestCase):
@@ -302,48 +311,9 @@ class ProjectAddComponentViewTest(AuthenticatedAPITestCase):
     def setUpTestData(cls):
         test_user = User.objects.create()
 
-        call_command(
-            "load_catalog",
-            name="NIST Test Catalog",
-            catalog_file="blueprintapi/testdata/NIST_SP-800-53_rev5_test.json",
-            catalog_version=Catalog.Version.CMS_ARS_3_1,
-            impact_level=Catalog.ImpactLevel.LOW,
-        )
+        call_command("load_catalog", load_standard_catalogs=True)
+        call_command("load_components")
 
-        call_command(
-            "load_catalog",
-            name="NIST Test Catalog 2",
-            catalog_file="blueprintapi/testdata/NIST_SP-800-53_rev5_test.json",
-            catalog_version=Catalog.Version.CMS_ARS_5_0,
-            impact_level=Catalog.ImpactLevel.MODERATE,
-        )
-
-        test_catalog = Catalog.objects.get(name="NIST Test Catalog")
-
-        cls.test_component = Component.objects.create(
-            title="Cool Component",
-            description="Probably the coolest component you ever did see. It's magical.",
-            supported_catalog_versions=[Catalog.Version.CMS_ARS_3_1],
-            search_terms=["cool", "magic", "software"],
-            type="software",
-            component_json=TEST_COMPONENT_JSON_BLOB,
-        )
-        cls.test_component_2 = Component.objects.create(
-            title="New Cool Component",
-            description="Probably the coolest component you ever did see. It's magical.",
-            supported_catalog_versions=[Catalog.Version.CMS_ARS_5_0],
-            search_terms=["cool", "magic", "software"],
-            type="software",
-            component_json=TEST_COMPONENT_JSON_BLOB,
-        )
-        cls.test_component_3 = Component.objects.create(
-            title="OCISO",
-            description="OCISO Inheritable Controls",
-            supported_catalog_versions=[Catalog.Version.CMS_ARS_3_1],
-            search_terms=[],
-            type="software",
-            component_json=TEST_COMPONENT_JSON_BLOB,
-        )
         cls.test_project = Project.objects.create(
             title="Pretty Ordinary Project",
             acronym="POP",
@@ -351,8 +321,31 @@ class ProjectAddComponentViewTest(AuthenticatedAPITestCase):
             impact_level="low",
             location="other",
             creator=test_user,
-            catalog=test_catalog,
         )
+
+        cls.test_project_5_0 = Project.objects.create(
+            title="Pretty Ordinary Project 2",
+            acronym="POP2",
+            catalog_version=Catalog.Version.CMS_ARS_5_0,
+            impact_level="low",
+            location="other",
+            creator=test_user,
+        )
+
+        cls.test_component_3_1 = (
+            Component.objects.filter(supported_catalog_versions=[Catalog.Version.CMS_ARS_3_1]).first()
+        )
+
+        cls.test_component_5_0 = Component.objects.create(
+            title="New Cool Component",
+            description="Probably the coolest component you ever did see. It's magical.",
+            supported_catalog_versions=[Catalog.Version.CMS_ARS_5_0],
+            search_terms=["cool", "magic", "software"],
+            type="software",
+            component_json=TEST_COMPONENT_JSON_BLOB,
+        )
+
+        cls.django_test_component = Component.objects.get(title="Django")  # Has 3.1 and 5.0 implementations
 
     def test_invalid_project(self):
         resp = self.client.post(
@@ -387,8 +380,8 @@ class ProjectAddComponentViewTest(AuthenticatedAPITestCase):
         resp = self.client.post(
             "/api/projects/add-component/",
             {
-                "component_id": self.test_component_2.id,  # Defined with test_catalog_2
-                "project_id": self.test_project.id,  # Defined with test_catalog
+                "component_id": self.test_component_5_0.id,  # Defined with 5.0 support only
+                "project_id": self.test_project.id,  # Defined on 3.1 catalog
             },
         )
         self.assertEqual(resp.status_code, 400)
@@ -397,11 +390,23 @@ class ProjectAddComponentViewTest(AuthenticatedAPITestCase):
         resp = self.client.post(
             "/api/projects/add-component/",
             {
-                "component_id": self.test_component.id,
+                "component_id": self.test_component_3_1.id,
                 "project_id": self.test_project.id,
             },
         )
         self.assertEqual(resp.status_code, 200)
+
+    def test_add_multi_implementation_component(self):
+        for project in (self.test_project.id, self.test_project_5_0.id):
+            with self.subTest(project=project):
+                response = self.client.post(
+                    "/api/projects/add-component/",
+                    {
+                        "component_id": self.django_test_component.id,
+                        "project_id": project
+                    }
+                )
+                self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
 class ProjectControlPage(AuthenticatedAPITestCase):
@@ -523,7 +528,7 @@ class ProjectPostSaveAddComponentTest(TestCase):
         project = Project.objects.create(
             title="Basic Project",
             acronym="BP",
-            catalog_version="NIST 800-53",
+            catalog_version=Catalog.Version.CMS_ARS_3_1,
             impact_level="low",
             location="other",
             creator=self.test_user,
@@ -536,7 +541,7 @@ class ProjectPostSaveAddComponentTest(TestCase):
         project = Project.objects.create(
             title="Basic Project",
             acronym="BP",
-            catalog_version="NIST 800-53",
+            catalog_version=Catalog.Version.CMS_ARS_3_1,
             impact_level="low",
             location="cms_aws",
             creator=self.test_user,
@@ -733,7 +738,7 @@ class RetrieveUpdateProjectControlViewTestCase(AuthenticatedAPITestCase):
             "load_catalog",
             name="NIST Test Catalog",
             catalog_file="blueprintapi/testdata/NIST_SP-800-53_rev5_test.json",
-            catalog_version="NIST 800-53",
+            catalog_version=Catalog.Version.CMS_ARS_3_1,
             impact_level=Catalog.ImpactLevel.LOW,
         )
 
@@ -742,7 +747,7 @@ class RetrieveUpdateProjectControlViewTestCase(AuthenticatedAPITestCase):
         cls.project = Project.objects.create(
             title="Test project",
             acronym="TP",
-            catalog_version="NIST 800-53",
+            catalog_version=Catalog.Version.CMS_ARS_3_1,
             impact_level="low",
             location="other",
             creator=user,

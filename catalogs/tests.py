@@ -46,41 +46,30 @@ class CatalogModelTest(AuthenticatedAPITestCase):
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
-class CatalogEndpointTest(AuthenticatedAPITestCase):
-    def test_valid_catalog(self):
-        with open("blueprintapi/testdata/NIST_SP-800-53_rev5_test.json", "rb") as file:
-            catalog = File(file)
-            resp = self.client.post(
-                "/api/catalogs/",
-                {"name": "Test Catalog", "file_name": catalog},
-            )
-            self.assertEqual(resp.status_code, 201)
-
-
 class LoadCatalogCommandTestCase(TestCase):
     def test_load_standard_catalogs(self):
         test_cases = [
             {
                 "name": "CMS_ARS_3_1_HIGH",
-                "version": "CMS_ARS_3_1",
+                "version": Catalog.Version.CMS_ARS_3_1,
                 "impact_level": "high"
             },
             {
                 "name": "CMS_ARS_3_1_LOW",
-                "version": "CMS_ARS_3_1",
+                "version": Catalog.Version.CMS_ARS_3_1,
                 "impact_level": "low"
             },
             {
                 "name": "CMS_ARS_3_1_MODERATE",
-                "version": "CMS_ARS_3_1",
+                "version": Catalog.Version.CMS_ARS_3_1,
                 "impact_level": "moderate"
             },
         ]
         call_command("load_catalog", load_standard_catalogs=True)
 
         catalog_qs = Catalog.objects.order_by("name").values("name", "impact_level", "version")
-        self.assertEqual(catalog_qs.count(), 3)
-        self.assertEqual(Controls.objects.count(), 909)
+        self.assertEqual(catalog_qs.count(), 6)
+        self.assertEqual(Controls.objects.count(), 1882)
 
         for expected, actual in zip(test_cases, catalog_qs):
             with self.subTest(catalog=expected["name"]):
@@ -90,4 +79,4 @@ class LoadCatalogCommandTestCase(TestCase):
         call_command("load_catalog", load_standard_catalogs=True)
         call_command("load_catalog", load_standard_catalogs=True)
 
-        self.assertEqual(Catalog.objects.count(), 3)
+        self.assertEqual(Catalog.objects.count(), 6)
