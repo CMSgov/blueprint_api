@@ -734,33 +734,29 @@ class RetrieveUpdateProjectControlViewTestCase(AuthenticatedAPITestCase):
 
         cls.user, cls.token = user, token
 
-        call_command(
-            "load_catalog",
-            name="NIST Test Catalog",
-            catalog_file="blueprintapi/testdata/NIST_SP-800-53_rev5_test.json",
-            catalog_version=Catalog.Version.CMS_ARS_3_1,
-            impact_level=Catalog.ImpactLevel.LOW,
-        )
+        call_command("load_catalog", load_standard_catalogs=True)
+        call_command("load_components")
 
-        test_catalog = Catalog.objects.get(name="NIST Test Catalog")
-
-        cls.project = Project.objects.create(
+        project = Project.objects.create(
             title="Test project",
             acronym="TP",
             catalog_version=Catalog.Version.CMS_ARS_3_1,
-            impact_level="low",
+            impact_level=Project.ImpactLevel.LOW,
             location="other",
             creator=user,
-            catalog=test_catalog,
         )
+
+        project.components.set(Component.objects.all())
+
+        cls.project = project
+
+        cls.ac_1_path = reverse("project-get-control", kwargs={"project_id": project.id, "control_id": "ac-1"})
 
     def setUp(self):
         self.client.force_authenticate(user=self.user, token=self.token)
 
     def test_get_project_control(self):
-        response = self.client.get(
-            reverse("project-get-control", kwargs={"project_id": self.project.id, "control_id": "ac-1"})
-        )
+        response = self.client.get(self.ac_1_path)
         self.assertEqual(response.status_code, 200)
 
         content = response.json()
@@ -774,9 +770,9 @@ class RetrieveUpdateProjectControlViewTestCase(AuthenticatedAPITestCase):
         control = content["control"]
         expected = {
             "control_id": "ac-1",
-            "control_label": "AC-1",
+            "control_label": "AC-01",
             "sort_id": "ac-01",
-            "title": "Policy and Procedures"
+            "title": "Access Control Policy and Procedures"
         }
 
         with self.subTest(msg="Test next control"):
@@ -786,10 +782,14 @@ class RetrieveUpdateProjectControlViewTestCase(AuthenticatedAPITestCase):
             with self.subTest(field=field):
                 self.assertEqual(control[field], value)
 
+        with self.subTest(msg="Test inherited components"):
+            self.assertEqual(len(content["component_data"]["components"]["inherited"]), 2)
+            self.assertTrue(
+                all(item["enabled"] for item in content["component_data"]["components"]["inherited"].values())
+            )
+
     def test_get_project_control_project_info(self):
-        response = self.client.get(
-            reverse("project-get-control", kwargs={"project_id": self.project.id, "control_id": "ac-1"})
-        )
+        response = self.client.get(self.ac_1_path)
         self.assertEqual(response.status_code, 200)
 
         content = response.json()
@@ -807,14 +807,12 @@ class RetrieveUpdateProjectControlViewTestCase(AuthenticatedAPITestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_update_control_status(self):
-        initial_response = self.client.get(
-            reverse("project-get-control", kwargs={"project_id": self.project.id, "control_id": "ac-1"})
-        )
+        initial_response = self.client.get(self.ac_1_path)
 
         original_status = initial_response.json()["status"]
 
         response = self.client.patch(
-            reverse("project-get-control", kwargs={"project_id": self.project.id, "control_id": "ac-1"}),
+            self.ac_1_path,
             data=json.dumps({"status": ProjectControl.Status.INCOMPLETE}),
             content_type="application/json"
         )
@@ -824,3 +822,31 @@ class RetrieveUpdateProjectControlViewTestCase(AuthenticatedAPITestCase):
 
         self.assertNotEqual(original_status, content["status"])
         self.assertEqual(content["status"], ProjectControl.Status.INCOMPLETE)
+
+    def test_enable_disable_narrative(self):
+        title = "Amazon Web Services"
+        test_component = Component.objects.get(title=title).id
+        patch_kwargs = {"path": self.ac_1_path, "content_type": "application/json"}
+
+        # Test narrative is disabled
+        disable_response = self.client.patch(data=json.dumps({"disable_narratives": [test_component]}), **patch_kwargs)
+        self.assertEqual(disable_response.status_code, status.HTTP_200_OK)
+
+        narrative = disable_response.json()["component_data"]["components"]["inherited"].get(title)
+        self.assertIs(narrative["enabled"], False)
+
+        # Test same narrative is re-enabled
+        enable_response = self.client.patch(data=json.dumps({"enable_narratives": [test_component]}), **patch_kwargs)
+        self.assertEqual(enable_response.status_code, status.HTTP_200_OK)
+
+        narrative = enable_response.json()["component_data"]["components"]["inherited"].get(title)
+        self.assertIs(narrative["enabled"], True)
+
+    def test_invalid_id_returns_400(self):
+        response = self.client.patch(
+            self.ac_1_path,
+            data=json.dumps({"disable_narratives": [12345]}),
+            content_type="application/json"
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
