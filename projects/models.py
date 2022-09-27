@@ -99,7 +99,7 @@ class ProjectControl(models.Model):
     class Status(models.TextChoices):
         NOT_STARTED = "not_started", _("Not started")
         INCOMPLETE = "incomplete", _("Incomplete")
-        COMPLETE = "completed", _("Completed")
+        COMPLETE = "complete", _("Complete")
         NA = "not_applicable", _("Not applicable")
 
     project = models.ForeignKey(
