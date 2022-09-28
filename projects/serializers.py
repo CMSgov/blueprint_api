@@ -92,7 +92,12 @@ class ProjectControlSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProjectControl
-        fields = ("status", "project", "control", "catalog_data", "component_data", )
+        fields = ("status", "project", "control", "remarks", "catalog_data", "component_data", )
+
+    def validate(self, attrs):
+        if attrs.get("status") == ProjectControl.Status.NA and not attrs.get("remarks"):
+            raise serializers.ValidationError("A justification is required for non-applicable controls.")
+        return attrs
 
     def get_catalog_data(self, obj: ProjectControl) -> Optional[dict]:
         """Get the Catalog data for a given Control."""
@@ -174,5 +179,6 @@ class ProjectControlListSerializer(serializers.ModelSerializer):
             "status",
             "control",
             "project",
+            "remarks",
         )
-        read_only_fields = ("status", "control", "project", )
+        read_only_fields = ("status", "control", "project", "remarks", )
