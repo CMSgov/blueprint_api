@@ -20,7 +20,7 @@ from projects.serializers import (
     ProjectSerializer, ProjectControlListSerializer,
 )
 
-n_completed = Count("to_project", filter=Q(to_project__status="complete"))
+n_completed = Count("to_project", filter=Q(to_project__status=ProjectControl.Status.COMPLETE))
 total_controls = Count("to_project")
 
 project_queryset = (
