@@ -1,3 +1,5 @@
+import json
+
 from wsgiref.util import FileWrapper
 
 from django.core.files.base import ContentFile
@@ -7,7 +9,8 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from guardian.shortcuts import get_objects_for_user
-from rest_framework import generics, status
+from rest_framework import generics, renderers, status, viewsets
+from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
@@ -15,6 +18,7 @@ from blueprintapi.filters import ObjectPermissionsFilter
 from components.filters import ComponentFilter
 from components.models import Component
 from components.serializers import ComponentListBasicSerializer
+from projects.downloads import OscalSSP
 from projects.filters import ProjectControlFilter
 from projects.models import Project, ProjectControl
 from projects.permissions import ProjectControlPermissions
@@ -23,7 +27,6 @@ from projects.serializers import (
     ProjectControlSerializer,
     ProjectListSerializer,
     ProjectSerializer,
-    ProjectSspDownloadSerializer,
 )
 
 n_completed = Count("to_project", filter=Q(to_project__status=ProjectControl.Status.COMPLETE))
@@ -194,15 +197,26 @@ class RetrieveUpdateProjectControlView(generics.RetrieveUpdateAPIView):
         return get_object_or_404(ProjectControl, control__control_id=self.kwargs.get("control_id"), project=project)
 
 
-class DownloadSspView(generics.ListAPIView):
-    queryset = Project.objects.all()
-    serializer_class = ProjectSspDownloadSerializer
-    lookup_url_kwarg = "project_id"
+class PassthroughRenderer(renderers.BaseRenderer):
+    media_type = ""
+    format = ""
 
-    def get_object(self):
+    def render(self, data, accepted_media_type=None, renderer_context=None):
+        return data
+
+
+class ProjectSspDownloadView(viewsets.ReadOnlyModelViewSet):
+    queryset = Project.objects.all()
+
+    @action(methods=["get"], detail=True, renderer_classes=(PassthroughRenderer,))
+    def download(self, *args, **kwargs):
         project = get_object_or_404(Project, pk=self.kwargs.get("project_id"))
         self.check_object_permissions(self.request, project)
-        file = ContentFile(project.file)
+
+        ssp = OscalSSP(project)
+        data = ssp.get_ssp()
+        file = ContentFile(data)
+
         response = HttpResponse(FileWrapper(file), "application/json")
         response["Content-Length"] = file.size
         response["Content-Disposition"] = (

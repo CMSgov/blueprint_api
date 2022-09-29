@@ -1,12 +1,12 @@
 from django.urls import path
 
 from .views import (
-    DownloadSspView,
     ProjectAddComponentView,
     ProjectComponentListSearchView,
     ProjectComponentNotAddedListView,
     ProjectGetControlList,
     ProjectRemoveComponentView,
+    ProjectSspDownloadView,
     ProjectsDetailView,
     ProjectsListViews,
     RetrieveUpdateProjectControlView,
@@ -47,7 +47,7 @@ urlpatterns = [
     ),
     path(
         "<int:project_id>/download/oscal",
-        DownloadSspView.as_view(),
+        ProjectSspDownloadView.as_view({"get": "download"}),
         name="download-ssp",
     ),
 ]
