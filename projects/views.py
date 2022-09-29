@@ -1,5 +1,9 @@
+from wsgiref.util import FileWrapper
+
+from django.core.files.base import ContentFile
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.db.models import Q, Count
+from django.db.models import Count, Q
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from guardian.shortcuts import get_objects_for_user
@@ -15,9 +19,11 @@ from projects.filters import ProjectControlFilter
 from projects.models import Project, ProjectControl
 from projects.permissions import ProjectControlPermissions
 from projects.serializers import (
+    ProjectControlListSerializer,
     ProjectControlSerializer,
     ProjectListSerializer,
-    ProjectSerializer, ProjectControlListSerializer,
+    ProjectSerializer,
+    ProjectSspDownloadSerializer,
 )
 
 n_completed = Count("to_project", filter=Q(to_project__status=ProjectControl.Status.COMPLETE))
@@ -186,3 +192,20 @@ class RetrieveUpdateProjectControlView(generics.RetrieveUpdateAPIView):
         self.check_object_permissions(self.request, project)
 
         return get_object_or_404(ProjectControl, control__control_id=self.kwargs.get("control_id"), project=project)
+
+
+class DownloadSspView(generics.ListAPIView):
+    queryset = Project.objects.all()
+    serializer_class = ProjectSspDownloadSerializer
+    lookup_url_kwarg = "project_id"
+
+    def get_object(self):
+        project = get_object_or_404(Project, pk=self.kwargs.get("project_id"))
+        self.check_object_permissions(self.request, project)
+        file = ContentFile(project.file)
+        response = HttpResponse(FileWrapper(file), "application/json")
+        response["Content-Length"] = file.size
+        response["Content-Disposition"] = (
+            'attachment; filename="%s-ssp.json"' % project.title
+        )
+        return response

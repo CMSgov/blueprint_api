@@ -1,17 +1,18 @@
+import json
 from typing import Optional
 
-from django.db.models import QuerySet
-from rest_framework import serializers
-
+from blueprintapi.oscal.component import Model as ComponentModel
 from catalogs.catalogio import CatalogTools
 from catalogs.io.v5_0 import CatalogModel
 from catalogs.models import Catalog
 from catalogs.serializers import ControlSerializer
 from components.models import Component
 from components.serializers import ComponentListSerializer
-from projects.models import Project, ProjectControl
+from django.db.models import QuerySet
+from rest_framework import serializers
 
-from blueprintapi.oscal.component import Model as ComponentModel
+from projects.downloads import OscalSSP
+from projects.models import Project, ProjectControl
 
 
 class ProjectListSerializer(serializers.ModelSerializer):
@@ -182,3 +183,17 @@ class ProjectControlListSerializer(serializers.ModelSerializer):
             "remarks",
         )
         read_only_fields = ("status", "control", "project", "remarks", )
+
+
+class ProjectSspDownloadSerializer(serializers.ModelSerializer):
+    file = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = Project
+        fields = ("file",)
+
+    def get_file(self, obj: Project):
+        ssp = OscalSSP(obj)
+        data = ssp.get_ssp()
+        file = json.loads(data)
+        return file
