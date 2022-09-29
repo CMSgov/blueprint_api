@@ -1,14 +1,15 @@
+import io
 import json
 
 from django.core.management import call_command
 from django.test import TestCase
 from django.urls import reverse
+from jsonschema import validate, ValidationError, SchemaError
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 
 from catalogs.models import Catalog
 from components.models import Component
-from projects.downloads import OscalSSP
 from projects.models import Project, ProjectControl
 from testing_utils import AuthenticatedAPITestCase
 from users.models import User
@@ -38,27 +39,27 @@ TEST_COMPONENT_JSON_BLOB = {
                             {
                                 "uuid": "6698d762-5cdc-452e-9f9e-3074df5292c6",
                                 "control-id": "ac-2",
-                                "description": "This component statisfies a.",
+                                "description": "This component satisfies a.",
                             },
                             {
                                 "uuid": "73dd3c2e-54eb-43c6-a488-dfb7c79d9413",
                                 "control-id": "at-1",
-                                "description": "This component statisfies b.",
+                                "description": "This component satisfies b.",
                             },
                             {
                                 "uuid": "73dd3c2e-54eb-43c6-a488-dfb7c79d9413",
                                 "control-id": "at-2",
-                                "description": "This component statisfies c.",
+                                "description": "This component satisfies c.",
                             },
                             {
                                 "uuid": "73dd3c2e-54eb-43c6-a488-dfb7c79d9413",
                                 "control-id": "at-3",
-                                "description": "This component statisfies d.",
+                                "description": "This component satisfies d.",
                             },
                             {
                                 "uuid": "73dd3c2e-54eb-43c6-a488-dfb7c79d9413",
                                 "control-id": "pe-3",
-                                "description": "This component statisfies e.",
+                                "description": "This component satisfies e.",
                             },
                         ],
                     }
@@ -103,10 +104,6 @@ class ProjectModelTest(TestCase):
             creator=user,
             catalog=test_catalog,
         )
-        with open("projects/project_extra.json") as read_file:
-            extras = json.load(read_file)
-        ssp = OscalSSP(cls.test_project, extras)
-        cls.ssp = json.loads(ssp.get_ssp())
 
     def test_project_permissions(self):
         self.assertTrue(
@@ -117,29 +114,54 @@ class ProjectModelTest(TestCase):
         private_component = self.test_project.components.get(title="Pretty Ordinary Project private")
         self.assertEqual(private_component.status, Component.Status.SYSTEM)
 
-    def test_project_ssp_metadata(self):
-        ssp_base = self.ssp.get("system-security-plan")
-        metadata = ssp_base.get("metadata")
-        self.assertEqual(metadata.get("title"), "Pretty Ordinary Project")
 
-        roles = metadata.get("roles")
-        self.assertEqual(7, len(roles))
+class ProjectSspDownload(AuthenticatedAPITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        user = User.objects.create()
+        cls.user = user
 
-    def test_project_ssp_implementations(self):
-        ssp_base = self.ssp.get("system-security-plan")
-        implementation = ssp_base.get("system-implementation")
-        components = implementation.get("components")
-        has_ociso = False
-        has_this_sytem = False
-        for comps in components:
-            if comps.get("title") == "OCISO":
-                has_ociso = True
-            if comps.get("type") == "this-system":
-                has_this_sytem = True
-        self.assertTrue(has_ociso)
-        self.assertTrue(has_this_sytem)
+        call_command(
+            "load_catalog",
+            name="NIST Test Catalog",
+            catalog_file="blueprintapi/testdata/NIST_SP-800-53_rev5_test.json",
+            catalog_version=Catalog.Version.CMS_ARS_3_1,
+            impact_level=Catalog.ImpactLevel.LOW,
+        )
 
+        test_catalog = Catalog.objects.get(name="NIST Test Catalog")
 
+        cls.test_component = Component.objects.create(
+            title="OCISO",
+            description="OCISO Inheritable Controls",
+            supported_catalog_versions=[Catalog.Version.CMS_ARS_3_1],
+            search_terms=[],
+            type="software",
+            component_json=TEST_COMPONENT_JSON_BLOB,
+        )
+
+        cls.test_project = Project.objects.create(
+            title="Pretty Ordinary Project",
+            acronym="POP",
+            catalog_version=Catalog.Version.CMS_ARS_3_1,
+            impact_level=Project.ImpactLevel.LOW,
+            location="other",
+            creator=user,
+            catalog=test_catalog,
+        )
+
+    def test_project_ssp_download(self):
+        token = Token.objects.create(user=self.user)
+        self.client.force_authenticate(user=self.user, token=token)
+
+        response = self.client.get(
+            reverse("download-ssp", kwargs={"project_id": self.test_project.pk})
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEquals(
+            response.get("Content-Disposition"),
+            f'attachment; filename="{self.test_project.title}-ssp.json"'
+        )
 
 
 class ProjectListCreateViewTestCase(AuthenticatedAPITestCase):

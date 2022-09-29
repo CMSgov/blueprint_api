@@ -100,8 +100,11 @@ python3 manage.py runserver
 ### SwaggerUI
 Go to http://localhost:8000/doc/ to see the SwaggerUI
 Go to http://localhost:8000/doc.json or http://localhost:8000/doc.yaml to see the unformatted spec
+<<<<<<< HEAD
 
 ### Django REST Framework UI
 Go to http://localhost:8000/ to see the index page of the REST framework UI.
 Any request defined in for the API can be executed in a browser and viewed via this UI, but actions/data may be 
 restricted until a user logs in with appropriate permissions.
+=======
+>>>>>>> ac6c8a7 (Adding new test for download.)
