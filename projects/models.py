@@ -55,7 +55,6 @@ class Project(models.Model):
         to="catalogs.Controls",
         through="ProjectControl",
         related_name="project_controls",
-        through_fields=("project", "control")
     )
     impact_level = models.CharField(
         choices=ImpactLevel.choices,
