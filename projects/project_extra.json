@@ -1,0 +1,60 @@
+{
+  "stakeholders": [
+    {"Business Owner (BO)": {
+        "props": {
+          "name": "type",
+          "value": "internal"
+        }
+      }
+    },
+    {"Information System Security Officer (ISSO)":  {
+        "props": {
+          "name": "type",
+          "value": "internal"
+        }
+      }
+    },
+    {"System Read Only (SRO)":  {
+        "props": {
+          "name": "type",
+          "value": "internal"
+        }
+      }
+    },
+    {"System Read Only (SRO)":  {
+        "props": {
+          "name": "type",
+          "value": "internal"
+        }
+      }
+    },
+    {"System Developer Maintainer (SDM)":  {
+        "props": {
+          "name": "type",
+          "value": "external"
+        }
+      }
+    },
+    {"ISSO Contractor Support (ISSOCS)":  {
+        "props": {
+          "name": "type",
+          "value": "external"
+        }
+      }
+    },
+    {"Chief Information Officer (CIO)": {
+        "props": {
+          "name": "type",
+          "value": "internal"
+        }
+      }
+    },
+    {"Deputy Chief Information Officer (DCIO)":  {
+        "props": {
+          "name": "type",
+          "value": "internal"
+        }
+      }
+    }
+  ]
+}

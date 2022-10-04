@@ -259,8 +259,8 @@ class RoleIDEnum(str, Enum):
     information_system_security_officer = "information-system-security-officer"
     maintainer = "maintainer"
     network_operations = "network-operations"
-    prepared_by = "prepared_by"
-    prepared_for = "prepared_for"
+    prepared_by = "prepared-by"
+    prepared_for = "prepared-for"
     privacy_poc = "privacy-poc"
     provider = "provider"
     security_operations = "security-operations"
@@ -271,7 +271,7 @@ class RoleIDEnum(str, Enum):
 
 
 class Role(OSCALElement):
-    id: RoleIDEnum
+    id: str
     title: MarkupLine
     short_name: Optional[str]
     description: Optional[MarkupMultiLine]
@@ -279,6 +279,10 @@ class Role(OSCALElement):
     annotations: Optional[List[Annotation]]
     links: Optional[List[Link]]
     remarks: Optional[MarkupMultiLine]
+
+    class Config:
+        fields = {"short_name": "short-name"}
+        allow_population_by_field_name = True
 
 
 class ResponsibleParty(OSCALElement):

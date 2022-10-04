@@ -37,27 +37,27 @@ TEST_COMPONENT_JSON_BLOB = {
                             {
                                 "uuid": "6698d762-5cdc-452e-9f9e-3074df5292c6",
                                 "control-id": "ac-2",
-                                "description": "This component statisfies a.",
+                                "description": "This component satisfies a.",
                             },
                             {
                                 "uuid": "73dd3c2e-54eb-43c6-a488-dfb7c79d9413",
                                 "control-id": "at-1",
-                                "description": "This component statisfies b.",
+                                "description": "This component satisfies b.",
                             },
                             {
                                 "uuid": "73dd3c2e-54eb-43c6-a488-dfb7c79d9413",
                                 "control-id": "at-2",
-                                "description": "This component statisfies c.",
+                                "description": "This component satisfies c.",
                             },
                             {
                                 "uuid": "73dd3c2e-54eb-43c6-a488-dfb7c79d9413",
                                 "control-id": "at-3",
-                                "description": "This component statisfies d.",
+                                "description": "This component satisfies d.",
                             },
                             {
                                 "uuid": "73dd3c2e-54eb-43c6-a488-dfb7c79d9413",
                                 "control-id": "pe-3",
-                                "description": "This component statisfies e.",
+                                "description": "This component satisfies e.",
                             },
                         ],
                     }
@@ -111,6 +111,55 @@ class ProjectModelTest(TestCase):
     def test_project_has_default_component(self):
         private_component = self.test_project.components.get(title="Pretty Ordinary Project private")
         self.assertEqual(private_component.status, Component.Status.SYSTEM)
+
+
+class ProjectSspDownload(AuthenticatedAPITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        user = User.objects.create()
+        cls.user = user
+
+        call_command(
+            "load_catalog",
+            name="NIST Test Catalog",
+            catalog_file="blueprintapi/testdata/NIST_SP-800-53_rev5_test.json",
+            catalog_version=Catalog.Version.CMS_ARS_3_1,
+            impact_level=Catalog.ImpactLevel.LOW,
+        )
+
+        test_catalog = Catalog.objects.get(name="NIST Test Catalog")
+
+        cls.test_component = Component.objects.create(
+            title="OCISO",
+            description="OCISO Inheritable Controls",
+            supported_catalog_versions=[Catalog.Version.CMS_ARS_3_1],
+            search_terms=[],
+            type="software",
+            component_json=TEST_COMPONENT_JSON_BLOB,
+        )
+
+        cls.test_project = Project.objects.create(
+            title="Pretty Ordinary Project",
+            acronym="POP",
+            catalog_version=Catalog.Version.CMS_ARS_3_1,
+            impact_level=Project.ImpactLevel.LOW,
+            location="other",
+            creator=user,
+            catalog=test_catalog,
+        )
+
+    def test_project_ssp_download(self):
+        token = Token.objects.create(user=self.user)
+        self.client.force_authenticate(user=self.user, token=token)
+
+        response = self.client.get(
+            reverse("download-ssp", kwargs={"project_id": self.test_project.pk})
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            response.get("Content-Disposition"),
+            f'attachment; filename="{self.test_project.title}-ssp.json"'
+        )
 
 
 class ProjectListCreateViewTestCase(AuthenticatedAPITestCase):

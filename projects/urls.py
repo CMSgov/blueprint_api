@@ -4,11 +4,12 @@ from .views import (
     ProjectAddComponentView,
     ProjectComponentListSearchView,
     ProjectComponentNotAddedListView,
-    RetrieveUpdateProjectControlView,
     ProjectGetControlList,
     ProjectRemoveComponentView,
+    ProjectSspDownloadView,
     ProjectsDetailView,
     ProjectsListViews,
+    RetrieveUpdateProjectControlView,
 )
 
 urlpatterns = [
@@ -43,5 +44,10 @@ urlpatterns = [
         "<int:project_id>/components-not-added/",
         ProjectComponentNotAddedListView.as_view(),
         name="components-not-in-project",
+    ),
+    path(
+        "<int:project_id>/downloads/oscal",
+        ProjectSspDownloadView.as_view({"get": "download"}),
+        name="download-ssp",
     ),
 ]

@@ -123,8 +123,8 @@ class SecurityImpactLevel(OSCALElement):
 
 
 class SystemId(OSCALElement):
-    identifier_type: Optional[str]  # really URI
-    id: Optional[str]
+    identifier_type: Optional[str]  # really URN
+    id: Optional[UUID]
 
     class Config:
         fields = {"identifier_type": "identifier-type"}
@@ -516,85 +516,3 @@ class Model(OSCALElement):
             kwargs.pop("exclude_none")
 
         return super().json(by_alias=True, exclude_none=True, **kwargs)
-
-
-def main():
-    md = Metadata(title="System Security Plan", version="1.2.3")
-    ciso = Role(id="security-operations", title="CISO")
-    fen = Party(type="person", name="Fen", email_addresses=["fen@civicactions.com"])
-    tom = Party(type="person", name="Tom", email_addresses=["tom@civicactions.com"])
-    md.parties = [fen, tom]
-    md.roles = [ciso]
-    md.responsible_parties
-
-    ip = ImportProfile(href="https://nist.gov/800-53-rev4")
-    ssec = SecurityImpactLevel(
-        security_objective_confidentiality="high",
-        security_objective_availability="low",
-        security_objective_integrity="low",
-    )
-    itype = InformationType(
-        title="Information Type",
-        description="Information Type",
-        confidential_impact=Impact(base="low"),
-        integrity_impact=Impact(base="moderate"),
-        availability_impact=Impact(base="low"),
-    )
-    sinfo = SystemInformation(information_types=[itype])
-
-    ab = NetworkDiagram(description="Authorization Boundary")
-    sc = SystemCharacteristics(
-        system_name="ODP",
-        description="ODP Description",
-        system_information=sinfo,
-        security_sensitivity_level="moderate",
-        security_impact_level=ssec,
-        authorization_boundary=ab,
-        status=SystemStatus(state="operational"),
-    )
-    si = SystemImplementation()
-    this_system = Component(
-        title="This System",
-        type="this-system",
-        description="This System",
-        status=SystemStatus(state="operational"),
-    )
-    drupal = Component(
-        title="Drupal",
-        type="software",
-        description="Drupal",
-        status=SystemStatus(state="operational"),
-    )
-    si.add_component(this_system).add_component(drupal)
-    ir = ImplementedRequirement(control_id="AC-1", description="Access Control")
-    ir.add_by_component(
-        ByComponent(component_uuid=drupal.uuid, description="AC-1 provided by Drupal")
-    )
-    ir.add_parameter(SetParameter(param_id="AC-1_prm_1", values=["every 30 days"]))
-    ir.add_statement(
-        Statement(statement_id="AC-1_smt").add_by_component(
-            ByComponent(
-                component_uuid=drupal.uuid, description="AC-1 provided by Drupal"
-            )
-        )
-    )
-    ci = ControlImplementation(
-        description="Our requirements", implemented_requirements=[ir]
-    )
-    bm = BackMatter(resources=[Resource(title="Test Resource")])
-
-    ssp = SystemSecurityPlan(
-        metadata=md,
-        import_profile=ip,
-        system_characteristics=sc,
-        system_implementation=si,
-        control_implementation=ci,
-        back_matter=bm,
-    )
-    root = Model(system_security_plan=ssp)
-
-    print(root.json(indent=2))
-
-
-if __name__ == "__main__":
-    main()

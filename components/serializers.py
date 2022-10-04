@@ -1,16 +1,15 @@
 import json
-
 from typing import Any, List, Optional, Tuple
 
 from django.db.models import TextChoices
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
-
 from blueprintapi.oscal.component import ImplementedRequirement, Model
 from catalogs.catalogio import CatalogTools
 from catalogs.models import Catalog
-from components.models import Component
 from projects.models import Project
+
+from components.models import Component
 
 
 class ComponentListSerializer(serializers.ModelSerializer):
@@ -27,6 +26,7 @@ class ComponentListSerializer(serializers.ModelSerializer):
             "description",
             "type",
             "supported_catalog_versions",
+            "controls",
             "component_json",
             "component_file",
             "controls_count",
