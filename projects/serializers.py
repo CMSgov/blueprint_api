@@ -1,7 +1,9 @@
 import json
 from typing import Optional
+from rest_framework import serializers
 
 from blueprintapi.oscal.component import Model as ComponentModel
+
 from catalogs.catalogio import CatalogTools
 from catalogs.io.v5_0 import CatalogModel
 from catalogs.models import Catalog
@@ -90,15 +92,51 @@ class ProjectControlSerializer(serializers.ModelSerializer):
     project = BasicViewProjectSerializer(read_only=True)
     catalog_data = serializers.SerializerMethodField(read_only=True)
     component_data = serializers.SerializerMethodField(read_only=True)
+    disable_narratives = serializers.ListSerializer(child=serializers.IntegerField(), write_only=True, required=False)
+    enable_narratives = serializers.ListSerializer(child=serializers.IntegerField(), write_only=True, required=False)
 
     class Meta:
         model = ProjectControl
-        fields = ("status", "project", "control", "remarks", "catalog_data", "component_data", )
+        fields = (
+            "status",
+            "project",
+            "control",
+            "remarks",
+            "catalog_data",
+            "component_data",
+            "disable_narratives",
+            "enable_narratives",
+        )
 
     def validate(self, attrs):
         if attrs.get("status") == ProjectControl.Status.NA and not attrs.get("remarks"):
             raise serializers.ValidationError("A justification is required for non-applicable controls.")
         return attrs
+
+    def validate_disable_narratives(self, value: list[int]) -> list[int]:
+        invalid = []
+        for item in value:
+            if not self.instance.project.components.filter(id=item).exists():
+                invalid.append(item)
+
+        if invalid:
+            raise serializers.ValidationError(f"Invalid ids are present in 'disabled_narratives': {invalid}")
+
+        return value
+
+    def update(self, instance, validated_data):
+        if disable := validated_data.get("disable_narratives"):
+            instance.disabled_narratives = list(set(instance.disabled_narratives).union(disable))
+
+        if enable := validated_data.get("enable_narratives"):
+            instance.disabled_narratives = list(set(instance.disabled_narratives).difference(enable))
+
+        if status := validated_data.get("status"):
+            instance.status = status
+
+        instance.save()
+
+        return instance
 
     def get_catalog_data(self, obj: ProjectControl) -> Optional[dict]:
         """Get the Catalog data for a given Control."""
@@ -121,14 +159,12 @@ class ProjectControlSerializer(serializers.ModelSerializer):
     def get_component_data(self, obj: ProjectControl) -> dict:
         """Get the narratives from any Component that includes the given Control."""
         if obj.project.components.exists():
-            return self._get_control_data(
-                obj.project.components.all(), self.context.get("control_id"), obj.project.catalog_version
-            )
+            return self._get_control_data(obj, self.context.get("control_id"))
 
         return {}
 
     @staticmethod
-    def _get_control_data(components: QuerySet, control_id: str, catalog_version: str) -> dict:
+    def _get_control_data(obj: ProjectControl, control_id: str) -> dict:
         type_map = {
             Component.Status.PUBLIC: "inherited",
             Component.Status.SYSTEM: "private"
@@ -140,7 +176,11 @@ class ProjectControlSerializer(serializers.ModelSerializer):
         }
 
         responsibilities = []
-        for component in components:
+        catalog_version = obj.project.catalog.version
+        disabled_narratives = obj.disabled_narratives
+
+        for component in obj.project.components.all():
+            enabled = component.id not in disabled_narratives
             component_def = ComponentModel(**component.component_json).component_definition.components[0]
 
             try:
@@ -153,13 +193,19 @@ class ProjectControlSerializer(serializers.ModelSerializer):
                 responsibilities.append(responsibility)
 
                 if (status := type_map[component.status]) == "private":
-                    result["components"][status] = {"description": control_data.description}
+                    result["components"][status] = {
+                        "id": component.id,
+                        "description": control_data.description,
+                        "enabled": enabled
+                    }
                 else:
                     # noinspection PyTypeChecker
                     result["components"][status][component.title] = {
+                        "id": component.id,
                         "description": control_data.description,
                         "responsibility": responsibility,
-                        "provider": control_data.provider
+                        "provider": control_data.provider,
+                        "enabled": enabled
                     }
 
         if len(responsibilities) > 1:
